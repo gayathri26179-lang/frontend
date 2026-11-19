@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InternTrack – Internship Activity & Ticket Management System</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="brand-logo">
+        <div class="brand-icon">✓</div>
+        Intern<span>Track</span>
+      </a>
+
+      <nav>
+        <ul class="nav-menu">
+          <li><a href="index.html" class="nav-link active">Home</a></li>
+          <li><a href="services.html" class="nav-link">Services</a></li>
+          <li><a href="certificate.html" class="nav-link">Certificate</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <span id="api-status-badge" class="badge badge-info">Checking API...</span>
+        <a href="login.html" class="btn btn-primary btn-sm">Sign In</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-badge">
+      <span>🚀 Enterprise Internship Management Platform</span>
+    </div>
+    <h1 class="hero-title">
+      Empowering Interns,<br><span>Streamlining Workflows</span>
+    </h1>
+    <p class="hero-subtitle">
+      The ultimate professional platform for tracking daily internship activities, logging support tickets, evaluating performance metrics, and issuing verified tamper-proof certificates.
+    </p>
+
+    <div class="hero-cta">
+      <a href="login.html" class="btn btn-primary btn-lg">Get Started</a>
+      <a href="services.html" class="btn btn-outline btn-lg">Explore Services</a>
+    </div>
+
+    <!-- Live Performance Metrics -->
+    <div class="hero-stats">
+      <div class="stat-item">
+        <h3 id="stat-interns">500+</h3>
+        <p>Active Interns Tracked</p>
+      </div>
+      <div class="stat-item">
+        <h3 id="stat-tickets">1,200+</h3>
+        <p>Support Tickets Resolved</p>
+      </div>
+      <div class="stat-item">
+        <h3 id="stat-rate">99.4%</h3>
+        <p>On-Time Completion Rate</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Key Capabilities Overview -->
+  <section class="container">
+    <div class="section-header">
+      <h2 class="section-title">Core Management Features</h2>
+      <p class="section-subtitle">Designed specifically for engineering teams, university internship programs, and corporate supervisors.</p>
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon">📝</div>
+        <h3 class="card-title">Daily Activity Logging</h3>
+        <p class="card-desc">Interns submit structured work entries including duration, tags, code milestones, and deliverables for supervisor review.</p>
+        <a href="login.html" style="font-weight:600; display:inline-block; margin-top:14px;">Learn more →</a>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">🎫</div>
+        <h3 class="card-title">Ticket & Query Tracking</h3>
+        <p class="card-desc">Instantly log blockers, environment issues, and technical questions with SLA priority statuses and mentor assignment.</p>
+        <a href="login.html" style="font-weight:600; display:inline-block; margin-top:14px;">Learn more →</a>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">📜</div>
+        <h3 class="card-title">Verified Certificates</h3>
+        <p class="card-desc">Issue tamper-proof completion certificates equipped with digital verification IDs and downloadable printable formats.</p>
+        <a href="certificate.html" style="font-weight:600; display:inline-block; margin-top:14px;">Verify certificate →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>© 2026 InternTrack Systems. Built for High-Performance Internship & Ticket Management.</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script src="js/home.js"></script>
+</body>
+</html>

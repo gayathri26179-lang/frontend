@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In – InternTrack</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: radial-gradient(circle at top right, #dbeafe 0%, #f8fafc 60%);
+    }
+    .auth-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+    .auth-card {
+      width: 100%;
+      max-width: 440px;
+      background: #ffffff;
+      border-radius: 16px;
+      border: 1px solid #cbd5e1;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+      padding: 36px 32px;
+    }
+    .auth-header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .auth-tabs {
+      display: flex;
+      background: #f1f5f9;
+      padding: 4px;
+      border-radius: 8px;
+      margin-bottom: 24px;
+    }
+    .auth-tab {
+      flex: 1;
+      text-align: center;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      color: #64748b;
+      transition: all 0.2s ease;
+    }
+    .auth-tab.active {
+      background: #ffffff;
+      color: #1e40af;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+    .demo-hint-box {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-top: 24px;
+      font-size: 12px;
+      color: #1e40af;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Minimal Header -->
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="brand-logo">
+        <div class="brand-icon">✓</div>
+        Intern<span>Track</span>
+      </a>
+      <a href="index.html" class="nav-link">← Return to Home</a>
+    </div>
+  </header>
+
+  <div class="auth-container">
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="brand-icon" style="margin: 0 auto 14px; width: 44px; height: 44px; font-size: 22px;">✓</div>
+        <h1 style="font-size: 24px; font-weight: 800; color: #0f172a; margin-bottom: 6px;">Sign In to InternTrack</h1>
+        <p style="font-size: 14px; color: #64748b;">Access your internship activity &amp; ticket portal</p>
+      </div>
+
+      <!-- Role Selector Tabs -->
+      <div class="auth-tabs">
+        <div id="tab-staff" class="auth-tab active" onclick="switchRole('staff')">Staff / Intern</div>
+        <div id="tab-manager" class="auth-tab" onclick="switchRole('manager')">Manager / Admin</div>
+      </div>
+
+      <!-- Login Form -->
+      <form id="login-form">
+        <div class="form-group">
+          <label class="form-label" for="login-email">Email Address</label>
+          <input type="email" id="login-email" class="form-control" placeholder="name@company.com" value="intern@interntrack.com" required>
+        </div>
+
+        <div class="form-group">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <label class="form-label" for="login-password" style="margin-bottom: 0;">Password</label>
+            <a href="#" onclick="alert('Demo passwords: manager123 or intern123')" style="font-size: 12px; color: #2563eb;">Forgot password?</a>
+          </div>
+          <input type="password" id="login-password" class="form-control" placeholder="••••••••" value="intern123" required>
+        </div>
+
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; font-size: 13px; color: #64748b;">
+          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+            <input type="checkbox" id="remember-me" checked> Remember this device
+          </label>
+        </div>
+
+        <button type="submit" id="btn-login-submit" class="btn btn-primary" style="width: 100%; padding: 12px; font-size: 15px;">
+          Sign In
+        </button>
+      </form>
+
+      <!-- Demo Credentials Quick Switch -->
+      <div class="demo-hint-box">
+        <strong>⚡ Quick Demo Credentials:</strong>
+        <div style="margin-top: 6px; display: flex; flex-direction: column; gap: 4px;">
+          <div style="cursor: pointer;" onclick="autofill('intern@interntrack.com', 'intern123', 'staff')">
+            👨‍💻 Intern: <code style="background: #ffffff; padding: 1px 4px; border-radius: 4px;">intern@interntrack.com</code> / <code>intern123</code> (Click to fill)
+          </div>
+          <div style="cursor: pointer;" onclick="autofill('manager@interntrack.com', 'manager123', 'manager')">
+            👔 Manager: <code style="background: #ffffff; padding: 1px 4px; border-radius: 4px;">manager@interntrack.com</code> / <code>manager123</code> (Click to fill)
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>© 2026 InternTrack Systems. Secure Role-Based Access.</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>

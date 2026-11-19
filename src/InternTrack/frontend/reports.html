@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reports &amp; Graphs – InternTrack Analytics</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .chart-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(460px, 1fr));
+      gap: 24px;
+      padding: 32px;
+    }
+    .chart-card {
+      background: #ffffff;
+      border-radius: 12px;
+      border: 1px solid #cbd5e1;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+      padding: 24px;
+    }
+    .chart-header {
+      margin-bottom: 20px;
+    }
+    .chart-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .chart-desc {
+      font-size: 13px;
+      color: #64748b;
+    }
+    canvas {
+      width: 100% !important;
+      max-height: 260px;
+    }
+    .dept-bar {
+      margin-bottom: 16px;
+    }
+    .dept-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 600;
+      color: #0f172a;
+      margin-bottom: 6px;
+    }
+    .progress-track {
+      width: 100%;
+      height: 12px;
+      background: #e2e8f0;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 6px;
+      transition: width 0.8s ease;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="dashboard-layout">
+    <!-- Left Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-icon" style="width: 32px; height: 32px; font-size: 16px;">✓</div>
+        <h2>InternTrack</h2>
+      </div>
+
+      <ul class="sidebar-menu">
+        <li><a href="manager-dashboard.html" class="sidebar-link" id="nav-dash"><span>📊</span> Dashboard</a></li>
+        <li><a href="daily-activities.html" class="sidebar-link"><span>📝</span> Daily Activities</a></li>
+        <li><a href="reports.html" class="sidebar-link active"><span>📈</span> Reports &amp; Graphs</a></li>
+        <li><a href="certificate.html" class="sidebar-link"><span>📜</span> Verified Certificates</a></li>
+        <li><a href="services.html" class="sidebar-link"><span>💼</span> Services Catalog</a></li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <a href="logout.html" class="sidebar-link" style="color: #f87171;"><span>🚪</span> Log Out</a>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Top Bar -->
+      <header class="topbar">
+        <div class="topbar-title">Reports &amp; Analytics Dashboard</div>
+        <div style="display: flex; gap: 12px; align-items: center;">
+          <span class="badge badge-info" style="padding: 6px 14px;">📅 Nov 1 – Nov 30, 2026</span>
+          <button onclick="window.print()" class="btn btn-primary btn-sm">📥 Export Report (PDF/CSV)</button>
+        </div>
+      </header>
+
+      <!-- Charts Section -->
+      <section class="chart-grid">
+        <!-- Chart 1: Bar Chart of Monthly Hours -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <h3 class="chart-title">Monthly Activity &amp; Hours Logged</h3>
+            <p class="chart-desc">Comparison between planned vs actual internship hours</p>
+          </div>
+          <canvas id="barChart" height="240"></canvas>
+          <div style="display: flex; justify-content: center; gap: 20px; margin-top: 14px; font-size: 12px; color: #64748b;">
+            <div style="display:flex; align-items:center; gap:6px;"><span style="width:12px; height:12px; background:#93c5fd; border-radius:2px;"></span> Planned Hours</div>
+            <div style="display:flex; align-items:center; gap:6px;"><span style="width:12px; height:12px; background:#2563eb; border-radius:2px;"></span> Actual Logged Hours</div>
+          </div>
+        </div>
+
+        <!-- Chart 2: Donut Chart of Ticket SLA -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <h3 class="chart-title">Support Ticket Resolution Rate</h3>
+            <p class="chart-desc">Resolution distribution across 1,248 logged cohort queries</p>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-around;">
+            <canvas id="donutChart" width="220" height="220" style="max-width: 220px;"></canvas>
+            <div style="font-size: 13px; display: flex; flex-direction: column; gap: 10px;">
+              <div><span class="badge badge-success">Resolved (68%)</span><br><small style="color:#64748b;">848 tickets closed</small></div>
+              <div><span class="badge badge-info">In Progress (22%)</span><br><small style="color:#64748b;">275 actively handled</small></div>
+              <div><span class="badge badge-warning">Pending (10%)</span><br><small style="color:#64748b;">125 in queue</small></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chart 3: Weekly Activity Velocity Trend -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <h3 class="chart-title">Weekly Activity Velocity Trend</h3>
+            <p class="chart-desc">Task submissions tracked week-over-week across cohort</p>
+          </div>
+          <canvas id="lineChart" height="240"></canvas>
+        </div>
+
+        <!-- Chart 4: Department Performance Index -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <h3 class="chart-title">Department Performance Index</h3>
+            <p class="chart-desc">Milestone completion rates across company internship tracks</p>
+          </div>
+          <div id="dept-container" style="padding-top: 10px;">
+            <div class="dept-bar">
+              <div class="dept-info"><span>Full-Stack Engineering</span><span>96%</span></div>
+              <div class="progress-track"><div class="progress-fill" style="width: 96%; background: #1e40af;"></div></div>
+            </div>
+            <div class="dept-bar">
+              <div class="dept-info"><span>Data Science &amp; AI</span><span>91%</span></div>
+              <div class="progress-track"><div class="progress-fill" style="width: 91%; background: #2563eb;"></div></div>
+            </div>
+            <div class="dept-bar">
+              <div class="dept-info"><span>UI / UX Product Design</span><span>88%</span></div>
+              <div class="progress-track"><div class="progress-fill" style="width: 88%; background: #3b82f6;"></div></div>
+            </div>
+            <div class="dept-bar">
+              <div class="dept-info"><span>Cloud DevOps &amp; Security</span><span>84%</span></div>
+              <div class="progress-track"><div class="progress-fill" style="width: 84%; background: #60a5fa;"></div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="js/main.js"></script>
+  <script src="js/reports.js"></script>
+</body>
+</html>

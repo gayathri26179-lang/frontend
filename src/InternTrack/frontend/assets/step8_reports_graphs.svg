@@ -1,0 +1,198 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 820" width="1280" height="820" style="background:#f8fafc; font-family:'Segoe UI',Roboto,Helvetica,sans-serif;">
+  <defs>
+    <filter id="shadow8" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.08"/>
+    </filter>
+    <linearGradient id="primaryGrad8" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e40af"/>
+      <stop offset="100%" stop-color="#3b82f6"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Browser Header Frame -->
+  <rect width="1280" height="40" fill="#0f172a"/>
+  <circle cx="22" cy="20" r="6" fill="#ef4444"/>
+  <circle cx="42" cy="20" r="6" fill="#f59e0b"/>
+  <circle cx="62" cy="20" r="6" fill="#10b981"/>
+  <rect x="180" y="8" width="920" height="24" rx="12" fill="#1e293b"/>
+  <text x="640" y="24" fill="#94a3b8" font-size="12" text-anchor="middle" font-family="monospace">https://interntrack.local/reports.html — Reports &amp; Graphs Analytics</text>
+
+  <!-- Left Sidebar (Corporate Navy) -->
+  <rect x="0" y="40" width="240" height="780" fill="#0f172a"/>
+  <g transform="translate(24, 60)">
+    <rect width="36" height="36" rx="8" fill="url(#primaryGrad8)"/>
+    <path d="M 10 18 L 16 24 L 26 12" stroke="#ffffff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="46" y="25" font-size="20" font-weight="700" fill="#ffffff">Intern<tspan fill="#60a5fa">Track</tspan></text>
+  </g>
+
+  <!-- Nav Links -->
+  <g transform="translate(16, 120)">
+    <!-- Dashboard -->
+    <rect y="0" width="208" height="42" rx="8" fill="transparent"/>
+    <text x="20" y="26" font-size="14" fill="#94a3b8">📊 Dashboard Overview</text>
+    
+    <!-- Interns -->
+    <rect y="50" width="208" height="42" rx="8" fill="transparent"/>
+    <text x="20" y="76" font-size="14" fill="#94a3b8">👥 Intern Directory</text>
+
+    <!-- Daily Activities -->
+    <rect y="100" width="208" height="42" rx="8" fill="transparent"/>
+    <text x="20" y="126" font-size="14" fill="#94a3b8">📝 Daily Activities</text>
+
+    <!-- Support Tickets -->
+    <rect y="150" width="208" height="42" rx="8" fill="transparent"/>
+    <text x="20" y="176" font-size="14" fill="#94a3b8">🎫 Ticket Approvals</text>
+
+    <!-- Reports (ACTIVE) -->
+    <rect y="200" width="208" height="42" rx="8" fill="#1e293b"/>
+    <line x1="0" y1="200" x2="0" y2="242" stroke="#3b82f6" stroke-width="4"/>
+    <text x="20" y="226" font-size="14" font-weight="600" fill="#60a5fa">📈 Reports &amp; Graphs</text>
+
+    <!-- Certificates -->
+    <rect y="250" width="208" height="42" rx="8" fill="transparent"/>
+    <text x="20" y="276" font-size="14" fill="#94a3b8">📜 Verified Certificates</text>
+
+    <!-- Logout -->
+    <rect y="580" width="208" height="42" rx="8" fill="#ef4444" opacity="0.1"/>
+    <text x="20" y="606" font-size="14" font-weight="600" fill="#f87171">🚪 Log Out</text>
+  </g>
+
+  <!-- Top Navigation Header -->
+  <g transform="translate(240, 40)">
+    <rect width="1040" height="64" fill="#ffffff" filter="url(#shadow8)"/>
+    <text x="32" y="38" font-size="18" font-weight="700" fill="#0f172a">Reports &amp; Analytics Dashboard</text>
+    <rect x="680" y="14" width="180" height="36" rx="6" fill="#f1f5f9" stroke="#cbd5e1"/>
+    <text x="700" y="37" font-size="12" fill="#475569">📅 Nov 1 – Nov 30, 2026</text>
+    
+    <rect x="880" y="14" width="130" height="36" rx="6" fill="url(#primaryGrad8)"/>
+    <text x="945" y="37" font-size="12" font-weight="600" fill="#ffffff" text-anchor="middle">📥 Export PDF / CSV</text>
+  </g>
+
+  <!-- Main Content Grid -->
+  <g transform="translate(264, 124)">
+    <!-- Chart 1: Monthly Hours & Activity Submissions (Bar Chart) -->
+    <g transform="translate(0, 0)">
+      <rect width="480" height="320" rx="12" fill="#ffffff" filter="url(#shadow8)"/>
+      <text x="24" y="36" font-size="16" font-weight="700" fill="#0f172a">Monthly Activity &amp; Hours Logged</text>
+      <text x="24" y="56" font-size="12" fill="#64748b">Comparison between planned vs actual internship hours</text>
+
+      <!-- Axes -->
+      <line x1="50" y1="260" x2="440" y2="260" stroke="#e2e8f0" stroke-width="1.5"/>
+      <line x1="50" y1="100" x2="50" y2="260" stroke="#e2e8f0" stroke-width="1.5"/>
+
+      <!-- Bars: Jul, Aug, Sep, Oct, Nov -->
+      <!-- Jul -->
+      <rect x="75" y="180" width="26" height="80" rx="4" fill="#93c5fd"/>
+      <rect x="105" y="150" width="26" height="110" rx="4" fill="#2563eb"/>
+      <text x="103" y="280" font-size="11" fill="#64748b" text-anchor="middle">Jul</text>
+
+      <!-- Aug -->
+      <rect x="150" y="160" width="26" height="100" rx="4" fill="#93c5fd"/>
+      <rect x="180" y="130" width="26" height="130" rx="4" fill="#2563eb"/>
+      <text x="178" y="280" font-size="11" fill="#64748b" text-anchor="middle">Aug</text>
+
+      <!-- Sep -->
+      <rect x="225" y="140" width="26" height="120" rx="4" fill="#93c5fd"/>
+      <rect x="255" y="110" width="26" height="150" rx="4" fill="#2563eb"/>
+      <text x="253" y="280" font-size="11" fill="#64748b" text-anchor="middle">Sep</text>
+
+      <!-- Oct -->
+      <rect x="300" y="150" width="26" height="110" rx="4" fill="#93c5fd"/>
+      <rect x="330" y="120" width="26" height="140" rx="4" fill="#2563eb"/>
+      <text x="328" y="280" font-size="11" fill="#64748b" text-anchor="middle">Oct</text>
+
+      <!-- Nov -->
+      <rect x="375" y="130" width="26" height="130" rx="4" fill="#93c5fd"/>
+      <rect x="405" y="90" width="26" height="170" rx="4" fill="#1d4ed8"/>
+      <text x="403" y="280" font-size="11" fill="#1d4ed8" font-weight="700" text-anchor="middle">Nov</text>
+
+      <!-- Legend -->
+      <circle cx="330" cy="32" r="5" fill="#93c5fd"/>
+      <text x="340" y="36" font-size="11" fill="#64748b">Planned</text>
+      <circle cx="400" cy="32" r="5" fill="#2563eb"/>
+      <text x="410" y="36" font-size="11" fill="#64748b">Actual Logged</text>
+    </g>
+
+    <!-- Chart 2: Ticket Status Breakdown (Donut Chart) -->
+    <g transform="translate(510, 0)">
+      <rect width="480" height="320" rx="12" fill="#ffffff" filter="url(#shadow8)"/>
+      <text x="24" y="36" font-size="16" font-weight="700" fill="#0f172a">Support Ticket Resolution Rate</text>
+      <text x="24" y="56" font-size="12" fill="#64748b">Distribution of 1,248 logged internship tickets</text>
+
+      <!-- Donut Circle SVG segments -->
+      <g transform="translate(170, 180)">
+        <circle cx="0" cy="0" r="75" fill="none" stroke="#f1f5f9" stroke-width="26"/>
+        <!-- 68% Resolved (#10b981) -->
+        <circle cx="0" cy="0" r="75" fill="none" stroke="#10b981" stroke-width="26" stroke-dasharray="320 471" stroke-dashoffset="0"/>
+        <!-- 22% In Progress (#3b82f6) -->
+        <circle cx="0" cy="0" r="75" fill="none" stroke="#3b82f6" stroke-width="26" stroke-dasharray="103 471" stroke-dashoffset="-320"/>
+        <!-- 10% Open/Pending (#f59e0b) -->
+        <circle cx="0" cy="0" r="75" fill="none" stroke="#f59e0b" stroke-width="26" stroke-dasharray="48 471" stroke-dashoffset="-423"/>
+        
+        <text x="0" y="-4" font-size="24" font-weight="800" fill="#0f172a" text-anchor="middle">92%</text>
+        <text x="0" y="16" font-size="11" font-weight="600" fill="#10b981" text-anchor="middle">SLA Met</text>
+      </g>
+
+      <!-- Donut Legend & Stats -->
+      <g transform="translate(300, 120)">
+        <circle cx="10" cy="10" r="6" fill="#10b981"/>
+        <text x="26" y="14" font-size="13" font-weight="600" fill="#0f172a">Resolved (68%)</text>
+        <text x="26" y="30" font-size="11" fill="#64748b">848 tickets closed</text>
+
+        <circle cx="10" cy="55" r="6" fill="#3b82f6"/>
+        <text x="26" y="59" font-size="13" font-weight="600" fill="#0f172a">In Progress (22%)</text>
+        <text x="26" y="75" font-size="11" fill="#64748b">275 tickets being handled</text>
+
+        <circle cx="10" cy="100" r="6" fill="#f59e0b"/>
+        <text x="26" y="104" font-size="13" font-weight="600" fill="#0f172a">Pending (10%)</text>
+        <text x="26" y="120" font-size="11" fill="#64748b">125 awaiting mentor review</text>
+      </g>
+    </g>
+
+    <!-- Chart 3: Weekly Activity Velocity Trend -->
+    <g transform="translate(0, 345)">
+      <rect width="480" height="320" rx="12" fill="#ffffff" filter="url(#shadow8)"/>
+      <text x="24" y="36" font-size="16" font-weight="700" fill="#0f172a">Weekly Activity Velocity</text>
+      <text x="24" y="56" font-size="12" fill="#64748b">Daily task submissions logged over the past 4 weeks</text>
+
+      <path d="M 60 250 Q 140 180 200 210 T 320 140 T 440 90" fill="none" stroke="#2563eb" stroke-width="3.5"/>
+      <circle cx="60" cy="250" r="5" fill="#2563eb"/>
+      <circle cx="200" cy="210" r="5" fill="#2563eb"/>
+      <circle cx="320" cy="140" r="5" fill="#2563eb"/>
+      <circle cx="440" cy="90" r="6" fill="#1d4ed8" stroke="#bfdbfe" stroke-width="4"/>
+
+      <!-- X Axis Labels -->
+      <text x="60" y="275" font-size="11" fill="#64748b" text-anchor="middle">Week 1</text>
+      <text x="200" y="275" font-size="11" fill="#64748b" text-anchor="middle">Week 2</text>
+      <text x="320" y="275" font-size="11" fill="#64748b" text-anchor="middle">Week 3</text>
+      <text x="440" y="275" font-size="11" font-weight="700" fill="#1d4ed8" text-anchor="middle">Week 4</text>
+    </g>
+
+    <!-- Chart 4: Department Performance Comparison -->
+    <g transform="translate(510, 345)">
+      <rect width="480" height="320" rx="12" fill="#ffffff" filter="url(#shadow8)"/>
+      <text x="24" y="36" font-size="16" font-weight="700" fill="#0f172a">Department Performance Index</text>
+      <text x="24" y="56" font-size="12" fill="#64748b">Completion rate across company internship tracks</text>
+
+      <!-- Department 1 -->
+      <text x="24" y="105" font-size="13" font-weight="600" fill="#0f172a">Full-Stack Engineering (96%)</text>
+      <rect x="24" y="115" width="432" height="14" rx="7" fill="#e2e8f0"/>
+      <rect x="24" y="115" width="414" height="14" rx="7" fill="url(#primaryGrad8)"/>
+
+      <!-- Department 2 -->
+      <text x="24" y="160" font-size="13" font-weight="600" fill="#0f172a">Data Science &amp; AI (91%)</text>
+      <rect x="24" y="170" width="432" height="14" rx="7" fill="#e2e8f0"/>
+      <rect x="24" y="170" width="393" height="14" rx="7" fill="#3b82f6"/>
+
+      <!-- Department 3 -->
+      <text x="24" y="215" font-size="13" font-weight="600" fill="#0f172a">UI / UX Product Design (88%)</text>
+      <rect x="24" y="225" width="432" height="14" rx="7" fill="#e2e8f0"/>
+      <rect x="24" y="225" width="380" height="14" rx="7" fill="#60a5fa"/>
+
+      <!-- Department 4 -->
+      <text x="24" y="270" font-size="13" font-weight="600" fill="#0f172a">Cloud DevOps &amp; Security (84%)</text>
+      <rect x="24" y="280" width="432" height="14" rx="7" fill="#e2e8f0"/>
+      <rect x="24" y="280" width="362" height="14" rx="7" fill="#93c5fd"/>
+    </g>
+  </g>
+</svg>

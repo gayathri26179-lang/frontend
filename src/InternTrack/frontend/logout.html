@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Logged Out – InternTrack</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: radial-gradient(circle at top center, #eff6ff 0%, #f8fafc 70%);
+    }
+    .logout-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+    .logout-card {
+      width: 100%;
+      max-width: 540px;
+      background: #ffffff;
+      border-radius: 16px;
+      border: 1px solid #cbd5e1;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.1);
+      padding: 48px 36px;
+      text-align: center;
+    }
+    .shield-badge {
+      width: 72px;
+      height: 72px;
+      background: #ecfdf5;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+    }
+    .shield-icon {
+      width: 52px;
+      height: 52px;
+      background: linear-gradient(135deg, #10b981, #059669);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-size: 26px;
+    }
+    .session-stats-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 16px;
+      margin: 28px 0;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .stat-box-item p {
+      font-size: 11px;
+      color: #64748b;
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .stat-box-item h4 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Minimal Header -->
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="brand-logo">
+        <div class="brand-icon">✓</div>
+        Intern<span>Track</span>
+      </a>
+      <a href="index.html" class="nav-link">Home</a>
+    </div>
+  </header>
+
+  <div class="logout-container">
+    <div class="logout-card">
+      <div class="shield-badge">
+        <div class="shield-icon">✓</div>
+      </div>
+
+      <h1 style="font-size: 26px; font-weight: 800; color: #0f172a; margin-bottom: 10px;">
+        You Have Been Successfully Logged Out
+      </h1>
+      <p style="font-size: 14px; color: #64748b; line-height: 1.6;">
+        Thank you for tracking your internship activities with InternTrack.<br>
+        Your session has ended securely and all recent logs are safely synced.
+      </p>
+
+      <!-- Session Stats Summary -->
+      <div class="session-stats-box">
+        <div class="stat-box-item">
+          <p>Session Time</p>
+          <h4 style="color: #1e40af;">4h 25m</h4>
+        </div>
+        <div class="stat-box-item" style="border-left: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0;">
+          <p>Activities Saved</p>
+          <h4 style="color: #10b981;">5 Entries</h4>
+        </div>
+        <div class="stat-box-item">
+          <p>Database Sync</p>
+          <h4 style="color: #059669;">Active</h4>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <a href="login.html" class="btn btn-primary btn-lg">Log In Again</a>
+        <a href="index.html" class="btn btn-outline btn-lg">Return to Home Page</a>
+      </div>
+
+      <!-- Countdown -->
+      <p style="font-size: 12px; color: #94a3b8; margin-top: 24px;">
+        Redirecting to Home Page automatically in <strong id="countdown" style="color: #2563eb;">10</strong> seconds...
+      </p>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>© 2026 InternTrack Systems. Secure Session Termination.</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script src="js/logout.js"></script>
+</body>
+</html>

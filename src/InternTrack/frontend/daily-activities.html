@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Activities – InternTrack</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div class="dashboard-layout">
+    <!-- Left Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-icon" style="width: 32px; height: 32px; font-size: 16px;">✓</div>
+        <h2>InternTrack</h2>
+      </div>
+
+      <ul class="sidebar-menu">
+        <li><a href="staff-dashboard.html" class="sidebar-link" id="nav-dashboard"><span>📊</span> Dashboard</a></li>
+        <li><a href="daily-activities.html" class="sidebar-link active"><span>📝</span> Daily Activities</a></li>
+        <li><a href="reports.html" class="sidebar-link"><span>📈</span> Reports &amp; Graphs</a></li>
+        <li><a href="certificate.html" class="sidebar-link"><span>📜</span> Certificate</a></li>
+        <li><a href="services.html" class="sidebar-link"><span>💼</span> Services</a></li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <a href="logout.html" class="sidebar-link" style="color: #f87171;"><span>🚪</span> Log Out</a>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Top Bar -->
+      <header class="topbar">
+        <div class="topbar-title">Internship Daily Activity Log &amp; Work Submissions</div>
+        <div class="user-profile">
+          <div class="user-avatar" id="act-avatar">SJ</div>
+          <div class="user-details">
+            <h4 id="act-user-name">Sarah Jenkins</h4>
+            <p id="act-user-role">Full-Stack Development</p>
+          </div>
+        </div>
+      </header>
+
+      <!-- Section 1: Log New Activity Form -->
+      <section class="panel" style="margin-bottom: 24px;">
+        <div class="panel-header">
+          <h3 class="panel-title">➕ Log New Daily Work Activity</h3>
+          <span class="badge badge-info">Submits directly to MySQL Database</span>
+        </div>
+        <div style="padding: 24px;">
+          <form id="activity-form" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px;">
+            <div class="form-group">
+              <label class="form-label" for="act-date">Activity Date</label>
+              <input type="date" id="act-date" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="act-title">Task Title / Module</label>
+              <input type="text" id="act-title" class="form-control" placeholder="e.g. Implemented OAuth login and tests" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="act-cat">Category Track</label>
+              <select id="act-cat" class="form-control">
+                <option value="Frontend Development">Frontend Development</option>
+                <option value="Backend Development">Backend Development</option>
+                <option value="Database Architecture">Database Architecture</option>
+                <option value="DevOps & Infrastructure">DevOps & Infrastructure</option>
+                <option value="Quality Assurance / Testing">Quality Assurance / Testing</option>
+                <option value="Documentation & Planning">Documentation & Planning</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="act-hours">Hours Spent (Hours)</label>
+              <input type="number" id="act-hours" class="form-control" step="0.5" min="0.5" max="16" value="8.0" required>
+            </div>
+
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label class="form-label" for="act-desc">Detailed Work Summary &amp; Key Deliverables</label>
+              <textarea id="act-desc" class="form-control" rows="3" placeholder="Detail accomplishments, commit links, or blockers overcome..."></textarea>
+            </div>
+
+            <div style="grid-column: 1 / -1; display: flex; justify-content: flex-end;">
+              <button type="submit" id="btn-submit-activity" class="btn btn-primary btn-lg">
+                Submit Activity for Manager Review
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- Section 2: Logged Activity History -->
+      <section class="panel">
+        <div class="panel-header">
+          <h3 class="panel-title">Logged Activity History</h3>
+          <div style="display: flex; gap: 8px;">
+            <button onclick="filterActivities('All')" class="btn btn-outline btn-sm filter-btn active" id="f-all">All</button>
+            <button onclick="filterActivities('Approved')" class="btn btn-outline btn-sm filter-btn" id="f-app">Approved</button>
+            <button onclick="filterActivities('Pending')" class="btn btn-outline btn-sm filter-btn" id="f-pen">Pending</button>
+          </div>
+        </div>
+        <div style="overflow-x: auto;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Task Title &amp; Description</th>
+                <th>Category</th>
+                <th>Hours</th>
+                <th>Status</th>
+                <th>Manager Feedback</th>
+              </tr>
+            </thead>
+            <tbody id="activities-table-body">
+              <tr>
+                <td colspan="6" style="text-align:center; color:#64748b;">Loading activity history...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="js/main.js"></script>
+  <script src="js/activities.js"></script>
+</body>
+</html>

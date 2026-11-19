@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Services – InternTrack Internship & Ticket Management</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="brand-logo">
+        <div class="brand-icon">✓</div>
+        Intern<span>Track</span>
+      </a>
+
+      <nav>
+        <ul class="nav-menu">
+          <li><a href="index.html" class="nav-link">Home</a></li>
+          <li><a href="services.html" class="nav-link active">Services</a></li>
+          <li><a href="certificate.html" class="nav-link">Certificate</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="login.html" class="btn btn-primary btn-sm">Sign In</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section" style="padding-bottom: 40px;">
+    <div class="hero-badge">
+      <span>⚙️ Comprehensive Platform Capabilities</span>
+    </div>
+    <h1 class="hero-title">
+      Our Internship &amp; <span>Enterprise Services</span>
+    </h1>
+    <p class="hero-subtitle">
+      End-to-end management for interns, corporate mentors, and academic institutions with live database synchronization.
+    </p>
+  </section>
+
+  <!-- Services Grid -->
+  <main class="container">
+    <div id="services-grid" class="card-grid">
+      <!-- Dynamically populated from /api/services with fallback -->
+      <div class="card">
+        <div class="card-icon">📝</div>
+        <h3 class="card-title">Daily Activity &amp; Timesheet Logging</h3>
+        <span class="badge badge-info" style="margin-bottom: 12px;">Core Tracking</span>
+        <p class="card-desc">Comprehensive daily task submission with hours tracking, task category tagging, and automatic submission logs.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🎫</div>
+        <h3 class="card-title">Ticket &amp; Issue Management</h3>
+        <span class="badge badge-info" style="margin-bottom: 12px;">Workflow &amp; Support</span>
+        <p class="card-desc">Raise and track blockers, hardware queries, guidance requests, and technical tickets with priority tags and SLA status.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">✅</div>
+        <h3 class="card-title">Manager Review &amp; Approvals</h3>
+        <span class="badge badge-info" style="margin-bottom: 12px;">Supervision</span>
+        <p class="card-desc">Real-time dashboard for supervisors to approve daily submissions, inspect weekly metrics, and leave mentorship feedback.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📜</div>
+        <h3 class="card-title">Verified Digital Certificates</h3>
+        <span class="badge badge-info" style="margin-bottom: 12px;">Certification</span>
+        <p class="card-desc">Tamper-proof verifiable internship completion certificates with instant online code search and official seal.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📈</div>
+        <h3 class="card-title">Live Analytics &amp; Reports</h3>
+        <span class="badge badge-info" style="margin-bottom: 12px;">Insights</span>
+        <p class="card-desc">Comprehensive charts showing velocity, attendance percentage, hours worked, and department-wide performance.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔐</div>
+        <h3 class="card-title">Role-Based Access Control</h3>
+        <span class="badge badge-info" style="margin-bottom: 12px;">Security</span>
+        <p class="card-desc">Separate secure interfaces for Management, Academic Coordinators, and Intern Staff with session management.</p>
+      </div>
+    </div>
+
+    <!-- Call to Action Banner -->
+    <div style="margin-top: 60px; background: linear-gradient(135deg, #1e40af, #2563eb); border-radius: 16px; padding: 48px; color: #ffffff; text-align: center; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.2);">
+      <h2 style="font-size: 28px; font-weight: 800; margin-bottom: 12px;">Ready to modernize your internship workflows?</h2>
+      <p style="font-size: 16px; opacity: 0.9; max-width: 600px; margin: 0 auto 28px;">Connect to MySQL database, register your cohort, and start tracking daily activities and tickets seamlessly.</p>
+      <a href="login.html" class="btn btn-outline" style="background:#ffffff; color:#1e40af; border:none; padding:12px 28px; font-size:15px;">Get Started Now</a>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>© 2026 InternTrack Systems. Built for High-Performance Internship &amp; Ticket Management.</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script src="js/services.js"></script>
+</body>
+</html>

@@ -3,7 +3,8 @@ import {Link}from "react-router-dom";
 function Sidebar(){
     return(
         <aside className="Sidebar">
-            <h3 style={{ color:'red'}}>JOB TRACK </h3>
+            <h3 style={{ color:'red'}}>JOB TRACk
+                6 </h3>
 
             <nav>
                 <p>
@@ -35,4 +36,4 @@ function Sidebar(){
     )
 }
 
-export default Sidebar
+export default Sidebars
