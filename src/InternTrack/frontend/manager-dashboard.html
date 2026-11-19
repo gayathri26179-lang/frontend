@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manager Dashboard – InternTrack</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div class="dashboard-layout">
+    <!-- Left Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-icon" style="width: 32px; height: 32px; font-size: 16px;">✓</div>
+        <h2>InternTrack</h2>
+      </div>
+
+      <ul class="sidebar-menu">
+        <li><a href="manager-dashboard.html" class="sidebar-link active"><span>📊</span> Overview</a></li>
+        <li><a href="daily-activities.html" class="sidebar-link"><span>📝</span> Daily Activities</a></li>
+        <li><a href="reports.html" class="sidebar-link"><span>📈</span> Reports &amp; Graphs</a></li>
+        <li><a href="certificate.html" class="sidebar-link"><span>📜</span> Verified Certificates</a></li>
+        <li><a href="services.html" class="sidebar-link"><span>💼</span> Services Catalog</a></li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <a href="logout.html" class="sidebar-link" style="color: #f87171;"><span>🚪</span> Log Out</a>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Top Bar -->
+      <header class="topbar">
+        <div class="topbar-title">Manager Supervision &amp; Cohort Dashboard</div>
+        <div class="user-profile">
+          <div class="user-avatar" id="mgr-avatar">AC</div>
+          <div class="user-details">
+            <h4 id="mgr-name">Alex Carter</h4>
+            <p id="mgr-dept">Engineering Leadership (Manager)</p>
+          </div>
+        </div>
+      </header>
+
+      <!-- KPI Summary Metric Cards -->
+      <section class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-info">
+            <p>Active Interns Tracked</p>
+            <h2 id="kpi-interns">48</h2>
+          </div>
+          <div class="kpi-icon">👥</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-info">
+            <p>Pending Tickets</p>
+            <h2 id="kpi-tickets" style="color: #f59e0b;">14</h2>
+          </div>
+          <div class="kpi-icon" style="background:#fef3c7; color:#b45309;">🎫</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-info">
+            <p>Activities Logged</p>
+            <h2 id="kpi-activities" style="color: #2563eb;">36</h2>
+          </div>
+          <div class="kpi-icon">📝</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-info">
+            <p>Approved Certificates</p>
+            <h2 id="kpi-certs" style="color: #10b981;">29</h2>
+          </div>
+          <div class="kpi-icon" style="background:#dcfce7; color:#15803d;">📜</div>
+        </div>
+      </section>
+
+      <!-- Activity Approvals Panel -->
+      <section class="panel">
+        <div class="panel-header">
+          <h3 class="panel-title">Pending Daily Activity Reviews</h3>
+          <span class="badge badge-warning" id="pending-count-badge">Requires Review</span>
+        </div>
+        <div style="overflow-x: auto;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Task Title</th>
+                <th>Category</th>
+                <th>Hours</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="manager-activities-tbody">
+              <!-- Dynamically populated -->
+              <tr>
+                <td colspan="6" style="text-align:center; color:#64748b;">Loading activity logs...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Ticket Queue Panel -->
+      <section class="panel">
+        <div class="panel-header">
+          <h3 class="panel-title">Cohort Support &amp; Technical Tickets</h3>
+          <a href="reports.html" class="btn btn-outline btn-sm">View Ticket Trends →</a>
+        </div>
+        <div style="overflow-x: auto;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Ticket ID</th>
+                <th>Issue Summary</th>
+                <th>Category</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="manager-tickets-tbody">
+              <!-- Dynamically populated -->
+              <tr>
+                <td colspan="6" style="text-align:center; color:#64748b;">Loading support tickets...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="js/main.js"></script>
+  <script src="js/manager.js"></script>
+</body>
+</html>

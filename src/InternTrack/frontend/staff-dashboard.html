@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staff Dashboard – InternTrack</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div class="dashboard-layout">
+    <!-- Left Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-icon" style="width: 32px; height: 32px; font-size: 16px;">✓</div>
+        <h2>InternTrack</h2>
+      </div>
+
+      <ul class="sidebar-menu">
+        <li><a href="staff-dashboard.html" class="sidebar-link active"><span>📊</span> My Dashboard</a></li>
+        <li><a href="daily-activities.html" class="sidebar-link"><span>📝</span> Daily Activity Log</a></li>
+        <li><a href="certificate.html" class="sidebar-link"><span>📜</span> My Certificate</a></li>
+        <li><a href="reports.html" class="sidebar-link"><span>📈</span> Reports &amp; Velocity</a></li>
+        <li><a href="services.html" class="sidebar-link"><span>💼</span> Services</a></li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <a href="logout.html" class="sidebar-link" style="color: #f87171;"><span>🚪</span> Log Out</a>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Top Bar -->
+      <header class="topbar">
+        <div class="topbar-title">Internship Portal &amp; Task Workspace</div>
+        <div class="user-profile">
+          <div class="user-avatar" id="staff-avatar">SJ</div>
+          <div class="user-details">
+            <h4 id="staff-name">Sarah Jenkins</h4>
+            <p id="staff-dept">Full-Stack Development (Intern)</p>
+          </div>
+        </div>
+      </header>
+
+      <!-- Staff KPI Summary -->
+      <section class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-info">
+            <p>Total Hours Logged</p>
+            <h2 id="staff-hours">160h</h2>
+          </div>
+          <div class="kpi-icon">⏱️</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-info">
+            <p>Completed Tasks</p>
+            <h2 id="staff-tasks" style="color: #10b981;">42</h2>
+          </div>
+          <div class="kpi-icon" style="background:#dcfce7; color:#15803d;">✅</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-info">
+            <p>Open Tickets</p>
+            <h2 id="staff-tickets" style="color: #f59e0b;">2</h2>
+          </div>
+          <div class="kpi-icon" style="background:#fef3c7; color:#b45309;">🎫</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-info">
+            <p>Cohort Progress</p>
+            <h2 id="staff-progress" style="color: #2563eb;">80%</h2>
+          </div>
+          <div class="kpi-icon">🎯</div>
+        </div>
+      </section>
+
+      <!-- Quick Action Buttons -->
+      <div style="padding: 24px 32px 0; display: flex; gap: 14px;">
+        <a href="daily-activities.html" class="btn btn-primary">➕ Log Today's Activity</a>
+        <button onclick="document.getElementById('ticket-modal').style.display='flex'" class="btn btn-outline">🎫 Raise Support Ticket</button>
+        <a href="certificate.html" class="btn btn-outline">📜 View Certificate Verification</a>
+      </div>
+
+      <!-- Recent Activities Logged -->
+      <section class="panel">
+        <div class="panel-header">
+          <h3 class="panel-title">My Recent Activity Submissions</h3>
+          <a href="daily-activities.html" class="btn btn-outline btn-sm">View All Activities →</a>
+        </div>
+        <div style="overflow-x: auto;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Task Title</th>
+                <th>Category</th>
+                <th>Hours</th>
+                <th>Manager Review</th>
+              </tr>
+            </thead>
+            <tbody id="staff-activities-tbody">
+              <tr>
+                <td colspan="5" style="text-align:center; color:#64748b;">Loading entries...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Support Tickets -->
+      <section class="panel">
+        <div class="panel-header">
+          <h3 class="panel-title">My Active Support Tickets</h3>
+          <button onclick="document.getElementById('ticket-modal').style.display='flex'" class="btn btn-primary btn-sm">+ New Ticket</button>
+        </div>
+        <div style="overflow-x: auto;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Ticket ID</th>
+                <th>Issue Description</th>
+                <th>Category</th>
+                <th>Priority</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="staff-tickets-tbody">
+              <tr>
+                <td colspan="5" style="text-align:center; color:#64748b;">Loading tickets...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Raise Ticket Modal -->
+  <div id="ticket-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.5); z-index:1000; align-items:center; justify-content:center;">
+    <div style="background:#ffffff; border-radius:12px; width:100%; max-width:500px; padding:28px; box-shadow:0 10px 25px rgba(0,0,0,0.2);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <h3 style="font-size:18px; font-weight:700; color:#0f172a;">Raise Support / Technical Ticket</h3>
+        <button onclick="document.getElementById('ticket-modal').style.display='none'" style="background:none; border:none; font-size:20px; cursor:pointer;">✕</button>
+      </div>
+
+      <form id="raise-ticket-form">
+        <div class="form-group">
+          <label class="form-label">Issue Summary / Title</label>
+          <input type="text" id="tck-title" class="form-control" placeholder="e.g. Docker daemon permission error" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <select id="tck-cat" class="form-control">
+            <option value="Technical Blocker">Technical Blocker</option>
+            <option value="Database">Database</option>
+            <option value="Cloud Infrastructure">Cloud Infrastructure</option>
+            <option value="Hardware / Access">Hardware / Access</option>
+            <option value="Mentor Guidance">Mentor Guidance</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Priority</label>
+          <select id="tck-priority" class="form-control">
+            <option value="Low">Low</option>
+            <option value="Medium" selected>Medium</option>
+            <option value="High">High</option>
+            <option value="Urgent">Urgent</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Detailed Notes</label>
+          <textarea id="tck-desc" class="form-control" rows="3" placeholder="Provide context, error messages, or steps to reproduce..."></textarea>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+          <button type="button" onclick="document.getElementById('ticket-modal').style.display='none'" class="btn btn-outline">Cancel</button>
+          <button type="submit" class="btn btn-primary">Submit Ticket</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/main.js"></script>
+  <script src="js/staff.js"></script>
+</body>
+</html>

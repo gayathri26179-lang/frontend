@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 820" width="1280" height="820" style="background:#f1f5f9; font-family:'Segoe UI',Roboto,Helvetica,sans-serif;">
+  <defs>
+    <filter id="shadow9" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="12" stdDeviation="20" flood-color="#0f172a" flood-opacity="0.12"/>
+    </filter>
+    <linearGradient id="primaryGrad9" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e40af"/>
+      <stop offset="100%" stop-color="#2563eb"/>
+    </linearGradient>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Browser Header Frame -->
+  <rect width="1280" height="42" fill="#1e293b"/>
+  <circle cx="22" cy="21" r="6" fill="#ef4444"/>
+  <circle cx="42" cy="21" r="6" fill="#f59e0b"/>
+  <circle cx="62" cy="21" r="6" fill="#10b981"/>
+  <rect x="180" y="8" width="920" height="26" rx="13" fill="#334155"/>
+  <text x="640" y="25" fill="#cbd5e1" font-size="12" text-anchor="middle" font-family="monospace">https://interntrack.local/logout.html — InternTrack Session Ended</text>
+
+  <!-- Simple Navbar -->
+  <rect y="42" width="1280" height="64" fill="#ffffff"/>
+  <rect x="80" y="56" width="36" height="36" rx="8" fill="url(#primaryGrad9)"/>
+  <path d="M 90 74 L 96 80 L 106 68" stroke="#ffffff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="128" y="81" font-size="22" font-weight="700" fill="#0f172a">Intern<tspan fill="#2563eb">Track</tspan></text>
+  <line x1="0" y1="106" x2="1280" y2="106" stroke="#e2e8f0" stroke-width="1"/>
+
+  <!-- Centered Card -->
+  <g transform="translate(360, 160)">
+    <rect width="560" height="540" rx="16" fill="#ffffff" filter="url(#shadow9)"/>
+
+    <!-- Top Badge / Shield Icon -->
+    <circle cx="280" cy="80" r="44" fill="#ecfdf5"/>
+    <circle cx="280" cy="80" r="34" fill="url(#shieldGrad)"/>
+    <path d="M 268 80 L 276 88 L 294 70" stroke="#ffffff" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- Heading & Message -->
+    <text x="280" y="160" font-size="24" font-weight="800" fill="#0f172a" text-anchor="middle">You Have Been Successfully Logged Out</text>
+    <text x="280" y="195" font-size="14" fill="#64748b" text-anchor="middle">Thank you for tracking your internship activities with InternTrack.</text>
+    <text x="280" y="215" font-size="14" fill="#64748b" text-anchor="middle">Your session has ended securely and all recent logs are safely synced.</text>
+
+    <!-- Session Summary Box -->
+    <rect x="60" y="250" width="440" height="100" rx="10" fill="#f8fafc" stroke="#e2e8f0"/>
+    <g transform="translate(90, 275)">
+      <text x="0" y="16" font-size="12" font-weight="600" fill="#64748b">Session Duration</text>
+      <text x="0" y="42" font-size="18" font-weight="700" fill="#1e40af">4 hrs 25 mins</text>
+    </g>
+    <line x1="230" y1="265" x2="230" y2="335" stroke="#e2e8f0" stroke-width="1"/>
+    <g transform="translate(255, 275)">
+      <text x="0" y="16" font-size="12" font-weight="600" fill="#64748b">Activities Saved</text>
+      <text x="0" y="42" font-size="18" font-weight="700" fill="#059669">5 Entries</text>
+    </g>
+    <line x1="375" y1="265" x2="375" y2="335" stroke="#e2e8f0" stroke-width="1"/>
+    <g transform="translate(395, 275)">
+      <text x="0" y="16" font-size="12" font-weight="600" fill="#64748b">Cloud Sync</text>
+      <text x="0" y="42" font-size="18" font-weight="700" fill="#10b981">Active</text>
+    </g>
+
+    <!-- Buttons -->
+    <rect x="60" y="380" width="440" height="48" rx="8" fill="url(#primaryGrad9)"/>
+    <text x="280" y="410" font-size="15" font-weight="600" fill="#ffffff" text-anchor="middle">Log In Again</text>
+
+    <rect x="60" y="440" width="440" height="48" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+    <text x="280" y="470" font-size="15" font-weight="600" fill="#334155" text-anchor="middle">Return to Home Page</text>
+
+    <!-- Countdown Indicator -->
+    <text x="280" y="515" font-size="12" fill="#94a3b8" text-anchor="middle">Redirecting to Home Page automatically in <tspan fill="#2563eb" font-weight="700">10 seconds</tspan>...</text>
+  </g>
+</svg>

@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 820" width="1280" height="820" style="background:#f1f5f9; font-family:'Segoe UI',Roboto,Helvetica,sans-serif;">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#0f172a" flood-opacity="0.12"/>
+    </filter>
+    <linearGradient id="primaryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e40af"/>
+      <stop offset="100%" stop-color="#2563eb"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d97706"/>
+      <stop offset="50%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#b45309"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Browser Header Frame -->
+  <rect width="1280" height="42" fill="#1e293b"/>
+  <circle cx="22" cy="21" r="6" fill="#ef4444"/>
+  <circle cx="42" cy="21" r="6" fill="#f59e0b"/>
+  <circle cx="62" cy="21" r="6" fill="#10b981"/>
+  <rect x="180" y="8" width="920" height="26" rx="13" fill="#334155"/>
+  <text x="640" y="25" fill="#cbd5e1" font-size="12" text-anchor="middle" font-family="monospace">https://interntrack.local/certificate.html — InternTrack Certificate Verification</text>
+
+  <!-- Navbar -->
+  <rect y="42" width="1280" height="64" fill="#ffffff" filter="url(#shadow)"/>
+  <rect x="60" y="56" width="36" height="36" rx="8" fill="url(#primaryGrad)"/>
+  <path d="M 70 74 L 76 80 L 86 68" stroke="#ffffff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="108" y="81" font-size="22" font-weight="700" fill="#0f172a">Intern<tspan fill="#2563eb">Track</tspan></text>
+
+  <text x="760" y="80" font-size="15" font-weight="500" fill="#64748b">Home</text>
+  <text x="830" y="80" font-size="15" font-weight="500" fill="#64748b">Services</text>
+  <text x="920" y="80" font-size="15" font-weight="700" fill="#1d4ed8">Certificate</text>
+  <line x1="920" y1="94" x2="990" y2="94" stroke="#1d4ed8" stroke-width="3" stroke-linecap="round"/>
+  
+  <rect x="1060" y="56" width="120" height="36" rx="8" fill="url(#primaryGrad)"/>
+  <text x="1120" y="80" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle">Sign In</text>
+
+  <!-- Verification Search Card -->
+  <g transform="translate(180, 126)">
+    <rect width="920" height="100" rx="12" fill="#ffffff" filter="url(#shadow)"/>
+    <text x="36" y="38" font-size="18" font-weight="700" fill="#0f172a">Verify an InternTrack Certificate</text>
+    <text x="36" y="60" font-size="13" fill="#64748b">Enter the unique verification code printed on the official digital certificate</text>
+    
+    <rect x="440" y="24" width="310" height="48" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+    <text x="458" y="54" font-size="15" font-family="monospace" fill="#0f172a" font-weight="600">IT-2026-8942</text>
+    
+    <rect x="765" y="24" width="130" height="48" rx="8" fill="url(#primaryGrad)"/>
+    <text x="830" y="54" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle">Verify Now</text>
+  </g>
+
+  <!-- Certificate Display Container -->
+  <g transform="translate(180, 246)">
+    <rect width="920" height="540" rx="16" fill="#ffffff" filter="url(#shadow)"/>
+    
+    <!-- Guilloche / Ornate Borders -->
+    <rect x="18" y="18" width="884" height="504" rx="10" fill="none" stroke="#1e40af" stroke-width="3"/>
+    <rect x="26" y="26" width="868" height="488" rx="8" fill="none" stroke="#d97706" stroke-width="1.5" stroke-dasharray="6,4"/>
+    
+    <!-- Watermark Logo Background -->
+    <circle cx="460" cy="270" r="140" fill="#eff6ff" opacity="0.6"/>
+    <path d="M 400 270 L 440 310 L 520 220" stroke="#bfdbfe" stroke-width="16" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+
+    <!-- Certificate Header -->
+    <rect x="425" y="44" width="70" height="5" rx="2.5" fill="#2563eb"/>
+    <text x="460" y="78" font-size="13" font-weight="700" letter-spacing="4" fill="#1e40af" text-anchor="middle">CERTIFICATE OF EXCELLENCE</text>
+    <text x="460" y="112" font-size="28" font-weight="800" fill="#0f172a" text-anchor="middle">Internship Completion &amp; Merit</text>
+    <text x="460" y="136" font-size="13" fill="#64748b" text-anchor="middle">This credential certifies that the undersigned intern has successfully completed all tasks</text>
+
+    <!-- Recipient -->
+    <text x="460" y="176" font-size="13" fill="#64748b" text-anchor="middle">PROUDLY PRESENTED TO</text>
+    <text x="460" y="222" font-size="34" font-weight="800" fill="#1d4ed8" text-anchor="middle" font-family="'Times New Roman', serif">Sarah Jenkins</text>
+    <line x1="280" y1="236" x2="640" y2="236" stroke="#cbd5e1" stroke-width="1"/>
+
+    <!-- Course / Performance Details -->
+    <text x="460" y="268" font-size="14" fill="#334155" text-anchor="middle">For demonstrating outstanding performance and dedication as an intern in</text>
+    <text x="460" y="296" font-size="20" font-weight="700" fill="#0f172a" text-anchor="middle">Full-Stack Software Engineering &amp; Ticket Resolution Track</text>
+    
+    <g transform="translate(240, 320)">
+      <rect width="130" height="42" rx="6" fill="#f8fafc" stroke="#e2e8f0"/>
+      <text x="65" y="26" font-size="12" font-weight="600" fill="#059669" text-anchor="middle">Grade: Distinction</text>
+    </g>
+    <g transform="translate(395, 320)">
+      <rect width="130" height="42" rx="6" fill="#f8fafc" stroke="#e2e8f0"/>
+      <text x="65" y="26" font-size="12" font-weight="600" fill="#2563eb" text-anchor="middle">Hours: 240 hrs</text>
+    </g>
+    <g transform="translate(550, 320)">
+      <rect width="130" height="42" rx="6" fill="#f8fafc" stroke="#e2e8f0"/>
+      <text x="65" y="26" font-size="12" font-weight="600" fill="#0f172a" text-anchor="middle">ID: IT-2026-8942</text>
+    </g>
+
+    <!-- Signatures & Golden Seal -->
+    <!-- Sign 1 -->
+    <path d="M 120 445 Q 150 425 180 445 T 240 435" stroke="#1e293b" stroke-width="2" fill="none"/>
+    <line x1="100" y1="455" x2="260" y2="455" stroke="#94a3b8" stroke-width="1"/>
+    <text x="180" y="473" font-size="12" font-weight="700" fill="#0f172a" text-anchor="middle">Alex Carter</text>
+    <text x="180" y="489" font-size="11" fill="#64748b" text-anchor="middle">Engineering Manager</text>
+
+    <!-- Golden Seal -->
+    <g transform="translate(460, 435)">
+      <circle cx="0" cy="0" r="42" fill="url(#goldGrad)" filter="url(#shadow)"/>
+      <circle cx="0" cy="0" r="34" fill="none" stroke="#ffffff" stroke-width="2" stroke-dasharray="4,2"/>
+      <text x="0" y="-8" font-size="8" font-weight="800" fill="#78350f" text-anchor="middle" letter-spacing="1">VERIFIED</text>
+      <text x="0" y="8" font-size="11" font-weight="900" fill="#78350f" text-anchor="middle">OFFICIAL</text>
+      <text x="0" y="20" font-size="8" font-weight="800" fill="#78350f" text-anchor="middle" letter-spacing="1">SEAL 2026</text>
+      <polygon points="-12,38 -20,70 -5,60 0,66" fill="#b45309"/>
+      <polygon points="12,38 20,70 5,60 0,66" fill="#d97706"/>
+    </g>
+
+    <!-- Sign 2 -->
+    <path d="M 670 445 Q 700 425 730 445 T 790 430" stroke="#1e293b" stroke-width="2" fill="none"/>
+    <line x1="650" y1="455" x2="810" y2="455" stroke="#94a3b8" stroke-width="1"/>
+    <text x="730" y="473" font-size="12" font-weight="700" fill="#0f172a" text-anchor="middle">Elena Vance</text>
+    <text x="730" y="489" font-size="11" fill="#64748b" text-anchor="middle">Director of Academics &amp; HR</text>
+  </g>
+</svg>
