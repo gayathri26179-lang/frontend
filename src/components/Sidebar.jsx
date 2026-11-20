@@ -16,7 +16,8 @@ import {
   User,
   Settings,
   LogOut,
-  ChevronRight
+  ChevronRight,
+  Sparkles
 } from 'lucide-react';
 
 const Sidebar = ({ isMobileOpen, closeMobileSidebar }) => {
@@ -33,6 +34,7 @@ const Sidebar = ({ isMobileOpen, closeMobileSidebar }) => {
   const navItems = [
     { name: 'Home', path: '/home', icon: Home },
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+    { name: '✨ Incredible AI CRM', path: '/crm', icon: Sparkles, isSpecial: true },
     { name: 'Employees', path: '/employees', icon: Users },
     { name: 'Courses', path: '/courses', icon: GraduationCap },
     { name: 'My Courses', path: '/my-courses', icon: BookmarkCheck },
@@ -150,11 +152,14 @@ const Sidebar = ({ isMobileOpen, closeMobileSidebar }) => {
                       }`
                     }
                     style={({ isActive }) => ({
-                      backgroundColor: isActive ? '#2563eb' : 'transparent',
-                      color: isActive ? '#ffffff' : '#94a3b8',
-                      fontWeight: isActive ? '600' : '500',
+                      background: isActive
+                        ? item.isSpecial ? 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)' : '#2563eb'
+                        : item.isSpecial ? 'rgba(99, 102, 241, 0.15)' : 'transparent',
+                      color: isActive || item.isSpecial ? '#ffffff' : '#94a3b8',
+                      fontWeight: isActive || item.isSpecial ? '600' : '500',
                       fontSize: '14px',
-                      transition: 'all 0.2s ease'
+                      transition: 'all 0.2s ease',
+                      border: item.isSpecial && !isActive ? '1px solid rgba(139, 92, 246, 0.3)' : '1px solid transparent'
                     })}
                   >
                     <div className="d-flex align-items-center gap-3">

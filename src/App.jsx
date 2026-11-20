@@ -18,6 +18,7 @@ import Employees from './pages/Employees';
 import Assignments from './pages/Assignments';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
+import CRMApp from './crm/CRMApp';
 
 import './App.css';
 
@@ -175,6 +176,24 @@ function AppRoutes() {
             <AppLayout>
               <Settings />
             </AppLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Incredible AI Solutions CRM Dashboard Routes */}
+      <Route
+        path="/crm"
+        element={
+          <ProtectedRoute>
+            <CRMApp />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/crm/*"
+        element={
+          <ProtectedRoute>
+            <CRMApp />
           </ProtectedRoute>
         }
       />
