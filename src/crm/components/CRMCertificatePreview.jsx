@@ -1,138 +1,222 @@
-import React, { useRef } from 'react';
-import { useCRM } from '../context/CRMContext';
-import { Award, Download, Printer, CheckCircle, Sparkles, ShieldCheck } from 'lucide-react';
+import React, { useState } from 'react';
+import { Award, Download, Printer, ShieldCheck, CheckCircle2, Sparkles } from 'lucide-react';
 
-const CRMCertificatePreview = ({ certData, onSelectAnother }) => {
-  const { selectedCertificate, certificates } = useCRM();
-  const cert = certData || selectedCertificate || certificates[0];
+const CRMCertificatePreview = ({ cert, selectedTheme = 'navy', onThemeChange }) => {
+  if (!cert) return null;
 
-  const printCertRef = useRef(null);
+  const currentTheme = selectedTheme || cert.theme || 'navy';
 
-  // Trigger professional print / PDF download
-  const handleDownloadPDF = () => {
-    const printContent = document.getElementById('printable-certificate-document');
-    if (!printContent) return;
+  // Theme configuration constants
+  const themeStyles = {
+    pink: {
+      primary: '#db2777',
+      borderOuter: '#E9A4C4',
+      borderInner: '#f472b6',
+      badgeBg: '#fdf2f7',
+      bgGradient: 'radial-gradient(circle at center, #ffffff 60%, #fff5f8 100%)',
+      titleColor: '#be185d',
+      watermarkColor: 'rgba(233, 164, 196, 0.12)'
+    },
+    purple: {
+      primary: '#7045B5',
+      borderOuter: '#7045B5',
+      borderInner: '#9055e8',
+      badgeBg: '#f5f0ff',
+      bgGradient: 'radial-gradient(circle at center, #ffffff 60%, #f7f3ff 100%)',
+      titleColor: '#582b9e',
+      watermarkColor: 'rgba(112, 69, 181, 0.1)'
+    },
+    navy: {
+      primary: '#172554',
+      borderOuter: '#172554',
+      borderInner: '#d97706', // gold inner trim
+      badgeBg: '#eff6ff',
+      bgGradient: 'radial-gradient(circle at center, #ffffff 60%, #f0f4ff 100%)',
+      titleColor: '#172554',
+      watermarkColor: 'rgba(23, 37, 84, 0.08)'
+    }
+  };
 
-    // Create a dedicated print window
-    const win = window.open('', '_blank', 'width=1100,height=800');
+  const currentStyle = themeStyles[currentTheme] || themeStyles.navy;
+
+  const handlePrintOrDownload = () => {
+    const win = window.open('', '_blank', 'width=1100,height=850');
     win.document.write(`
       <!DOCTYPE html>
       <html>
         <head>
-          <title>Certificate of Completion - ${cert.studentName} - Incredible AI Solutions</title>
+          <title>AR IT COMPANY - Official Certificate of Completion - ${cert.studentName}</title>
+          <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Cinzel:wght@600;700;900&family=Great+Vibes&display=swap" rel="stylesheet">
           <style>
             @page {
               size: A4 landscape;
-              margin: 10mm;
+              margin: 8mm;
             }
             body {
               margin: 0;
               padding: 0;
-              font-family: 'Times New Roman', Georgia, serif;
+              font-family: 'Plus Jakarta Sans', sans-serif;
               background: #ffffff;
               -webkit-print-color-adjust: exact;
               print-color-adjust: exact;
             }
-            .cert-container {
+            .cert-box {
               width: 100%;
-              max-width: 1000px;
+              max-width: 1020px;
               margin: 0 auto;
-              padding: 24px;
+              padding: 10px;
               box-sizing: border-box;
             }
-            .cert-outer {
-              border: 4px double #312e81;
-              padding: 10px;
+            .cert-border-outer {
+              border: 10px double ${currentStyle.borderOuter};
+              padding: 8px;
               border-radius: 4px;
             }
-            .cert-inner {
-              border: 1.5px solid #d97706;
-              padding: 36px 40px;
-              background: #fffdfa;
+            .cert-border-inner {
+              border: 2px solid ${currentStyle.borderInner};
+              padding: 36px 48px;
+              background: ${currentStyle.bgGradient};
               text-align: center;
               position: relative;
             }
             .cert-logo {
               font-size: 26px;
-              font-weight: bold;
-              color: #1e1b4b;
+              font-weight: 800;
+              color: ${currentStyle.titleColor};
               letter-spacing: 2px;
               text-transform: uppercase;
-              margin-bottom: 6px;
+              margin-bottom: 2px;
             }
-            .cert-heading {
-              font-size: 40px;
+            .cert-sub {
+              font-size: 11px;
               font-weight: 700;
-              color: #312e81;
-              letter-spacing: 4px;
-              text-transform: uppercase;
-              margin: 14px 0 6px;
-            }
-            .cert-subtitle {
-              font-size: 13px;
               letter-spacing: 3px;
               text-transform: uppercase;
               color: #64748b;
-              font-weight: bold;
             }
-            .cert-pre {
-              font-size: 16px;
-              font-style: italic;
-              color: #64748b;
-              margin: 22px 0 8px;
-            }
-            .cert-name {
+            .cert-title {
+              font-family: 'Cinzel', serif;
               font-size: 36px;
-              font-weight: bold;
-              color: #1e1b4b;
-              border-bottom: 2px solid #c7d2fe;
+              font-weight: 900;
+              color: ${currentStyle.titleColor};
+              letter-spacing: 4px;
+              margin: 18px 0 6px;
+              text-transform: uppercase;
+            }
+            .cert-for {
+              font-size: 14px;
+              letter-spacing: 2px;
+              text-transform: uppercase;
+              color: #64748b;
+              font-weight: 600;
+              margin-bottom: 14px;
+            }
+            .cert-recipient {
+              font-size: 34px;
+              font-weight: 800;
+              color: #0f172a;
+              border-bottom: 2px solid ${currentStyle.borderOuter};
               display: inline-block;
               padding: 0 40px 6px;
-              margin-bottom: 18px;
+              margin-bottom: 16px;
             }
-            .cert-text {
-              font-size: 16px;
+            .cert-body {
+              font-size: 15px;
               line-height: 1.7;
               color: #334155;
-              max-width: 720px;
+              max-width: 760px;
               margin: 0 auto 24px;
+            }
+            .cert-body strong {
+              color: ${currentStyle.titleColor};
             }
             .cert-footer {
               display: flex;
               justify-content: space-between;
               align-items: flex-end;
-              margin-top: 36px;
+              margin-top: 30px;
+              padding-top: 16px;
             }
             .sig-block {
-              width: 220px;
               text-align: center;
-            }
-            .sig-font {
-              font-family: 'Brush Script MT', cursive, sans-serif;
-              font-size: 30px;
-              color: #1e1b4b;
+              width: 220px;
             }
             .sig-line {
-              border-top: 1.5px solid #1e293b;
-              margin: 4px 0;
-            }
-            .sig-name {
-              font-size: 13px;
+              border-top: 1.5px solid #0f172a;
+              margin-top: 40px;
+              padding-top: 6px;
+              font-size: 12px;
               font-weight: bold;
+              color: #0f172a;
             }
-            .sig-role {
-              font-size: 11px;
+            .sig-title {
+              font-size: 10.5px;
               color: #64748b;
             }
-            .gold-seal-svg {
-              width: 90px;
-              height: 90px;
+            .cert-seal {
+              width: 80px;
+              height: 80px;
+              border-radius: 50%;
+              border: 3px dashed ${currentStyle.borderOuter};
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-weight: 800;
+              font-size: 10px;
+              text-transform: uppercase;
+              color: ${currentStyle.primary};
+              margin: 0 auto;
+            }
+            .cert-id-tag {
+              font-size: 11px;
+              color: #94a3b8;
+              margin-top: 12px;
             }
           </style>
         </head>
         <body>
-          <div class="cert-container">
-            ${printContent.innerHTML}
+          <div class="cert-box">
+            <div class="cert-border-outer">
+              <div class="cert-border-inner">
+                <div class="cert-logo">AR IT COMPANY</div>
+                <div class="cert-sub">Center of Excellence in Software Engineering &amp; IT Training</div>
+
+                <div class="cert-title">Certificate of Internship</div>
+                <div class="cert-for">Proudly Presented to</div>
+
+                <div class="cert-recipient">${cert.studentName}</div>
+
+                <div class="cert-body">
+                  for successfully completing the rigorous <strong>${cert.courseName}</strong> professional internship program
+                  spanning <strong>${cert.duration}</strong> with distinction grade <strong>${cert.grade || 'A+ (Distinction)'}</strong>.
+                  Demonstrated exemplary technical mastery, adherence to enterprise Agile coding standards, and delivery of production-grade modules.
+                </div>
+
+                <div class="cert-footer">
+                  <div class="sig-block">
+                    <div style="font-family: 'Great Vibes', cursive; font-size: 26px; color: #1e1b4b;">Maya Raman</div>
+                    <div class="sig-line">Dr. Maya Raman</div>
+                    <div class="sig-title">Managing Director &bull; AR IT COMPANY</div>
+                  </div>
+
+                  <div style="text-align: center;">
+                    <div class="cert-seal">
+                      AR IT<br/>SEAL
+                    </div>
+                    <div class="cert-id-tag">
+                      Certificate ID: ${cert.id}<br/>
+                      Issued Date: ${cert.issueDate}
+                    </div>
+                  </div>
+
+                  <div class="sig-block">
+                    <div style="font-family: 'Great Vibes', cursive; font-size: 26px; color: #1e1b4b;">Rajesh Sharma</div>
+                    <div class="sig-line">${cert.technicalLead || 'Rajesh K. Sharma'}</div>
+                    <div class="sig-title">Technical Head &bull; Internship Faculty</div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           <script>
             window.onload = function() {
@@ -147,141 +231,240 @@ const CRMCertificatePreview = ({ certData, onSelectAnother }) => {
 
   return (
     <div className="crm-card mb-4">
-      <div className="crm-card-header flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between gap-3">
+      {/* Top Controls: Theme Selector and Download */}
+      <div className="crm-card-header flex-column flex-md-row align-items-start align-items-md-center gap-3">
         <div>
           <h2 className="crm-card-title">
-            <Award size={18} className="text-primary" />
+            <Award size={18} style={{ color: currentStyle.primary }} />
             <span>Official Certificate Preview</span>
-            <span className="badge bg-success bg-opacity-10 text-success ms-2" style={{ fontSize: '11px' }}>
-              <ShieldCheck size={12} className="me-1 d-inline" />
-              Verified Authenticity
+            <span
+              className="badge ms-2"
+              style={{ backgroundColor: currentStyle.badgeBg, color: currentStyle.primary, fontSize: '11px' }}
+            >
+              Verified AR IT Credential
             </span>
           </h2>
           <div className="crm-card-subtitle">
-            Tamper-proof verifiable digital credentials issued by Incredible AI Solutions
+            Authentic internship certificate with security seal, verification ID, and authorized signatures
           </div>
         </div>
 
-        <div className="d-flex align-items-center gap-2">
+        <div className="d-flex flex-wrap align-items-center gap-2">
+          {/* Theme Selector Tabs (Pink, Purple, Navy Blue) */}
+          <div className="btn-group bg-light p-1 rounded-3 border" role="group">
+            <button
+              type="button"
+              className={`btn btn-sm py-1 px-2.5 rounded-2 ${currentTheme === 'pink' ? 'text-white' : 'text-muted'}`}
+              style={{
+                backgroundColor: currentTheme === 'pink' ? '#db2777' : 'transparent',
+                border: 'none',
+                fontSize: '11.5px',
+                fontWeight: 600
+              }}
+              onClick={() => onThemeChange && onThemeChange('pink')}
+            >
+              Pink Theme
+            </button>
+            <button
+              type="button"
+              className={`btn btn-sm py-1 px-2.5 rounded-2 ${currentTheme === 'purple' ? 'text-white' : 'text-muted'}`}
+              style={{
+                backgroundColor: currentTheme === 'purple' ? '#7045B5' : 'transparent',
+                border: 'none',
+                fontSize: '11.5px',
+                fontWeight: 600
+              }}
+              onClick={() => onThemeChange && onThemeChange('purple')}
+            >
+              Purple Theme
+            </button>
+            <button
+              type="button"
+              className={`btn btn-sm py-1 px-2.5 rounded-2 ${currentTheme === 'navy' ? 'text-white' : 'text-muted'}`}
+              style={{
+                backgroundColor: currentTheme === 'navy' ? '#172554' : 'transparent',
+                border: 'none',
+                fontSize: '11.5px',
+                fontWeight: 600
+              }}
+              onClick={() => onThemeChange && onThemeChange('navy')}
+            >
+              Navy Blue Theme
+            </button>
+          </div>
+
           <button
             type="button"
             className="crm-btn crm-btn-primary crm-btn-sm"
-            onClick={handleDownloadPDF}
+            onClick={handlePrintOrDownload}
           >
-            <Download size={15} />
+            <Download size={14} />
             <span>Download Certificate (PDF)</span>
           </button>
         </div>
       </div>
 
-      {/* Realistic Printable Certificate Document */}
-      <div className="d-flex justify-content-center py-2" style={{ backgroundColor: '#f1f5f9', borderRadius: '12px', padding: '24px' }}>
-        <div id="printable-certificate-document" className="crm-certificate-paper" ref={printCertRef}>
-          <div className="crm-cert-border-outer">
-            <div className="crm-cert-border-inner">
-              {/* Background Watermark */}
-              <svg className="crm-cert-watermark" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="100" cy="100" r="80" fill="none" stroke="#6366f1" strokeWidth="8" strokeDasharray="6,4" />
-                <path d="M 70 100 L 90 120 L 130 80" fill="none" stroke="#6366f1" strokeWidth="12" strokeLinecap="round" />
-              </svg>
+      {/* Visual Authentic Certificate Canvas */}
+      <div className="certificate-preview-wrapper">
+        <div
+          className={`certificate-sheet theme-${currentTheme}`}
+          id="printable-certificate-document"
+        >
+          {/* Background Watermark */}
+          <div className="cert-watermark">AR IT COMPANY</div>
 
-              {/* Certificate Header */}
-              <div className="crm-cert-header">
-                <div className="crm-cert-logo-container">
-                  <div
-                    style={{
-                      width: 42,
-                      height: 42,
-                      borderRadius: 10,
-                      background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: '#ffffff'
-                    }}
-                  >
-                    <Sparkles size={24} />
-                  </div>
-                  <div className="crm-cert-company">Incredible AI Solutions</div>
-                </div>
-
-                <div className="crm-cert-subtitle">Premier Center for Advanced IT Training & Enterprise Internships</div>
-                <div className="crm-cert-title">Certificate of Completion</div>
+          {/* Top Brand Header */}
+          <div className="text-center position-relative z-1 mb-2">
+            <div className="d-flex align-items-center justify-content-center gap-2 mb-1">
+              <div
+                className="rounded-3 d-flex align-items-center justify-content-center text-white fw-bold"
+                style={{
+                  width: '32px',
+                  height: '32px',
+                  backgroundColor: currentStyle.primary,
+                  fontSize: '14px'
+                }}
+              >
+                AR
               </div>
+              <h1
+                className="fw-bold mb-0"
+                style={{
+                  fontSize: '22px',
+                  letterSpacing: '2px',
+                  color: currentStyle.titleColor,
+                  textTransform: 'uppercase'
+                }}
+              >
+                AR IT COMPANY
+              </h1>
+            </div>
+            <div
+              className="text-muted fw-bold"
+              style={{ fontSize: '10.5px', letterSpacing: '2.5px', textTransform: 'uppercase' }}
+            >
+              Center of Excellence in Software Engineering &amp; IT Training
+            </div>
+          </div>
 
-              {/* Recipient Details */}
-              <div className="crm-cert-recipient-pre">This is proudly and officially conferred upon</div>
-              <div className="crm-cert-recipient-name">{cert.studentName}</div>
+          {/* Certificate Title */}
+          <div className="text-center position-relative z-1 my-3">
+            <h2
+              className="fw-extrabold mb-1"
+              style={{
+                fontSize: '32px',
+                letterSpacing: '3px',
+                color: currentStyle.titleColor,
+                textTransform: 'uppercase',
+                fontFamily: 'serif'
+              }}
+            >
+              Certificate of Internship
+            </h2>
+            <div
+              className="text-muted fw-semibold"
+              style={{ fontSize: '12px', letterSpacing: '2px', textTransform: 'uppercase' }}
+            >
+              This is to certify that
+            </div>
+          </div>
 
-              {/* Statement */}
-              <div className="crm-cert-statement">
-                for exceptionally rigorous and satisfactory completion of the intensive specialization program in{' '}
-                <span className="crm-cert-course-badge">{cert.courseName}</span>.
-                The recipient has fulfilled all academic capstone projects, demonstrated software mastery in{' '}
-                <em>{cert.skills || 'production software development and algorithmic workflows'}</em>,
-                and graduated with the honor of <strong>{cert.grade || 'Distinction'}</strong>.
+          {/* Recipient Name */}
+          <div className="text-center position-relative z-1 mb-3">
+            <div
+              className="fw-bold d-inline-block"
+              style={{
+                fontSize: '32px',
+                color: '#0f172a',
+                borderBottom: `2px solid ${currentStyle.borderOuter}`,
+                padding: '0 36px 6px'
+              }}
+            >
+              {cert.studentName}
+            </div>
+          </div>
+
+          {/* Body Text */}
+          <div className="text-center position-relative z-1 mb-4">
+            <p
+              className="text-secondary mx-auto mb-0"
+              style={{ fontSize: '14px', lineHeight: '1.8', maxWidth: '680px' }}
+            >
+              has successfully fulfilled all academic and practical requirements of the intensive{' '}
+              <strong style={{ color: currentStyle.titleColor }}>{cert.courseName}</strong> internship program
+              conducted over <strong>{cert.duration}</strong> with an evaluated distinction grade of{' '}
+              <strong>{cert.grade || 'A+ (Distinction)'}</strong>.
+            </p>
+          </div>
+
+          {/* Signatures & Seal Footer */}
+          <div className="d-flex align-items-end justify-content-between position-relative z-1 pt-3 border-top">
+            {/* Signature 1 */}
+            <div className="text-center" style={{ width: '180px' }}>
+              <div
+                style={{
+                  fontFamily: 'cursive',
+                  fontSize: '22px',
+                  color: currentStyle.primary,
+                  lineHeight: '1'
+                }}
+              >
+                Maya Raman
               </div>
-
-              {/* Duration and Date Details */}
-              <div className="d-flex justify-content-center gap-4 text-muted mb-4" style={{ fontSize: '13px' }}>
-                <div><strong>Duration:</strong> {cert.duration}</div>
-                <div>•</div>
-                <div><strong>Award Date:</strong> {cert.completionDate}</div>
+              <div
+                className="pt-1 mt-1 border-top fw-bold text-dark"
+                style={{ fontSize: '11.5px', borderColor: '#0f172a' }}
+              >
+                Dr. Maya Raman
               </div>
+              <div className="text-muted" style={{ fontSize: '10px' }}>
+                Managing Director
+              </div>
+            </div>
 
-              {/* Certificate Footer with Signatures & Official Gold Seal */}
-              <div className="crm-cert-footer">
-                {/* Academic Signatory */}
-                <div className="crm-cert-signature-block">
-                  <div className="crm-cert-signature-img">Dr. Maya Raman</div>
-                  <div className="crm-cert-signature-line" />
-                  <div className="crm-cert-signatory-name">Dr. Maya Raman, Ph.D.</div>
-                  <div className="crm-cert-signatory-role">Director of AI & Academics</div>
-                </div>
+            {/* Verified Seal */}
+            <div className="text-center">
+              <div
+                className="rounded-circle d-flex flex-column align-items-center justify-content-center mx-auto mb-1"
+                style={{
+                  width: '68px',
+                  height: '68px',
+                  border: `2px dashed ${currentStyle.primary}`,
+                  backgroundColor: currentStyle.badgeBg,
+                  color: currentStyle.primary
+                }}
+              >
+                <ShieldCheck size={20} />
+                <span style={{ fontSize: '8.5px', fontWeight: 800, letterSpacing: '0.5px' }}>
+                  VERIFIED
+                </span>
+              </div>
+              <div className="text-muted" style={{ fontSize: '10px' }}>
+                Certificate ID: <strong>{cert.id}</strong><br />
+                Issued: {cert.issueDate}
+              </div>
+            </div>
 
-                {/* Embossed Gold Seal Medallion */}
-                <div className="crm-cert-seal-box">
-                  <svg className="crm-cert-gold-seal" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                      <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="#d97706" />
-                        <stop offset="25%" stopColor="#fbbf24" />
-                        <stop offset="50%" stopColor="#fef08a" />
-                        <stop offset="75%" stopColor="#fbbf24" />
-                        <stop offset="100%" stopColor="#b45309" />
-                      </linearGradient>
-                      <filter id="sealShadow" x="-20%" y="-20%" width="140%" height="140%">
-                        <feDropShadow dx="0" dy="4" stdDeviation="4" floodColor="#78350f" floodOpacity="0.4" />
-                      </filter>
-                    </defs>
-
-                    {/* Ribbon Tails */}
-                    <path d="M 35 70 L 25 96 L 40 88 L 48 96 Z" fill="#b45309" />
-                    <path d="M 65 70 L 75 96 L 60 88 L 52 96 Z" fill="#92400e" />
-
-                    {/* Outer Star / Scallop Seal */}
-                    <circle cx="50" cy="50" r="38" fill="url(#goldGradient)" filter="url(#sealShadow)" stroke="#d97706" strokeWidth="1" />
-                    <circle cx="50" cy="50" r="33" fill="none" stroke="#78350f" strokeWidth="1.5" strokeDasharray="3,2" />
-                    <circle cx="50" cy="50" r="26" fill="url(#goldGradient)" />
-
-                    {/* Seal Emblem Text */}
-                    <text x="50" y="44" fontSize="6" fontWeight="bold" fill="#78350f" textAnchor="middle" letterSpacing="0.8">OFFICIAL SEAL</text>
-                    <path d="M 43 51 L 48 56 L 58 46" fill="none" stroke="#78350f" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                    <text x="50" y="64" fontSize="5" fontWeight="bold" fill="#78350f" textAnchor="middle">VERIFIED</text>
-                  </svg>
-
-                  <div className="crm-cert-id-tag">
-                    CODE: {cert.verificationCode || cert.id}
-                  </div>
-                </div>
-
-                {/* Executive Signatory */}
-                <div className="crm-cert-signature-block">
-                  <div className="crm-cert-signature-img">V. Singhania</div>
-                  <div className="crm-cert-signature-line" />
-                  <div className="crm-cert-signatory-name">Vikram Singhania</div>
-                  <div className="crm-cert-signatory-role">Founder & Chief Executive Officer</div>
-                </div>
+            {/* Signature 2 */}
+            <div className="text-center" style={{ width: '180px' }}>
+              <div
+                style={{
+                  fontFamily: 'cursive',
+                  fontSize: '22px',
+                  color: currentStyle.primary,
+                  lineHeight: '1'
+                }}
+              >
+                Rajesh Sharma
+              </div>
+              <div
+                className="pt-1 mt-1 border-top fw-bold text-dark"
+                style={{ fontSize: '11.5px', borderColor: '#0f172a' }}
+              >
+                {cert.technicalLead || 'Rajesh K. Sharma'}
+              </div>
+              <div className="text-muted" style={{ fontSize: '10px' }}>
+                Technical Head &bull; AR IT
               </div>
             </div>
           </div>

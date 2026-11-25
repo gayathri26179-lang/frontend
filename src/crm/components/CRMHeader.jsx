@@ -8,14 +8,25 @@ import {
   User,
   Settings,
   LogOut,
-  ExternalLink,
   Plus,
-  Award,
-  ChevronDown
+  RefreshCw,
+  ExternalLink,
+  ShieldCheck,
+  UserCheck
 } from 'lucide-react';
 
-const CRMHeader = ({ activeTab, onToggleSidebar, onAddStudent, onGenerateCert, onReturnToMain, onLogout }) => {
-  const { currentAdmin, notifications, markNotificationAsRead, markAllNotificationsAsRead } = useCRM();
+const CRMHeader = ({ activeTab, setActiveTab, onToggleSidebar, onAddStudent, onLogout }) => {
+  const {
+    currentUser,
+    activeRole,
+    setActiveRole,
+    notifications,
+    markNotificationAsRead,
+    markAllNotificationsAsRead,
+    syncInternshipWebsiteRegistrations,
+    isSyncing
+  } = useCRM();
+
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -25,26 +36,26 @@ const CRMHeader = ({ activeTab, onToggleSidebar, onAddStudent, onGenerateCert, o
 
   const unreadCount = notifications.filter(n => n.unread).length;
 
-  // Title formatting
   const getTabTitle = (tab) => {
     switch (tab) {
-      case 'dashboard': return 'Incredible CRM Dashboard';
+      case 'dashboard': return 'Executive CRM Dashboard';
       case 'students': return 'Student & Intern Management';
-      case 'courses': return 'Curriculum & Courses';
-      case 'daily-tasks': return 'Daily Tasks & Assignments';
-      case 'submissions': return 'Task Submissions & Reviews';
+      case 'courses': return 'Curriculum & Courses Management';
+      case 'internships': return 'Internship Applications & Status';
+      case 'daily-activities': return 'Daily Internship Activities & Feedback';
+      case 'attendance': return 'Student Attendance Tracking';
+      case 'progress': return 'Cohort Progress & Velocity';
+      case 'payments': return 'Student Fee & Payment Records';
       case 'certificates': return 'Digital Certificate Registry';
-      case 'attendance': return 'Daily Attendance Tracking';
-      case 'progress': return 'Cohort Velocity & Progress';
-      case 'payments': return 'Fee & Payment Management';
-      case 'messages': return 'Communications & Chats';
-      case 'reports': return 'Analytics & Reports';
-      case 'settings': return 'CRM & Platform Settings';
-      default: return 'CRM Overview';
+      case 'mentors': return 'Mentor & Faculty Supervision';
+      case 'communication': return 'Student & Cohort Announcements';
+      case 'reports': return 'Analytics & Compliance Reports';
+      case 'notifications': return 'System Notifications Center';
+      case 'settings': return 'CRM & Company Settings';
+      default: return 'AR IT COMPANY CRM';
     }
   };
 
-  // Click outside to close dropdowns
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (notifRef.current && !notifRef.current.contains(e.target)) {
@@ -73,9 +84,9 @@ const CRMHeader = ({ activeTab, onToggleSidebar, onAddStudent, onGenerateCert, o
         <div className="crm-page-title-box">
           <h1>{getTabTitle(activeTab)}</h1>
           <div className="crm-breadcrumb">
-            <span>Incredible AI Solutions</span>
+            <span>AR IT COMPANY</span>
             <span>/</span>
-            <span style={{ color: 'var(--crm-primary)', fontWeight: '600' }}>
+            <span className="crm-breadcrumb-current">
               {activeTab.charAt(0).toUpperCase() + activeTab.slice(1).replace('-', ' ')}
             </span>
           </div>
@@ -88,54 +99,100 @@ const CRMHeader = ({ activeTab, onToggleSidebar, onAddStudent, onGenerateCert, o
         <input
           type="text"
           className="crm-search-input"
-          placeholder="Search students, tasks, certificates..."
+          placeholder="Search students, courses, IDs..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
       </div>
 
-      {/* Right: Actions, Notifications & Profile */}
+      {/* Right: Actions, Sync, Notifications & Profile */}
       <div className="crm-header-right">
+        {/* Shared Website Integration Simulation Sync Button */}
+        <button
+          type="button"
+          className="crm-btn crm-btn-outline crm-btn-sm d-none d-sm-inline-flex"
+          onClick={syncInternshipWebsiteRegistrations}
+          disabled={isSyncing}
+          title="Simulate pulling new student registrations submitted from the AR IT COMPANY Internship Website"
+          style={{ borderColor: 'var(--crm-purple-border)', color: 'var(--crm-purple)' }}
+        >
+          <RefreshCw size={14} className={isSyncing ? 'spin-animation' : ''} />
+          <span>{isSyncing ? 'Syncing...' : 'Sync Website Registrations'}</span>
+        </button>
+
         {/* Quick Add Student Button */}
         <button
           type="button"
-          className="crm-btn crm-btn-primary crm-btn-sm d-none d-sm-inline-flex"
+          className="crm-btn crm-btn-primary crm-btn-sm"
           onClick={onAddStudent}
         >
-          <Plus size={16} />
-          <span>Add Student</span>
+          <Plus size={15} />
+          <span className="d-none d-sm-inline">Add Student</span>
         </button>
+
+        {/* Role Toggle Pill (Admin / Mentor) */}
+        <div
+          className="d-none d-xl-flex align-items-center bg-light rounded-pill p-1 border"
+          style={{ fontSize: '11.5px', fontWeight: 600 }}
+        >
+          <button
+            type="button"
+            className={`btn btn-sm rounded-pill px-2.5 py-0.5 border-0 ${activeRole === 'Admin' ? 'text-white' : 'text-muted'}`}
+            style={{
+              backgroundColor: activeRole === 'Admin' ? 'var(--crm-navy)' : 'transparent',
+              fontSize: '11.5px'
+            }}
+            onClick={() => setActiveRole('Admin')}
+          >
+            Admin View
+          </button>
+          <button
+            type="button"
+            className={`btn btn-sm rounded-pill px-2.5 py-0.5 border-0 ${activeRole === 'Mentor' ? 'text-white' : 'text-muted'}`}
+            style={{
+              backgroundColor: activeRole === 'Mentor' ? 'var(--crm-purple)' : 'transparent',
+              fontSize: '11.5px'
+            }}
+            onClick={() => setActiveRole('Mentor')}
+          >
+            Mentor View
+          </button>
+        </div>
 
         {/* Notifications Dropdown */}
         <div className="position-relative" ref={notifRef}>
           <button
             type="button"
-            className="crm-icon-btn"
+            className="crm-btn crm-btn-outline crm-btn-icon position-relative"
             onClick={() => setShowNotifications(!showNotifications)}
-            aria-label="Notifications"
+            aria-label="View Notifications"
           >
-            <Bell size={18} />
-            {unreadCount > 0 && <span className="crm-notification-dot" />}
+            <Bell size={18} color="var(--crm-navy)" />
+            {unreadCount > 0 && (
+              <span
+                className="position-absolute top-0 start-100 translate-middle badge rounded-pill"
+                style={{ backgroundColor: 'var(--crm-pink)', color: 'var(--crm-navy)', fontSize: '10px' }}
+              >
+                {unreadCount}
+              </span>
+            )}
           </button>
 
           {showNotifications && (
             <div
-              className="position-absolute end-0 mt-2 bg-white rounded-4 shadow-lg border p-3"
-              style={{
-                width: '320px',
-                zIndex: 1050,
-                borderColor: 'var(--crm-lavender-border)'
-              }}
+              className="position-absolute end-0 mt-2 bg-white rounded-3 shadow-lg border p-0 overflow-hidden"
+              style={{ width: '340px', zIndex: 1050 }}
             >
-              <div className="d-flex align-items-center justify-content-between mb-2 pb-2 border-bottom">
-                <span className="fw-bold" style={{ fontSize: '14px' }}>
-                  Notifications ({unreadCount})
-                </span>
+              <div className="p-3 bg-light border-bottom d-flex align-items-center justify-content-between">
+                <div>
+                  <h6 className="fw-bold mb-0 text-dark" style={{ fontSize: '14px' }}>Notifications</h6>
+                  <span className="text-muted" style={{ fontSize: '11.5px' }}>{unreadCount} unread alerts</span>
+                </div>
                 {unreadCount > 0 && (
                   <button
+                    className="btn btn-link btn-sm p-0 text-decoration-none"
+                    style={{ fontSize: '12px', color: 'var(--crm-purple)' }}
                     onClick={markAllNotificationsAsRead}
-                    className="btn btn-link btn-sm text-decoration-none p-0"
-                    style={{ fontSize: '11px', color: 'var(--crm-primary)' }}
                   >
                     Mark all read
                   </button>
@@ -143,100 +200,125 @@ const CRMHeader = ({ activeTab, onToggleSidebar, onAddStudent, onGenerateCert, o
               </div>
 
               <div style={{ maxHeight: '280px', overflowY: 'auto' }}>
-                {notifications.map((notif) => (
-                  <div
-                    key={notif.id}
-                    onClick={() => markNotificationAsRead(notif.id)}
-                    className="p-2 rounded-3 mb-1 cursor-pointer"
-                    style={{
-                      backgroundColor: notif.unread ? 'var(--crm-lavender-subtle)' : 'transparent',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    <div className="d-flex align-items-center justify-content-between">
-                      <span className="fw-semibold" style={{ fontSize: '12px' }}>
-                        {notif.title}
-                      </span>
-                      <span className="text-muted" style={{ fontSize: '10px' }}>
-                        {notif.time}
-                      </span>
-                    </div>
-                    <p className="text-muted mb-0 mt-1" style={{ fontSize: '11px', lineHeight: '1.4' }}>
-                      {notif.text}
-                    </p>
+                {notifications.length === 0 ? (
+                  <div className="p-4 text-center text-muted" style={{ fontSize: '13px' }}>
+                    No notifications yet.
                   </div>
-                ))}
+                ) : (
+                  notifications.slice(0, 5).map(n => (
+                    <div
+                      key={n.id}
+                      className={`p-3 border-bottom d-flex align-items-start gap-2 ${n.unread ? 'bg-light bg-opacity-50' : ''}`}
+                      style={{ cursor: 'pointer', transition: 'background 0.2s' }}
+                      onClick={() => {
+                        markNotificationAsRead(n.id);
+                        if (n.link) {
+                          const tab = n.link.replace('/', '');
+                          if (tab) setActiveTab(tab);
+                        }
+                        setShowNotifications(false);
+                      }}
+                    >
+                      <div
+                        className="rounded-circle p-1.5 mt-0.5 d-flex align-items-center justify-content-center"
+                        style={{
+                          backgroundColor: n.unread ? 'var(--crm-purple-soft)' : '#f1f5f9',
+                          color: n.unread ? 'var(--crm-purple)' : '#64748b'
+                        }}
+                      >
+                        <Bell size={13} />
+                      </div>
+                      <div className="flex-grow-1 overflow-hidden">
+                        <div className="d-flex justify-content-between align-items-center">
+                          <strong className="text-dark d-block text-truncate" style={{ fontSize: '12.5px' }}>
+                            {n.title}
+                          </strong>
+                          <span className="text-muted" style={{ fontSize: '10.5px' }}>{n.timestamp}</span>
+                        </div>
+                        <p className="text-secondary mb-0 text-truncate" style={{ fontSize: '12px' }}>
+                          {n.message}
+                        </p>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              <div className="p-2 text-center bg-light border-top">
+                <button
+                  type="button"
+                  className="btn btn-link btn-sm text-decoration-none fw-semibold p-0"
+                  style={{ color: 'var(--crm-purple)', fontSize: '12px' }}
+                  onClick={() => {
+                    setActiveTab('notifications');
+                    setShowNotifications(false);
+                  }}
+                >
+                  View All Notifications &rarr;
+                </button>
               </div>
             </div>
           )}
         </div>
 
-        {/* Switch Portal Button */}
-        <button
-          type="button"
-          onClick={onReturnToMain}
-          className="btn btn-sm btn-outline-secondary d-none d-xl-inline-flex align-items-center gap-1 rounded-3 px-2 py-1"
-          style={{ fontSize: '12px' }}
-          title="Return to InternTrack Main App"
-        >
-          <ExternalLink size={13} />
-          <span>InternTrack Portal</span>
-        </button>
-
-        {/* Profile Pill Dropdown */}
+        {/* User Profile Menu */}
         <div className="position-relative" ref={profileRef}>
-          <div
-            className="crm-admin-pill"
+          <button
+            type="button"
+            className="d-flex align-items-center gap-2 p-1 pe-2 bg-light border rounded-pill"
+            style={{ cursor: 'pointer' }}
             onClick={() => setShowProfileMenu(!showProfileMenu)}
           >
             <img
-              src={currentAdmin.avatar}
-              alt={currentAdmin.name}
-              className="crm-admin-avatar"
+              src={currentUser.avatar}
+              alt={currentUser.name}
+              className="rounded-circle"
+              style={{ width: '32px', height: '32px', objectFit: 'cover' }}
             />
-            <div className="crm-admin-info d-none d-md-flex">
-              <span className="crm-admin-name">{currentAdmin.name}</span>
-              <span className="crm-admin-role">Super Admin</span>
+            <div className="d-none d-md-block text-start lh-1">
+              <span className="d-block fw-bold text-dark" style={{ fontSize: '12.5px' }}>
+                {currentUser.name}
+              </span>
+              <span className="text-muted" style={{ fontSize: '10px' }}>
+                {activeRole}
+              </span>
             </div>
-            <ChevronDown size={14} className="text-muted ms-1" />
-          </div>
+          </button>
 
           {showProfileMenu && (
             <div
               className="position-absolute end-0 mt-2 bg-white rounded-3 shadow-lg border p-2"
-              style={{
-                width: '210px',
-                zIndex: 1050,
-                borderColor: 'var(--crm-lavender-border)'
-              }}
+              style={{ width: '220px', zIndex: 1050 }}
             >
-              <div className="px-3 py-2 border-bottom mb-1">
-                <div className="fw-bold" style={{ fontSize: '13px' }}>{currentAdmin.name}</div>
-                <div className="text-muted" style={{ fontSize: '11px' }}>{currentAdmin.email}</div>
+              <div className="p-2 border-bottom mb-1">
+                <strong className="d-block text-dark" style={{ fontSize: '13px' }}>{currentUser.name}</strong>
+                <span className="text-muted d-block" style={{ fontSize: '11px' }}>{currentUser.email}</span>
+                <span className="badge mt-1" style={{ backgroundColor: 'var(--crm-purple)', fontSize: '10px' }}>
+                  {currentUser.role}
+                </span>
               </div>
               <button
-                type="button"
-                className="w-100 btn btn-light btn-sm text-start d-flex align-items-center gap-2 mb-1"
-                onClick={() => { setShowProfileMenu(false); onReturnToMain(); }}
+                className="dropdown-item d-flex align-items-center gap-2 p-2 rounded text-secondary"
+                style={{ fontSize: '13px', border: 'none', background: 'transparent', width: '100%', textAlign: 'left' }}
+                onClick={() => {
+                  setActiveTab('settings');
+                  setShowProfileMenu(false);
+                }}
               >
-                <User size={14} />
-                <span>Switch Portal</span>
+                <Settings size={15} />
+                <span>Account Settings</span>
               </button>
+              <div className="dropdown-divider my-1" />
               <button
-                type="button"
-                className="w-100 btn btn-light btn-sm text-start d-flex align-items-center gap-2 mb-1"
-                onClick={() => { setShowProfileMenu(false); onGenerateCert(); }}
+                className="dropdown-item d-flex align-items-center gap-2 p-2 rounded text-danger"
+                style={{ fontSize: '13px', border: 'none', background: 'transparent', width: '100%', textAlign: 'left' }}
+                onClick={() => {
+                  setShowProfileMenu(false);
+                  onLogout();
+                }}
               >
-                <Award size={14} />
-                <span>Certificate Studio</span>
-              </button>
-              <button
-                type="button"
-                className="w-100 btn btn-outline-danger btn-sm text-start d-flex align-items-center gap-2 mt-2"
-                onClick={() => { setShowProfileMenu(false); onLogout(); }}
-              >
-                <LogOut size={14} />
-                <span>Logout</span>
+                <LogOut size={15} />
+                <span>Sign Out</span>
               </button>
             </div>
           )}

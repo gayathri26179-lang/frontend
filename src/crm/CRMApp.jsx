@@ -1,21 +1,23 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { CRMProvider, useCRM } from './context/CRMContext';
 import CRMSidebar from './components/CRMSidebar';
 import CRMHeader from './components/CRMHeader';
 
-// Pages
+// 14 Core Pages
 import CRMDashboard from './pages/CRMDashboard';
 import CRMStudentsPage from './pages/CRMStudentsPage';
 import CRMCoursesPage from './pages/CRMCoursesPage';
-import CRMDailyTasksPage from './pages/CRMDailyTasksPage';
-import CRMSubmissionsPage from './pages/CRMSubmissionsPage';
-import CRMCertificatesPage from './pages/CRMCertificatesPage';
+import CRMInternshipsPage from './pages/CRMInternshipsPage';
+import CRMDailyActivitiesPage from './pages/CRMDailyActivitiesPage';
 import CRMAttendancePage from './pages/CRMAttendancePage';
 import CRMProgressPage from './pages/CRMProgressPage';
 import CRMPaymentsPage from './pages/CRMPaymentsPage';
-import CRMMessagesPage from './pages/CRMMessagesPage';
+import CRMCertificatesPage from './pages/CRMCertificatesPage';
+import CRMMentorsPage from './pages/CRMMentorsPage';
+import CRMCommunicationPage from './pages/CRMCommunicationPage';
 import CRMReportsPage from './pages/CRMReportsPage';
+import CRMNotificationsPage from './pages/CRMNotificationsPage';
 import CRMSettingsPage from './pages/CRMSettingsPage';
 
 // Modals
@@ -26,10 +28,21 @@ import './styles/crm.css';
 
 const CRMMainContent = () => {
   const navigate = useNavigate();
-  const { setSelectedCertificate, generateCertificate } = useCRM();
+  const location = useLocation();
+  const { generateCertificate } = useCRM();
 
-  // Navigation State
-  const [activeTab, setActiveTab] = useState('dashboard');
+  // Extract current tab from URL path if present, otherwise default to 'dashboard'
+  const getInitialTab = () => {
+    const path = location.pathname.replace(/^\/crm\/?/, '').replace(/^\//, '');
+    const validTabs = [
+      'dashboard', 'students', 'courses', 'internships', 'daily-activities',
+      'attendance', 'progress', 'payments', 'certificates', 'mentors',
+      'communication', 'reports', 'notifications', 'settings'
+    ];
+    return validTabs.includes(path) ? path : 'dashboard';
+  };
+
+  const [activeTab, setActiveTabState] = useState(getInitialTab);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // Modals State
@@ -37,6 +50,20 @@ const CRMMainContent = () => {
   const [studentToEdit, setStudentToEdit] = useState(null);
   const [profileModalStudent, setProfileModalStudent] = useState(null);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
+  // Keep URL in sync with tab
+  const setActiveTab = (tab) => {
+    setActiveTabState(tab);
+    navigate(`/${tab === 'dashboard' ? 'dashboard' : tab}`, { replace: true });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    const currentTab = getInitialTab();
+    if (currentTab !== activeTab) {
+      setActiveTabState(currentTab);
+    }
+  }, [location.pathname]);
 
   // Handlers
   const handleOpenAddStudent = () => {
@@ -55,20 +82,17 @@ const CRMMainContent = () => {
 
   const handleGenerateOrViewCert = (student) => {
     if (student) {
-      if (!student.certificateIssued) {
-        generateCertificate(student);
+      if (!student.certificateIssued && student.internshipStatus === 'Completed') {
+        generateCertificate(student.id, 'navy');
       }
     }
     setActiveTab('certificates');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleReturnToMainPortal = () => {
-    navigate('/dashboard');
   };
 
   const handleLogout = () => {
     setShowLogoutConfirm(false);
+    localStorage.removeItem('arit_admin_token');
+    localStorage.removeItem('arit_auth');
     navigate('/login');
   };
 
@@ -79,10 +103,7 @@ const CRMMainContent = () => {
         return (
           <CRMDashboard
             onOpenStudentProfile={handleOpenProfile}
-            onEditStudent={handleOpenEditStudent}
-            onAddStudent={handleOpenAddStudent}
-            onGenerateCert={handleGenerateOrViewCert}
-            onViewAllActivities={() => setActiveTab('reports')}
+            onNavigateTab={(tab) => setActiveTab(tab)}
           />
         );
       case 'students':
@@ -96,31 +117,41 @@ const CRMMainContent = () => {
         );
       case 'courses':
         return <CRMCoursesPage />;
-      case 'daily-tasks':
-        return <CRMDailyTasksPage />;
-      case 'submissions':
-        return <CRMSubmissionsPage />;
-      case 'certificates':
-        return <CRMCertificatesPage onGenerateCertModal={handleOpenAddStudent} />;
+      case 'internships':
+        return (
+          <CRMInternshipsPage
+            onOpenStudentProfile={handleOpenProfile}
+          />
+        );
+      case 'daily-activities':
+        return <CRMDailyActivitiesPage />;
       case 'attendance':
         return <CRMAttendancePage />;
       case 'progress':
-        return <CRMProgressPage onOpenStudentProfile={handleOpenProfile} />;
+        return (
+          <CRMProgressPage
+            onOpenStudentProfile={handleOpenProfile}
+          />
+        );
       case 'payments':
         return <CRMPaymentsPage />;
-      case 'messages':
-        return <CRMMessagesPage />;
+      case 'certificates':
+        return <CRMCertificatesPage />;
+      case 'mentors':
+        return <CRMMentorsPage />;
+      case 'communication':
+        return <CRMCommunicationPage />;
       case 'reports':
         return <CRMReportsPage />;
+      case 'notifications':
+        return <CRMNotificationsPage />;
       case 'settings':
-        return <CRMSettingsPage />;
+        return <CRMSettingsPage onLogout={() => setShowLogoutConfirm(true)} />;
       default:
         return (
           <CRMDashboard
             onOpenStudentProfile={handleOpenProfile}
-            onEditStudent={handleOpenEditStudent}
-            onAddStudent={handleOpenAddStudent}
-            onGenerateCert={handleGenerateOrViewCert}
+            onNavigateTab={(tab) => setActiveTab(tab)}
           />
         );
     }
@@ -128,14 +159,13 @@ const CRMMainContent = () => {
 
   return (
     <div className="crm-wrapper">
-      {/* 13-Item Left Sidebar Navigation */}
+      {/* 15-Item Left Sidebar Navigation */}
       <CRMSidebar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         isOpen={isSidebarOpen}
         setIsOpen={setIsSidebarOpen}
         onLogout={() => setShowLogoutConfirm(true)}
-        onReturnToMain={handleReturnToMainPortal}
       />
 
       {/* Main Container */}
@@ -143,10 +173,9 @@ const CRMMainContent = () => {
         {/* Sticky Header */}
         <CRMHeader
           activeTab={activeTab}
+          setActiveTab={setActiveTab}
           onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
           onAddStudent={handleOpenAddStudent}
-          onGenerateCert={() => setActiveTab('certificates')}
-          onReturnToMain={handleReturnToMainPortal}
           onLogout={() => setShowLogoutConfirm(true)}
         />
 
@@ -163,7 +192,7 @@ const CRMMainContent = () => {
         studentToEdit={studentToEdit}
       />
 
-      {/* Student Profile Modal */}
+      {/* Student Profile 7-Tab Modal */}
       {profileModalStudent && (
         <CRMStudentProfileModal
           student={profileModalStudent}
@@ -184,7 +213,7 @@ const CRMMainContent = () => {
             </div>
             <div className="crm-modal-body">
               <p className="text-muted mb-0" style={{ fontSize: '14px', lineHeight: '1.6' }}>
-                Are you sure you want to end your Incredible AI Solutions CRM session? Your workspace progress and active student logs have been saved.
+                Are you sure you want to log out of the AR IT COMPANY CRM portal? Your active sessions and cohort progress records are safely stored.
               </p>
             </div>
             <div className="crm-modal-footer">

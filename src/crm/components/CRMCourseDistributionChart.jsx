@@ -1,32 +1,40 @@
 import React from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import { BookOpen } from 'lucide-react';
 import { useCRM } from '../context/CRMContext';
 
 const CRMCourseDistributionChart = () => {
   const { courses } = useCRM();
 
-  // Data mapping directly matching requirements:
-  // Full Stack Development, Python, Data Science, AI & Machine Learning
-  const courseData = [
-    { name: 'Full Stack Development', students: 475, percentage: 38, color: '#6366f1' },
-    { name: 'AI & Machine Learning', students: 337, percentage: 27, color: '#8b5cf6' },
-    { name: 'Data Science', students: 262, percentage: 21, color: '#a855f7' },
-    { name: 'Python', students: 174, percentage: 14, color: '#ec4899' }
+  // Color palette using AR IT COMPANY corporate tones
+  const COLORS = [
+    '#172554', // Navy Blue
+    '#7045B5', // Purple
+    '#E9A4C4', // Soft Pink
+    '#1e3a8a', // Deep Royal Blue
+    '#9055e8', // Light Purple
+    '#db2777', // Rose Deep Pink
+    '#0284c7'  // Cyan Accent
   ];
 
-  const totalStudents = courseData.reduce((acc, curr) => acc + curr.students, 0);
+  const chartData = courses.map((course, idx) => ({
+    name: course.name,
+    value: course.enrolledCount,
+    color: COLORS[idx % COLORS.length]
+  }));
+
+  const totalEnrollments = chartData.reduce((acc, curr) => acc + curr.value, 0);
 
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
-      const data = payload[0].payload;
+      const data = payload[0];
+      const pct = ((data.value / totalEnrollments) * 100).toFixed(1);
       return (
-        <div
-          className="bg-white p-2 rounded-3 shadow border"
-          style={{ borderColor: 'var(--crm-lavender-border)', fontSize: '12px' }}
-        >
-          <div className="fw-bold" style={{ color: data.color }}>{data.name}</div>
-          <div>{data.students} students ({data.percentage}%)</div>
+        <div className="bg-white p-2.5 rounded-3 shadow-lg border" style={{ fontSize: '12px' }}>
+          <div className="fw-bold text-dark">{data.name}</div>
+          <div style={{ color: data.payload.color }}>
+            Enrolled: <span className="fw-bold">{data.value}</span> ({pct}%)
+          </div>
         </div>
       );
     }
@@ -34,78 +42,45 @@ const CRMCourseDistributionChart = () => {
   };
 
   return (
-    <div className="crm-card h-100 mb-0 d-flex flex-column justify-content-between">
+    <div className="crm-card h-100 mb-0">
       <div className="crm-card-header">
         <div>
           <h2 className="crm-card-title">
-            <BookOpen size={18} className="text-primary" />
-            <span>Course Distribution</span>
+            <BookOpen size={18} style={{ color: 'var(--crm-purple)' }} />
+            <span>Course-wise Enrollment Chart</span>
           </h2>
-          <div className="crm-card-subtitle">Enrolled students across 4 specialization tracks</div>
+          <div className="crm-card-subtitle">
+            Student distribution across AR IT technology domains
+          </div>
         </div>
       </div>
 
-      <div className="position-relative d-flex align-items-center justify-content-center" style={{ height: '220px' }}>
+      <div style={{ width: '100%', height: '300px' }}>
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
-              data={courseData}
+              data={chartData}
               cx="50%"
               cy="50%"
               innerRadius={65}
               outerRadius={95}
-              paddingAngle={4}
-              dataKey="students"
+              paddingAngle={3}
+              dataKey="value"
             >
-              {courseData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={entry.color} stroke="#ffffff" strokeWidth={2} />
+              {chartData.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={entry.color} />
               ))}
             </Pie>
             <Tooltip content={<CustomTooltip />} />
+            <Legend
+              layout="horizontal"
+              verticalAlign="bottom"
+              align="center"
+              wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }}
+              formatter={(value) => <span style={{ color: 'var(--crm-text-secondary)' }}>{value}</span>}
+            />
           </PieChart>
         </ResponsiveContainer>
-
-        {/* Center Total Count Label */}
-        <div
-          className="position-absolute text-center"
-          style={{ top: '50%', left: '50%', transform: 'translate(-50%, -50%)', pointerEvents: 'none' }}
-        >
-          <div className="fw-bold" style={{ fontSize: '22px', color: '#1e1b4b', lineHeight: '1' }}>
-            {totalStudents}
-          </div>
-          <div className="text-muted" style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-            Students
-          </div>
-        </div>
-      </div>
-
-      {/* Legend List */}
-      <div className="mt-3 pt-2 border-top">
-        <div className="row g-2">
-          {courseData.map((course, idx) => (
-            <div key={idx} className="col-6">
-              <div className="d-flex align-items-center gap-2 p-1 rounded-2 bg-light bg-opacity-50">
-                <span
-                  style={{
-                    width: 10,
-                    height: 10,
-                    borderRadius: '50%',
-                    backgroundColor: course.color,
-                    flexShrink: 0
-                  }}
-                />
-                <div className="text-truncate">
-                  <div className="fw-semibold text-truncate" style={{ fontSize: '12px' }}>
-                    {course.name}
-                  </div>
-                  <div className="text-muted" style={{ fontSize: '11px' }}>
-                    {course.students} ({course.percentage}%)
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
       </div>
     </div>
   );

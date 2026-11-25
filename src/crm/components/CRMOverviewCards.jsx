@@ -1,104 +1,105 @@
 import React from 'react';
 import { useCRM } from '../context/CRMContext';
-import { Users, CheckCircle, Award, DollarSign, TrendingUp } from 'lucide-react';
-
-const MiniSparkline = ({ data, color }) => {
-  if (!data || data.length < 2) return null;
-  const min = Math.min(...data);
-  const max = Math.max(...data);
-  const range = max - min || 1;
-  const width = 80;
-  const height = 24;
-
-  const points = data.map((val, idx) => {
-    const x = (idx / (data.length - 1)) * width;
-    const y = height - ((val - min) / range) * (height - 6) - 3;
-    return `${x},${y}`;
-  }).join(' ');
-
-  return (
-    <svg className="crm-sparkline-svg" viewBox={`0 0 ${width} ${height}`}>
-      <polyline
-        fill="none"
-        stroke={color}
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        points={points}
-      />
-    </svg>
-  );
-};
+import {
+  Users,
+  UserPlus,
+  UserCheck,
+  Briefcase,
+  Award,
+  Clock,
+  BookOpen,
+  CreditCard,
+  TrendingUp,
+  ArrowUpRight
+} from 'lucide-react';
 
 const CRMOverviewCards = () => {
   const { metrics } = useCRM();
 
-  const cardsData = [
+  const cards = [
     {
       title: 'Total Students',
-      value: metrics.totalStudents.toLocaleString(),
-      change: '+12.5%',
-      isPositive: true,
+      value: metrics.totalStudents,
+      sub: 'Enrolled in portal',
       icon: Users,
-      iconTheme: 'purple',
-      sparkline: [1020, 1080, 1140, 1190, 1220, 1248],
-      sparkColor: '#6366f1'
+      theme: 'navy',
+      trend: '+14% this month'
     },
     {
-      title: 'Tasks Completed',
-      value: metrics.tasksCompleted.toLocaleString(),
-      change: '+18.2%',
-      isPositive: true,
-      icon: CheckCircle,
-      iconTheme: 'indigo',
-      sparkline: [6200, 6800, 7400, 7900, 8300, 8620],
-      sparkColor: '#4f46e5'
+      title: 'Total Registrations',
+      value: metrics.totalRegistrations,
+      sub: 'Portal + Website',
+      icon: UserPlus,
+      theme: 'purple',
+      trend: '+22% new signups'
     },
     {
-      title: 'Certificates Issued',
-      value: metrics.certificatesIssued.toLocaleString(),
-      change: '+8.4%',
-      isPositive: true,
+      title: 'Active Students',
+      value: metrics.activeStudents,
+      sub: 'Under training',
+      icon: UserCheck,
+      theme: 'success',
+      trend: '94% attendance rate'
+    },
+    {
+      title: 'Active Interns',
+      value: metrics.activeInterns,
+      sub: 'Ongoing projects',
+      icon: Briefcase,
+      theme: 'purple',
+      trend: 'Working on sprints'
+    },
+    {
+      title: 'Completed Internships',
+      value: metrics.completedInternships,
+      sub: 'Certified alumni',
       icon: Award,
-      iconTheme: 'violet',
-      sparkline: [480, 520, 560, 590, 620, 642],
-      sparkColor: '#8b5cf6'
+      theme: 'pink',
+      trend: '100% placement rate'
+    },
+    {
+      title: 'Pending Applications',
+      value: metrics.pendingApplications,
+      sub: 'Needs review',
+      icon: Clock,
+      theme: 'warning',
+      trend: 'From website portal'
+    },
+    {
+      title: 'Total Courses',
+      value: metrics.totalCourses,
+      sub: 'Curriculum tracks',
+      icon: BookOpen,
+      theme: 'navy',
+      trend: '7 active programs'
     },
     {
       title: 'Total Revenue',
-      value: `$${metrics.totalRevenue.toLocaleString()}`,
-      change: '+14.6%',
-      isPositive: true,
-      icon: DollarSign,
-      iconTheme: 'emerald',
-      sparkline: [88000, 96000, 104000, 114000, 122000, 128450],
-      sparkColor: '#10b981'
+      value: `₹${metrics.totalRevenue.toLocaleString('en-IN')}`,
+      sub: 'Tuition fees collected',
+      icon: CreditCard,
+      theme: 'success',
+      trend: 'Verified receipts'
     }
   ];
 
   return (
-    <div className="crm-kpi-grid">
-      {cardsData.map((card, idx) => {
+    <div className="row g-3">
+      {cards.map((card, idx) => {
         const Icon = card.icon;
         return (
-          <div key={idx} className="crm-kpi-card">
-            <div className="crm-kpi-top">
-              <div>
-                <div className="crm-kpi-title">{card.title}</div>
-                <div className="crm-kpi-value">{card.value}</div>
+          <div key={idx} className="col-12 col-sm-6 col-xl-3">
+            <div className={`crm-stat-card ${card.theme}`}>
+              <div className="flex-grow-1 me-2">
+                <div className="crm-stat-label">{card.title}</div>
+                <div className="crm-stat-value">{card.value}</div>
+                <div className="crm-stat-trend positive">
+                  <ArrowUpRight size={13} />
+                  <span>{card.trend}</span>
+                </div>
               </div>
-              <div className={`crm-kpi-icon-box ${card.iconTheme}`}>
-                <Icon size={24} />
-              </div>
-            </div>
-
-            <div className="crm-kpi-bottom">
-              <span className={`crm-trend-badge ${card.isPositive ? 'positive' : 'neutral'}`}>
-                <TrendingUp size={13} />
-                <span>{card.change}</span>
-              </span>
-              <div className="d-flex align-items-center gap-1">
-                <MiniSparkline data={card.sparkline} color={card.sparkColor} />
+              <div className={`crm-stat-icon-wrapper crm-stat-icon-${card.theme}`}>
+                <Icon size={22} />
               </div>
             </div>
           </div>

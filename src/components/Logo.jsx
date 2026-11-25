@@ -2,64 +2,63 @@ import React from 'react';
 
 const Logo = ({ size = 'md', light = false, showTagline = true, className = '' }) => {
   const iconSizes = {
-    sm: { box: '32px', font: '16px' },
-    md: { box: '40px', font: '20px' },
-    lg: { box: '52px', font: '26px' }
+    sm: { box: '34px', font: '15px' },
+    md: { box: '44px', font: '18px' },
+    lg: { box: '56px', font: '24px' }
   };
 
   const titleSizes = {
-    sm: 'fs-5',
-    md: 'fs-4',
-    lg: 'fs-2'
+    sm: { title: '15px', sub: '10px' },
+    md: { title: '18px', sub: '11px' },
+    lg: { title: '24px', sub: '12px' }
   };
 
   const { box, font } = iconSizes[size] || iconSizes.md;
+  const { title, sub } = titleSizes[size] || titleSizes.md;
 
   return (
-    <div className={`d-flex align-items-center gap-2 text-decoration-none ${className}`}>
-      {/* Professional Gradient Blue Shield Icon with Double Checkmark Track */}
+    <div className={`d-flex align-items-center gap-3 text-decoration-none ${className}`}>
+      {/* AR IT Corporate Logo Icon */}
       <div
-        className="d-flex align-items-center justify-content-center text-white fw-bold shadow-sm"
+        className="d-flex align-items-center justify-content-center text-white fw-extrabold shadow-sm position-relative overflow-hidden"
         style={{
           width: box,
           height: box,
           minWidth: box,
-          borderRadius: '10px',
-          background: 'linear-gradient(135deg, #1e40af 0%, #2563eb 50%, #3b82f6 100%)',
-          boxShadow: '0 4px 12px rgba(37, 99, 235, 0.35)',
-          border: '1.5px solid rgba(255, 255, 255, 0.2)'
+          borderRadius: '12px',
+          background: 'linear-gradient(135deg, #172554 0%, #7045B5 60%, #E9A4C4 100%)',
+          boxShadow: '0 4px 14px rgba(112, 69, 181, 0.35)',
+          border: '1.5px solid rgba(233, 164, 196, 0.4)',
+          fontSize: font,
+          letterSpacing: '-0.5px'
         }}
       >
-        <svg
-          width="60%"
-          height="60%"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="3"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M4 12l5 5L20 6" />
-          <path d="M9 18l3 3L22 9" opacity="0.65" strokeWidth="2" />
-        </svg>
+        <span style={{ fontWeight: 800 }}>AR</span>
       </div>
 
       <div className="d-flex flex-column justify-content-center lh-1">
-        <div className={`fw-bold tracking-tight ${titleSizes[size]} ${light ? 'text-white' : 'text-dark'}`}>
-          Intern<span style={{ color: '#2563eb' }}>Track</span>
+        <div
+          style={{
+            fontWeight: 800,
+            fontSize: title,
+            letterSpacing: '0.2px',
+            color: light ? '#FFFFFF' : '#172554'
+          }}
+        >
+          AR IT <span style={{ color: '#7045B5' }}>COMPANY</span>
         </div>
         {showTagline && (
           <span
             style={{
-              fontSize: size === 'sm' ? '10px' : size === 'lg' ? '12px' : '11px',
-              color: light ? '#94a3b8' : '#64748b',
-              fontWeight: 500,
-              letterSpacing: '0.4px',
-              marginTop: '2px'
+              fontSize: sub,
+              color: light ? '#E9A4C4' : '#64748B',
+              fontWeight: 600,
+              letterSpacing: '0.8px',
+              textTransform: 'uppercase',
+              marginTop: '3px'
             }}
           >
-            Work Smarter Together
+            Internship &amp; Student CRM
           </span>
         )}
       </div>

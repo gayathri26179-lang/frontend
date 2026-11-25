@@ -1,693 +1,1504 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import crmApiService from '../../services/api';
 
 const CRMContext = createContext();
 
-// Sample Initial Students
-const INITIAL_STUDENTS = [
-  {
-    id: 'IAI-STU-101',
-    name: 'Ananya Verma',
-    email: 'ananya.verma@example.com',
-    phone: '+91 98765 43210',
-    course: 'Full Stack Development',
-    progress: 94,
-    status: 'Active',
-    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=150&q=80',
-    enrolledDate: '2026-06-15',
-    duration: '6 Months',
-    attendance: 96,
-    feeStatus: 'Paid',
-    totalFee: 1500,
-    paidAmount: 1500,
-    tasksCompleted: 42,
-    totalTasks: 45,
-    certificateId: 'IAI-2026-9842',
-    certificateIssued: true,
-    mentor: 'Alex Carter'
-  },
-  {
-    id: 'IAI-STU-102',
-    name: 'Rohan Mehta',
-    email: 'rohan.mehta@example.com',
-    phone: '+91 98123 45678',
-    course: 'AI & Machine Learning',
-    progress: 78,
-    status: 'Active',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80',
-    enrolledDate: '2026-07-01',
-    duration: '6 Months',
-    attendance: 91,
-    feeStatus: 'Paid',
-    totalFee: 1800,
-    paidAmount: 1800,
-    tasksCompleted: 35,
-    totalTasks: 45,
-    certificateId: null,
-    certificateIssued: false,
-    mentor: 'Dr. Maya Raman'
-  },
-  {
-    id: 'IAI-STU-103',
-    name: 'Jessica Chen',
-    email: 'jessica.chen@example.com',
-    phone: '+1 (555) 234-5678',
-    course: 'Data Science',
-    progress: 100,
-    status: 'Completed',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80',
-    enrolledDate: '2026-05-10',
-    duration: '6 Months',
-    attendance: 98,
-    feeStatus: 'Paid',
-    totalFee: 1600,
-    paidAmount: 1600,
-    tasksCompleted: 45,
-    totalTasks: 45,
-    certificateId: 'IAI-2026-9042',
-    certificateIssued: true,
-    mentor: 'Dr. Maya Raman'
-  },
-  {
-    id: 'IAI-STU-104',
-    name: 'Kabir Patel',
-    email: 'kabir.patel@example.com',
-    phone: '+91 97234 56789',
-    course: 'Python',
-    progress: 68,
-    status: 'Active',
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80',
-    enrolledDate: '2026-08-01',
-    duration: '3 Months',
-    attendance: 88,
-    feeStatus: 'Partial',
-    totalFee: 900,
-    paidAmount: 600,
-    tasksCompleted: 24,
-    totalTasks: 35,
-    certificateId: null,
-    certificateIssued: false,
-    mentor: 'Elena Vance'
-  },
-  {
-    id: 'IAI-STU-105',
-    name: 'Sarah Jenkins',
-    email: 'sarah.jenkins@example.com',
-    phone: '+1 (555) 345-6789',
-    course: 'Full Stack Development',
-    progress: 89,
-    status: 'Active',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80',
-    enrolledDate: '2026-06-20',
-    duration: '6 Months',
-    attendance: 95,
-    feeStatus: 'Paid',
-    totalFee: 1500,
-    paidAmount: 1500,
-    tasksCompleted: 40,
-    totalTasks: 45,
-    certificateId: null,
-    certificateIssued: false,
-    mentor: 'Alex Carter'
-  },
-  {
-    id: 'IAI-STU-106',
-    name: 'Liam Scott',
-    email: 'liam.scott@example.com',
-    phone: '+1 (555) 456-7890',
-    course: 'AI & Machine Learning',
-    progress: 52,
-    status: 'On Leave',
-    avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=150&q=80',
-    enrolledDate: '2026-08-15',
-    duration: '6 Months',
-    attendance: 79,
-    feeStatus: 'Paid',
-    totalFee: 1800,
-    paidAmount: 1800,
-    tasksCompleted: 20,
-    totalTasks: 45,
-    certificateId: null,
-    certificateIssued: false,
-    mentor: 'Dr. Maya Raman'
-  },
-  {
-    id: 'IAI-STU-107',
-    name: 'Aisha Khan',
-    email: 'aisha.khan@example.com',
-    phone: '+91 99887 76655',
-    course: 'Data Science',
-    progress: 82,
-    status: 'Active',
-    avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80',
-    enrolledDate: '2026-07-10',
-    duration: '6 Months',
-    attendance: 93,
-    feeStatus: 'Paid',
-    totalFee: 1600,
-    paidAmount: 1600,
-    tasksCompleted: 37,
-    totalTasks: 45,
-    certificateId: null,
-    certificateIssued: false,
-    mentor: 'Dr. Maya Raman'
-  },
-  {
-    id: 'IAI-STU-108',
-    name: 'Arjun Nair',
-    email: 'arjun.nair@example.com',
-    phone: '+91 91234 98765',
-    course: 'Python',
-    progress: 95,
-    status: 'Completed',
-    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&q=80',
-    enrolledDate: '2026-05-15',
-    duration: '3 Months',
-    attendance: 97,
-    feeStatus: 'Paid',
-    totalFee: 900,
-    paidAmount: 900,
-    tasksCompleted: 35,
-    totalTasks: 35,
-    certificateId: 'IAI-2026-8910',
-    certificateIssued: true,
-    mentor: 'Elena Vance'
-  }
-];
-
-// Initial Pending Tasks for Review
-const INITIAL_PENDING_TASKS = [
-  {
-    id: 'TASK-REV-01',
-    taskName: 'Build RAG Pipeline with ChromaDB & LangChain',
-    studentName: 'Kabir Patel',
-    studentId: 'IAI-STU-104',
-    course: 'Python',
-    assignedDate: '2026-11-15',
-    dueDate: '2026-11-22',
-    submittedDate: '2026-11-19',
-    status: 'Pending Review',
-    repoUrl: 'https://github.com/kabir/rag-pipeline',
-    demoUrl: 'https://rag-demo.incredibleai.app',
-    notes: 'Implemented vector embeddings with OpenAI text-embedding-3-small and persistent ChromaDB collection with cosine similarity reranking.'
-  },
-  {
-    id: 'TASK-REV-02',
-    taskName: 'Redux Toolkit Query Cache & Pagination',
-    studentName: 'Sarah Jenkins',
-    studentId: 'IAI-STU-105',
-    course: 'Full Stack Development',
-    assignedDate: '2026-11-16',
-    dueDate: '2026-11-21',
-    submittedDate: '2026-11-19',
-    status: 'Pending Review',
-    repoUrl: 'https://github.com/sarah/rtk-query-demo',
-    demoUrl: 'https://rtk-cache.incredibleai.app',
-    notes: 'Configured optimistic updates, automated cache invalidation on mutations, and infinite scroll pagination with RTK Query.'
-  },
-  {
-    id: 'TASK-REV-03',
-    taskName: 'Customer Churn Classification & ROC-AUC Analysis',
-    studentName: 'Aisha Khan',
-    studentId: 'IAI-STU-107',
-    course: 'Data Science',
-    assignedDate: '2026-11-14',
-    dueDate: '2026-11-20',
-    submittedDate: '2026-11-18',
-    status: 'In Review',
-    repoUrl: 'https://github.com/aisha/churn-analysis',
-    demoUrl: 'https://churn-viz.incredibleai.app',
-    notes: 'Trained XGBoost model with hyperparameter tuning via Optuna. Achieved 0.89 ROC-AUC on 50k customer dataset with SHAP feature importance.'
-  },
-  {
-    id: 'TASK-REV-04',
-    taskName: 'FastAPI JWT Auth & Role-Based RBAC Middleware',
-    studentName: 'Rohan Mehta',
-    studentId: 'IAI-STU-102',
-    course: 'AI & Machine Learning',
-    assignedDate: '2026-11-17',
-    dueDate: '2026-11-24',
-    submittedDate: '2026-11-19',
-    status: 'Pending Review',
-    repoUrl: 'https://github.com/rohan/fastapi-auth',
-    demoUrl: 'https://api-auth.incredibleai.app',
-    notes: 'Full OAuth2 Bearer token flow with refresh tokens, password hashing with passlib/bcrypt, and dependency injection guards.'
-  },
-  {
-    id: 'TASK-REV-05',
-    taskName: 'YOLOv8 Real-Time Object Tracking Pipeline',
-    studentName: 'Liam Scott',
-    studentId: 'IAI-STU-106',
-    course: 'AI & Machine Learning',
-    assignedDate: '2026-11-15',
-    dueDate: '2026-11-23',
-    submittedDate: '2026-11-18',
-    status: 'Needs Re-work',
-    repoUrl: 'https://github.com/liam/yolov8-tracking',
-    demoUrl: 'https://yolo-stream.incredibleai.app',
-    notes: 'Frame rate drops below 15 FPS when processing 1080p stream. Needs TensorRT quantization or frame-skipping optimization.'
-  }
-];
-
-// Initial Recent Activities Timeline
-const INITIAL_ACTIVITIES = [
-  {
-    id: 'ACT-1',
-    type: 'registration',
-    title: 'New Student Registered',
-    description: 'Aarav Sharma enrolled in AI & Machine Learning Bootcamp (Cohort #14).',
-    timestamp: '10 minutes ago',
-    avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=80&q=80',
-    iconColor: '#6366f1'
-  },
-  {
-    id: 'ACT-2',
-    type: 'submission',
-    title: 'Task Submitted for Review',
-    description: 'Ananya Verma submitted "Fine-Tuning Llama 3 on Custom Dataset".',
-    timestamp: '25 minutes ago',
-    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=80&q=80',
-    iconColor: '#8b5cf6'
-  },
-  {
-    id: 'ACT-3',
-    type: 'certificate',
-    title: 'Certificate Generated & Verified',
-    description: 'Official digital certificate issued to Jessica Chen (#IAI-CERT-9042).',
-    timestamp: '1 hour ago',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&q=80',
-    iconColor: '#10b981'
-  },
-  {
-    id: 'ACT-4',
-    type: 'payment',
-    title: 'Payment Received',
-    description: '$1,800 received from Rohan Mehta for Full Tuition Fee (Stripe Ref: #TXN-9021).',
-    timestamp: '2 hours ago',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&q=80',
-    iconColor: '#f59e0b'
-  },
-  {
-    id: 'ACT-5',
-    type: 'submission',
-    title: 'Task Approved with Distinction',
-    description: 'Mentor Alex Carter approved Sarah Jenkins’s "React 19 Server Components Architecture".',
-    timestamp: '3 hours ago',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&q=80',
-    iconColor: '#10b981'
-  }
-];
-
-// Initial Courses
+// =========================================================================
+// 1. INITIAL REALISTIC SAMPLE COURSES (Section 6)
+// =========================================================================
 const INITIAL_COURSES = [
   {
-    id: 'CRS-FS',
-    title: 'Full Stack Development',
-    code: 'FSD-2026',
-    category: 'Web & Cloud',
-    enrolledStudents: 475,
-    percentage: 38,
-    color: '#6366f1',
+    id: 'CRS-01',
+    name: 'Full Stack Development',
+    category: 'Full Stack',
     duration: '6 Months',
+    fee: 35000,
+    status: 'Active',
+    enrolledCount: 148,
     modulesCount: 24,
-    instructor: 'Alex Carter, Senior Lead Architect',
-    description: 'Comprehensive enterprise track: React 19, TypeScript, Node.js, Express, MySQL, PostgreSQL, Docker, and AWS cloud deployment.',
-    rating: 4.9,
-    status: 'Active'
+    image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=600&q=80',
+    description: 'Enterprise full stack program covering React 19, Node.js, Express, PostgreSQL, Docker, Redis, and Cloud Deployment.'
   },
   {
-    id: 'CRS-AI',
-    title: 'AI & Machine Learning',
-    code: 'AIML-2026',
-    category: 'Artificial Intelligence',
-    enrolledStudents: 337,
-    percentage: 27,
-    color: '#8b5cf6',
-    duration: '6 Months',
-    modulesCount: 28,
-    instructor: 'Dr. Maya Raman, AI Research Director',
-    description: 'Deep learning neural networks, PyTorch, LangChain, RAG architecture, LLM fine-tuning, computer vision with YOLOv8, and Agentic AI workflows.',
-    rating: 4.95,
-    status: 'Active'
+    id: 'CRS-02',
+    name: 'Frontend Development',
+    category: 'Web Development',
+    duration: '4 Months',
+    fee: 25000,
+    status: 'Active',
+    enrolledCount: 112,
+    modulesCount: 18,
+    image: 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=600&q=80',
+    description: 'Modern UI/UX engineering with HTML5, CSS3/Tailwind, JavaScript ESNext, React, Vite, and responsive accessibility design.'
   },
   {
-    id: 'CRS-DS',
-    title: 'Data Science',
-    code: 'DS-2026',
-    category: 'Data & Analytics',
-    enrolledStudents: 262,
-    percentage: 21,
-    color: '#a855f7',
+    id: 'CRS-03',
+    name: 'Backend Development',
+    category: 'Backend & Cloud',
     duration: '5 Months',
+    fee: 28000,
+    status: 'Active',
+    enrolledCount: 94,
     modulesCount: 20,
-    instructor: 'Priya Sharma, Principal Data Scientist',
-    description: 'Exploratory data analysis, statistical modeling, Pandas, NumPy, Scikit-Learn, Big Data with PySpark, Tableau & Power BI dashboarding.',
-    rating: 4.85,
-    status: 'Active'
+    image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=600&q=80',
+    description: 'Scalable REST & GraphQL APIs, microservices, authentication systems, database tuning, caching, and CI/CD pipelines.'
   },
   {
-    id: 'CRS-PY',
-    title: 'Python',
-    code: 'PY-2026',
-    category: 'Programming & Automation',
-    enrolledStudents: 174,
-    percentage: 14,
-    color: '#ec4899',
+    id: 'CRS-04',
+    name: 'Python Programming',
+    category: 'Programming & Data',
     duration: '3 Months',
+    fee: 20000,
+    status: 'Active',
+    enrolledCount: 135,
     modulesCount: 16,
-    instructor: 'Elena Vance, Technical Curriculum Lead',
-    description: 'Core and advanced Python, asynchronous programming, FastAPI microservices, web scraping with Playwright, automated testing, and CI/CD pipelines.',
-    rating: 4.8,
-    status: 'Active'
+    image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80',
+    description: 'Core to advanced Python, OOP principles, FastAPI web services, automated data parsing, web scraping, and scripting.'
+  },
+  {
+    id: 'CRS-05',
+    name: 'Java Programming',
+    category: 'Enterprise Software',
+    duration: '4 Months',
+    fee: 24000,
+    status: 'Active',
+    enrolledCount: 88,
+    modulesCount: 18,
+    image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=600&q=80',
+    description: 'Core Java, Spring Boot microservices, Hibernate/JPA, design patterns, multi-threading, and enterprise application testing.'
+  },
+  {
+    id: 'CRS-06',
+    name: 'UI/UX Design',
+    category: 'Product Design',
+    duration: '3 Months',
+    fee: 22000,
+    status: 'Active',
+    enrolledCount: 76,
+    modulesCount: 14,
+    image: 'https://images.unsplash.com/photo-1581291518655-9523c93269c4?auto=format&fit=crop&w=600&q=80',
+    description: 'Design thinking, user research, wireframing, high-fidelity Figma prototyping, design systems, usability testing.'
+  },
+  {
+    id: 'CRS-07',
+    name: 'Web Development',
+    category: 'Web Development',
+    duration: '3 Months',
+    fee: 18000,
+    status: 'Active',
+    enrolledCount: 104,
+    modulesCount: 15,
+    image: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=600&q=80',
+    description: 'Practical foundation in web architecture, semantic markup, modern CSS grid/flexbox, JavaScript DOM, and API consumption.'
   }
 ];
 
-// Initial Certificates
+// =========================================================================
+// 2. INITIAL REALISTIC MENTORS (Section 14)
+// =========================================================================
+const INITIAL_MENTORS = [
+  {
+    id: 'MTR-01',
+    name: 'Rajesh K. Sharma',
+    email: 'rajesh.sharma@aritcompany.com',
+    specialization: 'Full Stack & Cloud Architecture',
+    assignedCourse: 'Full Stack Development',
+    activeStudentsCount: 18,
+    phone: '+91 98450 11223',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80',
+    experience: '8+ Years'
+  },
+  {
+    id: 'MTR-02',
+    name: 'Pooja Sundaram',
+    email: 'pooja.s@aritcompany.com',
+    specialization: 'React & Modern Frontend Architecture',
+    assignedCourse: 'Frontend Development',
+    activeStudentsCount: 14,
+    phone: '+91 97422 33445',
+    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80',
+    experience: '6+ Years'
+  },
+  {
+    id: 'MTR-03',
+    name: 'Vikramaditya Verma',
+    email: 'vikram.verma@aritcompany.com',
+    specialization: 'Python & Distributed Systems',
+    assignedCourse: 'Python Programming',
+    activeStudentsCount: 16,
+    phone: '+91 99001 55667',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80',
+    experience: '9+ Years'
+  },
+  {
+    id: 'MTR-04',
+    name: 'Anjali Deshmukh',
+    email: 'anjali.d@aritcompany.com',
+    specialization: 'UI/UX & Product Design Systems',
+    assignedCourse: 'UI/UX Design',
+    activeStudentsCount: 12,
+    phone: '+91 98866 77889',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+    experience: '7+ Years'
+  },
+  {
+    id: 'MTR-05',
+    name: 'Siddharth Menon',
+    email: 'siddharth.m@aritcompany.com',
+    specialization: 'Java Enterprise & Spring Boot',
+    assignedCourse: 'Java Programming',
+    activeStudentsCount: 15,
+    phone: '+91 98112 99001',
+    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=200&q=80',
+    experience: '10+ Years'
+  }
+];
+
+// =========================================================================
+// 3. INITIAL REALISTIC STUDENTS (Section 5)
+// =========================================================================
+const INITIAL_STUDENTS = [
+  {
+    id: 'ARIT-2026-STU01',
+    name: 'Aarav Sharma',
+    email: 'aarav.sharma@example.com',
+    phone: '+91 98451 23456',
+    address: '42, Brigade Road, Shanthi Nagar, Bangalore - 560025',
+    course: 'Full Stack Development',
+    registrationDate: '2026-06-10',
+    internshipStatus: 'Completed',
+    duration: '6 Months',
+    attendance: 96,
+    progress: 100,
+    feeStatus: 'Paid',
+    totalFee: 35000,
+    paidAmount: 35000,
+    pendingAmount: 0,
+    tasksCompleted: 45,
+    totalTasks: 45,
+    mentor: 'Rajesh K. Sharma',
+    college: 'RV College of Engineering',
+    certificateId: 'ARIT-CERT-2026-0101',
+    certificateIssued: true,
+    avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=200&q=80',
+    mode: 'Hybrid (Bangalore Campus + Online)'
+  },
+  {
+    id: 'ARIT-2026-STU02',
+    name: 'Sneha Patel',
+    email: 'sneha.patel@example.com',
+    phone: '+91 98123 78901',
+    address: '15, Navrangpura, Ahmedabad, Gujarat - 380009',
+    course: 'Frontend Development',
+    registrationDate: '2026-07-01',
+    internshipStatus: 'Active',
+    duration: '4 Months',
+    attendance: 92,
+    progress: 80,
+    feeStatus: 'Paid',
+    totalFee: 25000,
+    paidAmount: 25000,
+    pendingAmount: 0,
+    tasksCompleted: 32,
+    totalTasks: 40,
+    mentor: 'Pooja Sundaram',
+    college: 'Nirma University',
+    certificateId: null,
+    certificateIssued: false,
+    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80',
+    mode: 'Online Live'
+  },
+  {
+    id: 'ARIT-2026-STU03',
+    name: 'Rohan Kulkarni',
+    email: 'rohan.kulkarni@example.com',
+    phone: '+91 99234 56789',
+    address: '88, Kothrud, Pune, Maharashtra - 411038',
+    course: 'Python Programming',
+    registrationDate: '2026-07-15',
+    internshipStatus: 'Active',
+    duration: '3 Months',
+    attendance: 88,
+    progress: 75,
+    feeStatus: 'Partially Paid',
+    totalFee: 20000,
+    paidAmount: 12000,
+    pendingAmount: 8000,
+    tasksCompleted: 26,
+    totalTasks: 35,
+    mentor: 'Vikramaditya Verma',
+    college: 'COEP Technological University',
+    certificateId: null,
+    certificateIssued: false,
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80',
+    mode: 'Hybrid (Bangalore Campus + Online)'
+  },
+  {
+    id: 'ARIT-2026-STU04',
+    name: 'Meera Nambiar',
+    email: 'meera.nambiar@example.com',
+    phone: '+91 97441 23890',
+    address: '104, Panampilly Nagar, Kochi, Kerala - 682036',
+    course: 'UI/UX Design',
+    registrationDate: '2026-08-01',
+    internshipStatus: 'Active',
+    duration: '3 Months',
+    attendance: 95,
+    progress: 88,
+    feeStatus: 'Paid',
+    totalFee: 22000,
+    paidAmount: 22000,
+    pendingAmount: 0,
+    tasksCompleted: 28,
+    totalTasks: 32,
+    mentor: 'Anjali Deshmukh',
+    college: 'Amrita Vishwa Vidyapeetham',
+    certificateId: null,
+    certificateIssued: false,
+    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80',
+    mode: 'Online Live'
+  },
+  {
+    id: 'ARIT-2026-STU05',
+    name: 'Aditya Srivastava',
+    email: 'aditya.s@example.com',
+    phone: '+91 96500 44321',
+    address: 'C-12, Sector 62, Noida, Uttar Pradesh - 201309',
+    course: 'Java Programming',
+    registrationDate: '2026-06-20',
+    internshipStatus: 'Completed',
+    duration: '4 Months',
+    attendance: 98,
+    progress: 100,
+    feeStatus: 'Paid',
+    totalFee: 24000,
+    paidAmount: 24000,
+    pendingAmount: 0,
+    tasksCompleted: 40,
+    totalTasks: 40,
+    mentor: 'Siddharth Menon',
+    college: 'IIT Roorkee',
+    certificateId: 'ARIT-CERT-2026-0102',
+    certificateIssued: true,
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80',
+    mode: 'Hybrid (Bangalore Campus + Online)'
+  },
+  {
+    id: 'ARIT-2026-STU06',
+    name: 'Kavya Ramanathan',
+    email: 'kavya.r@example.com',
+    phone: '+91 94440 88990',
+    address: '22, Gandhi Nagar, Adyar, Chennai, Tamil Nadu - 600020',
+    course: 'Backend Development',
+    registrationDate: '2026-08-10',
+    internshipStatus: 'Active',
+    duration: '5 Months',
+    attendance: 90,
+    progress: 60,
+    feeStatus: 'Partially Paid',
+    totalFee: 28000,
+    paidAmount: 18000,
+    pendingAmount: 10000,
+    tasksCompleted: 24,
+    totalTasks: 40,
+    mentor: 'Rajesh K. Sharma',
+    college: 'Anna University',
+    certificateId: null,
+    certificateIssued: false,
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+    mode: 'Online Live'
+  },
+  {
+    id: 'ARIT-2026-STU07',
+    name: 'Varun Teja',
+    email: 'varun.teja@example.com',
+    phone: '+91 99890 12345',
+    address: '77, Jubilee Hills, Hyderabad, Telangana - 500033',
+    course: 'Web Development',
+    registrationDate: '2026-09-01',
+    internshipStatus: 'Pending',
+    duration: '3 Months',
+    attendance: 0,
+    progress: 10,
+    feeStatus: 'Pending',
+    totalFee: 18000,
+    paidAmount: 0,
+    pendingAmount: 18000,
+    tasksCompleted: 2,
+    totalTasks: 30,
+    mentor: 'Unassigned',
+    college: 'Osmania University',
+    certificateId: null,
+    certificateIssued: false,
+    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=200&q=80',
+    mode: 'Online Live'
+  },
+  {
+    id: 'ARIT-2026-STU08',
+    name: 'Priyanka Sen',
+    email: 'priyanka.sen@example.com',
+    phone: '+91 98300 66778',
+    address: '35, Salt Lake Sector V, Kolkata, West Bengal - 700091',
+    course: 'Full Stack Development',
+    registrationDate: '2026-08-15',
+    internshipStatus: 'Active',
+    duration: '6 Months',
+    attendance: 94,
+    progress: 65,
+    feeStatus: 'Paid',
+    totalFee: 35000,
+    paidAmount: 35000,
+    pendingAmount: 0,
+    tasksCompleted: 30,
+    totalTasks: 45,
+    mentor: 'Rajesh K. Sharma',
+    college: 'Jadavpur University',
+    certificateId: null,
+    certificateIssued: false,
+    avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80',
+    mode: 'Hybrid (Bangalore Campus + Online)'
+  }
+];
+
+// =========================================================================
+// 4. INITIAL INTERNSHIP APPLICATIONS (Section 7)
+// =========================================================================
+const INITIAL_INTERNSHIPS = [
+  {
+    id: 'INT-APP-101',
+    studentId: 'ARIT-2026-STU01',
+    studentName: 'Aarav Sharma',
+    course: 'Full Stack Development',
+    startDate: '2026-06-15',
+    endDate: '2026-11-20',
+    mentor: 'Rajesh K. Sharma',
+    status: 'Completed',
+    college: 'RV College of Engineering',
+    appliedDate: '2026-06-08',
+    evaluationGrade: 'A+ (Distinction)',
+    notes: 'Outstanding final project on Microservices Architecture with Docker & Kubernetes.'
+  },
+  {
+    id: 'INT-APP-102',
+    studentId: 'ARIT-2026-STU02',
+    studentName: 'Sneha Patel',
+    course: 'Frontend Development',
+    startDate: '2026-07-05',
+    endDate: '2026-11-30',
+    mentor: 'Pooja Sundaram',
+    status: 'Ongoing',
+    college: 'Nirma University',
+    appliedDate: '2026-06-25',
+    evaluationGrade: 'A',
+    notes: 'Excellent design component library implementation in Tailwind & React.'
+  },
+  {
+    id: 'INT-APP-103',
+    studentId: 'ARIT-2026-STU03',
+    studentName: 'Rohan Kulkarni',
+    course: 'Python Programming',
+    startDate: '2026-07-20',
+    endDate: '2026-10-30',
+    mentor: 'Vikramaditya Verma',
+    status: 'Ongoing',
+    college: 'COEP Technological University',
+    appliedDate: '2026-07-10',
+    evaluationGrade: 'B+',
+    notes: 'Completing FastAPI microservices backend module.'
+  },
+  {
+    id: 'INT-APP-104',
+    studentId: 'ARIT-2026-STU04',
+    studentName: 'Meera Nambiar',
+    course: 'UI/UX Design',
+    startDate: '2026-08-05',
+    endDate: '2026-11-15',
+    mentor: 'Anjali Deshmukh',
+    status: 'Ongoing',
+    college: 'Amrita Vishwa Vidyapeetham',
+    appliedDate: '2026-07-28',
+    evaluationGrade: 'A+',
+    notes: 'Designed mobile banking application prototype with 95% user satisfaction.'
+  },
+  {
+    id: 'INT-APP-105',
+    studentId: 'ARIT-2026-STU05',
+    studentName: 'Aditya Srivastava',
+    course: 'Java Programming',
+    startDate: '2026-06-25',
+    endDate: '2026-10-28',
+    mentor: 'Siddharth Menon',
+    status: 'Completed',
+    college: 'IIT Roorkee',
+    appliedDate: '2026-06-18',
+    evaluationGrade: 'A+ (Distinction)',
+    notes: 'Delivered Spring Boot enterprise order processing system with JUnit testing.'
+  },
+  {
+    id: 'INT-APP-106',
+    studentId: 'ARIT-2026-STU07',
+    studentName: 'Varun Teja',
+    course: 'Web Development',
+    startDate: '2026-12-01',
+    endDate: '2027-02-28',
+    mentor: 'Unassigned',
+    status: 'New Application',
+    college: 'Osmania University',
+    appliedDate: '2026-09-01',
+    evaluationGrade: 'Under Review',
+    notes: 'Application submitted via AR IT COMPANY Internship Portal. Awaiting mentor assignment.'
+  },
+  {
+    id: 'INT-APP-107',
+    studentId: 'ARIT-2026-STU09',
+    studentName: 'Deepak Roy',
+    course: 'Full Stack Development',
+    startDate: '2026-11-20',
+    endDate: '2027-05-20',
+    mentor: 'Rajesh K. Sharma',
+    status: 'Approved',
+    college: 'BITS Pilani',
+    appliedDate: '2026-11-10',
+    evaluationGrade: 'Eligible',
+    notes: 'Passed initial technical screening. Induction scheduled for next Monday.'
+  },
+  {
+    id: 'INT-APP-108',
+    studentId: 'ARIT-2026-STU10',
+    studentName: 'Monika Chawla',
+    course: 'UI/UX Design',
+    startDate: '-',
+    endDate: '-',
+    mentor: 'None',
+    status: 'Rejected',
+    college: 'Delhi University',
+    appliedDate: '2026-10-05',
+    evaluationGrade: 'Incomplete',
+    notes: 'Prerequisites not met; advised to retake portfolio workshop.'
+  }
+];
+
+// =========================================================================
+// 5. INITIAL DAILY ACTIVITIES (Section 8)
+// =========================================================================
+const INITIAL_DAILY_ACTIVITIES = [
+  {
+    id: 'ACT-01',
+    studentName: 'Aarav Sharma',
+    studentId: 'ARIT-2026-STU01',
+    course: 'Full Stack Development',
+    dayNumber: 'Day 1',
+    activityDate: '2026-11-15',
+    taskTitle: 'Day 1 – HTML Introduction',
+    workDescription: 'Configured development environment, created semantic markup for AR IT corporate portal header, hero section, and accessible forms.',
+    taskStatus: 'Approved',
+    mentorFeedback: 'Well structured semantic elements. Excellent use of meta viewport and ARIA landmarks.',
+    mentorName: 'Rajesh K. Sharma'
+  },
+  {
+    id: 'ACT-02',
+    studentName: 'Sneha Patel',
+    studentId: 'ARIT-2026-STU02',
+    course: 'Frontend Development',
+    dayNumber: 'Day 2',
+    activityDate: '2026-11-16',
+    taskTitle: 'Day 2 – CSS Fundamentals',
+    workDescription: 'Developed responsive Flexbox grid and media queries for tablet & mobile views. Integrated CSS custom variables for dark/light themes.',
+    taskStatus: 'Approved',
+    mentorFeedback: 'Clean typography and responsive break-points match Figma guidelines accurately.',
+    mentorName: 'Pooja Sundaram'
+  },
+  {
+    id: 'ACT-03',
+    studentName: 'Rohan Kulkarni',
+    studentId: 'ARIT-2026-STU03',
+    course: 'Python Programming',
+    dayNumber: 'Day 3',
+    activityDate: '2026-11-17',
+    taskTitle: 'Day 3 – JavaScript Basics',
+    workDescription: 'Implemented asynchronous data fetching with ES6 promises, error handling with try/catch blocks, and localStorage state synchronization.',
+    taskStatus: 'Approved',
+    mentorFeedback: 'Good error handling. Added comments for debounced search logic.',
+    mentorName: 'Vikramaditya Verma'
+  },
+  {
+    id: 'ACT-04',
+    studentName: 'Sneha Patel',
+    studentId: 'ARIT-2026-STU02',
+    course: 'Frontend Development',
+    dayNumber: 'Day 4',
+    activityDate: '2026-11-18',
+    taskTitle: 'Day 4 – React Introduction',
+    workDescription: 'Architected reusable UI components: StatCard, Badge, FilterDropdown, and Modal. Handled props drilling using React Context API.',
+    taskStatus: 'Pending Review',
+    mentorFeedback: 'In review. Checking component re-render performance with memoization.',
+    mentorName: 'Pooja Sundaram'
+  },
+  {
+    id: 'ACT-05',
+    studentName: 'Aarav Sharma',
+    studentId: 'ARIT-2026-STU01',
+    course: 'Full Stack Development',
+    dayNumber: 'Day 5',
+    activityDate: '2026-11-19',
+    taskTitle: 'Day 5 – Mini Project Development',
+    workDescription: 'Built full end-to-end Student Registration feature connected with local REST mock API. Included client-side form validation and toast alerts.',
+    taskStatus: 'Approved',
+    mentorFeedback: 'Outstanding delivery! Production-ready code quality and flawless UX.',
+    mentorName: 'Rajesh K. Sharma'
+  },
+  {
+    id: 'ACT-06',
+    studentName: 'Kavya Ramanathan',
+    studentId: 'ARIT-2026-STU06',
+    course: 'Backend Development',
+    dayNumber: 'Day 6',
+    activityDate: '2026-11-20',
+    taskTitle: 'Day 6 – REST API Integration',
+    workDescription: 'Designed CRUD endpoints for students and courses with JWT bearer authentication and role-based permissions middleware.',
+    taskStatus: 'Needs Revision',
+    mentorFeedback: 'Please ensure bcrypt salt rounds are at least 10 and return sanitized JSON omitting password fields.',
+    mentorName: 'Rajesh K. Sharma'
+  }
+];
+
+// =========================================================================
+// 6. INITIAL ATTENDANCE RECORDS (Section 9)
+// =========================================================================
+const INITIAL_ATTENDANCE = [
+  { studentId: 'ARIT-2026-STU01', studentName: 'Aarav Sharma', course: 'Full Stack Development', date: '2026-11-25', status: 'Present', markedAt: '09:05 AM' },
+  { studentId: 'ARIT-2026-STU02', studentName: 'Sneha Patel', course: 'Frontend Development', date: '2026-11-25', status: 'Present', markedAt: '09:12 AM' },
+  { studentId: 'ARIT-2026-STU03', studentName: 'Rohan Kulkarni', course: 'Python Programming', date: '2026-11-25', status: 'Leave', markedAt: '08:45 AM', reason: 'Medical Checkup' },
+  { studentId: 'ARIT-2026-STU04', studentName: 'Meera Nambiar', course: 'UI/UX Design', date: '2026-11-25', status: 'Present', markedAt: '09:00 AM' },
+  { studentId: 'ARIT-2026-STU05', studentName: 'Aditya Srivastava', course: 'Java Programming', date: '2026-11-25', status: 'Present', markedAt: '09:10 AM' },
+  { studentId: 'ARIT-2026-STU06', studentName: 'Kavya Ramanathan', course: 'Backend Development', date: '2026-11-25', status: 'Absent', markedAt: '10:00 AM' },
+  { studentId: 'ARIT-2026-STU07', studentName: 'Varun Teja', course: 'Web Development', date: '2026-11-25', status: 'Leave', markedAt: '08:30 AM', reason: 'College Semester Exam' },
+  { studentId: 'ARIT-2026-STU08', studentName: 'Priyanka Sen', course: 'Full Stack Development', date: '2026-11-25', status: 'Present', markedAt: '09:18 AM' }
+];
+
+// =========================================================================
+// 7. INITIAL PAYMENTS (Section 11)
+// =========================================================================
+const INITIAL_PAYMENTS = [
+  {
+    id: 'TXN-ARIT-8901',
+    studentId: 'ARIT-2026-STU01',
+    studentName: 'Aarav Sharma',
+    course: 'Full Stack Development',
+    courseFee: 35000,
+    amountPaid: 35000,
+    pendingAmount: 0,
+    paymentDate: '2026-06-10',
+    paymentStatus: 'Paid',
+    method: 'UPI / NetBanking',
+    receiptNo: 'REC-2026-001'
+  },
+  {
+    id: 'TXN-ARIT-8902',
+    studentId: 'ARIT-2026-STU02',
+    studentName: 'Sneha Patel',
+    course: 'Frontend Development',
+    courseFee: 25000,
+    amountPaid: 25000,
+    pendingAmount: 0,
+    paymentDate: '2026-07-01',
+    paymentStatus: 'Paid',
+    method: 'Credit Card / Razorpay',
+    receiptNo: 'REC-2026-002'
+  },
+  {
+    id: 'TXN-ARIT-8903',
+    studentId: 'ARIT-2026-STU03',
+    studentName: 'Rohan Kulkarni',
+    course: 'Python Programming',
+    courseFee: 20000,
+    amountPaid: 12000,
+    pendingAmount: 8000,
+    paymentDate: '2026-07-15',
+    paymentStatus: 'Partially Paid',
+    method: 'UPI Transfer',
+    receiptNo: 'REC-2026-003'
+  },
+  {
+    id: 'TXN-ARIT-8904',
+    studentId: 'ARIT-2026-STU04',
+    studentName: 'Meera Nambiar',
+    course: 'UI/UX Design',
+    courseFee: 22000,
+    amountPaid: 22000,
+    pendingAmount: 0,
+    paymentDate: '2026-08-01',
+    paymentStatus: 'Paid',
+    method: 'Debit Card',
+    receiptNo: 'REC-2026-004'
+  },
+  {
+    id: 'TXN-ARIT-8905',
+    studentId: 'ARIT-2026-STU06',
+    studentName: 'Kavya Ramanathan',
+    course: 'Backend Development',
+    courseFee: 28000,
+    amountPaid: 18000,
+    pendingAmount: 10000,
+    paymentDate: '2026-08-10',
+    paymentStatus: 'Partially Paid',
+    method: 'Net Banking',
+    receiptNo: 'REC-2026-005'
+  },
+  {
+    id: 'TXN-ARIT-8906',
+    studentId: 'ARIT-2026-STU07',
+    studentName: 'Varun Teja',
+    course: 'Web Development',
+    courseFee: 18000,
+    amountPaid: 0,
+    pendingAmount: 18000,
+    paymentDate: '2026-09-01',
+    paymentStatus: 'Pending',
+    method: 'Awaiting Payment',
+    receiptNo: '-'
+  }
+];
+
+// =========================================================================
+// 8. INITIAL CERTIFICATES (Section 12)
+// =========================================================================
 const INITIAL_CERTIFICATES = [
   {
-    id: 'IAI-2026-9842',
-    studentId: 'IAI-STU-101',
-    studentName: 'Ananya Verma',
+    id: 'ARIT-CERT-2026-0101',
+    studentId: 'ARIT-2026-STU01',
+    studentName: 'Aarav Sharma',
     courseName: 'Full Stack Development',
-    duration: '6 Months (May 2026 - Nov 2026)',
-    completionDate: 'November 20, 2026',
-    grade: 'Distinction with Honors',
-    status: 'Verified',
-    verificationCode: 'IAI-2026-9842',
-    qrData: 'https://incredibleai.solutions/verify/IAI-2026-9842',
-    issuedBy: 'Dr. Maya Raman & Vikram Singhania',
-    skills: 'React 19, TypeScript, Node.js, Express, MySQL, Docker, REST APIs'
+    duration: '6 Months (June 2026 – November 2026)',
+    issueDate: '2026-11-20',
+    theme: 'navy', // 'pink' | 'purple' | 'navy'
+    grade: 'A+ (Distinction)',
+    authorizedSignatory: 'Dr. Maya Raman (Managing Director)',
+    technicalLead: 'Rajesh K. Sharma (Technical Head)',
+    company: 'AR IT COMPANY',
+    verificationCode: 'ARIT-VERIFY-0101',
+    skills: 'React 19, Node.js, Express, PostgreSQL, Docker, Microservices'
   },
   {
-    id: 'IAI-2026-9042',
-    studentId: 'IAI-STU-103',
-    studentName: 'Jessica Chen',
-    courseName: 'Data Science',
-    duration: '6 Months (May 2026 - Nov 2026)',
-    completionDate: 'November 10, 2026',
-    grade: 'Distinction',
-    status: 'Verified',
-    verificationCode: 'IAI-2026-9042',
-    qrData: 'https://incredibleai.solutions/verify/IAI-2026-9042',
-    issuedBy: 'Dr. Maya Raman & Vikram Singhania',
-    skills: 'Python, PyTorch, Machine Learning, Data Analytics, Pandas, Scikit-Learn'
-  },
-  {
-    id: 'IAI-2026-8910',
-    studentId: 'IAI-STU-108',
-    studentName: 'Arjun Nair',
-    courseName: 'Python',
-    duration: '3 Months (Aug 2026 - Nov 2026)',
-    completionDate: 'November 15, 2026',
-    grade: 'Excellence',
-    status: 'Verified',
-    verificationCode: 'IAI-2026-8910',
-    qrData: 'https://incredibleai.solutions/verify/IAI-2026-8910',
-    issuedBy: 'Elena Vance & Vikram Singhania',
-    skills: 'Advanced Python, FastAPI, AsyncIO, PyTest, Automated Scrapers'
+    id: 'ARIT-CERT-2026-0102',
+    studentId: 'ARIT-2026-STU05',
+    studentName: 'Aditya Srivastava',
+    courseName: 'Java Programming',
+    duration: '4 Months (June 2026 – October 2026)',
+    issueDate: '2026-10-28',
+    theme: 'purple',
+    grade: 'A+ (Distinction)',
+    authorizedSignatory: 'Dr. Maya Raman (Managing Director)',
+    technicalLead: 'Siddharth Menon (Technical Lead)',
+    company: 'AR IT COMPANY',
+    verificationCode: 'ARIT-VERIFY-0102',
+    skills: 'Java 21, Spring Boot, Hibernate, REST APIs, Microservices, JUnit'
   }
 ];
 
-// Initial Payments
-const INITIAL_PAYMENTS = [
-  { id: 'TXN-9021', studentId: 'IAI-STU-102', studentName: 'Rohan Mehta', course: 'AI & Machine Learning', amount: 1800, date: '2026-11-19', method: 'Stripe / Credit Card', status: 'Completed', invoice: 'INV-2026-0891' },
-  { id: 'TXN-9020', studentId: 'IAI-STU-101', studentName: 'Ananya Verma', course: 'Full Stack Development', amount: 1500, date: '2026-11-18', method: 'Bank Wire / ACH', status: 'Completed', invoice: 'INV-2026-0890' },
-  { id: 'TXN-9019', studentId: 'IAI-STU-104', studentName: 'Kabir Patel', course: 'Python', amount: 600, date: '2026-11-17', method: 'UPI / Razorpay', status: 'Completed', invoice: 'INV-2026-0889' },
-  { id: 'TXN-9018', studentId: 'IAI-STU-107', studentName: 'Aisha Khan', course: 'Data Science', amount: 1600, date: '2026-11-16', method: 'Stripe / Card', status: 'Completed', invoice: 'INV-2026-0888' },
-  { id: 'TXN-9017', studentId: 'IAI-STU-105', studentName: 'Sarah Jenkins', course: 'Full Stack Development', amount: 1500, date: '2026-11-15', method: 'PayPal', status: 'Completed', invoice: 'INV-2026-0887' }
+// =========================================================================
+// 9. INITIAL NOTIFICATIONS (Section 16)
+// =========================================================================
+const INITIAL_NOTIFICATIONS = [
+  {
+    id: 'NOTIF-01',
+    type: 'registration',
+    title: 'New Student Registration',
+    message: 'Varun Teja registered for Web Development course via online portal.',
+    timestamp: '15 minutes ago',
+    unread: true,
+    link: '/students'
+  },
+  {
+    id: 'NOTIF-02',
+    type: 'activity',
+    title: 'Daily Activity Submitted',
+    message: 'Sneha Patel submitted Day 4 – React Introduction for review.',
+    timestamp: '45 minutes ago',
+    unread: true,
+    link: '/daily-activities'
+  },
+  {
+    id: 'NOTIF-03',
+    type: 'payment',
+    title: 'Payment Received',
+    message: 'Payment of ₹22,000 received from Meera Nambiar for UI/UX Design.',
+    timestamp: '2 hours ago',
+    unread: false,
+    link: '/payments'
+  },
+  {
+    id: 'NOTIF-04',
+    type: 'internship',
+    title: 'Internship Completed',
+    message: 'Aarav Sharma completed 6-month Full Stack internship with Distinction.',
+    timestamp: '1 day ago',
+    unread: false,
+    link: '/certificates'
+  },
+  {
+    id: 'NOTIF-05',
+    type: 'application',
+    title: 'New Internship Application',
+    message: 'Deepak Roy submitted internship application for Full Stack Development.',
+    timestamp: '2 days ago',
+    unread: false,
+    link: '/internships'
+  }
 ];
 
+// =========================================================================
+// 10. INITIAL COMMUNICATIONS (Section 13)
+// =========================================================================
+const INITIAL_COMMUNICATIONS = [
+  {
+    id: 'COMM-01',
+    title: 'Final Capstone Project Evaluation Schedule',
+    category: 'Internship Announcements',
+    targetAudience: 'All Active Interns (Cohort 2026)',
+    sentDate: '2026-11-20',
+    sentBy: 'Dr. Maya Raman',
+    status: 'Sent',
+    content: 'All interns scheduled for December evaluation must submit their final GitHub repository links and deployment URLs by Friday 5:00 PM.'
+  },
+  {
+    id: 'COMM-02',
+    title: 'Upcoming Tech Webinar: Microservices with Docker & Kubernetes',
+    category: 'Course Announcements',
+    targetAudience: 'Full Stack & Backend Development Batches',
+    sentDate: '2026-11-18',
+    sentBy: 'Rajesh K. Sharma',
+    status: 'Sent',
+    content: 'Join our senior lead architect for an intensive 2-hour live session on container orchestration and cloud architecture.'
+  },
+  {
+    id: 'COMM-03',
+    title: 'Daily Activity Log Reminder',
+    category: 'Activity Reminders',
+    targetAudience: 'All Cohorts',
+    sentDate: '2026-11-24',
+    sentBy: 'System Automation',
+    status: 'Sent',
+    content: 'Reminder: Daily internship activity logs must be submitted before 8:00 PM every working day for mentor review.'
+  },
+  {
+    id: 'COMM-04',
+    title: 'Tuition Fee Balance Clearance Notice',
+    category: 'Payment Reminders',
+    targetAudience: 'Students with Pending Balances',
+    sentDate: '2026-11-15',
+    sentBy: 'Accounts Department',
+    status: 'Sent',
+    content: 'Kindly clear any pending course installment balances to ensure uninterrupted access to the internship lab and certification.'
+  }
+];
+
+// =========================================================================
+// CRM PROVIDER COMPONENT
+// =========================================================================
 export const CRMProvider = ({ children }) => {
-  // Persistence state
+  // 1. Current Session
+  const [currentUser, setCurrentUser] = useState(() => {
+    const saved = localStorage.getItem('arit_user');
+    return saved ? JSON.parse(saved) : {
+      name: 'Dr. Maya Raman',
+      role: 'Senior IT Director',
+      email: 'admin@aritcompany.com',
+      avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80',
+      company: 'AR IT COMPANY'
+    };
+  });
+
+  const [activeRole, setActiveRole] = useState('Admin'); // 'Admin' | 'Mentor'
+
+  // 2. Core Entities with LocalStorage Persistence
   const [students, setStudents] = useState(() => {
-    const saved = localStorage.getItem('incredible_crm_students');
+    const saved = localStorage.getItem('arit_students');
     return saved ? JSON.parse(saved) : INITIAL_STUDENTS;
   });
 
-  const [pendingTasks, setPendingTasks] = useState(() => {
-    const saved = localStorage.getItem('incredible_crm_pending_tasks');
-    return saved ? JSON.parse(saved) : INITIAL_PENDING_TASKS;
-  });
-
-  const [activities, setActivities] = useState(() => {
-    const saved = localStorage.getItem('incredible_crm_activities');
-    return saved ? JSON.parse(saved) : INITIAL_ACTIVITIES;
-  });
-
   const [courses, setCourses] = useState(() => {
-    const saved = localStorage.getItem('incredible_crm_courses');
+    const saved = localStorage.getItem('arit_courses');
     return saved ? JSON.parse(saved) : INITIAL_COURSES;
   });
 
-  const [certificates, setCertificates] = useState(() => {
-    const saved = localStorage.getItem('incredible_crm_certificates');
-    return saved ? JSON.parse(saved) : INITIAL_CERTIFICATES;
+  const [internships, setInternships] = useState(() => {
+    const saved = localStorage.getItem('arit_internships');
+    return saved ? JSON.parse(saved) : INITIAL_INTERNSHIPS;
+  });
+
+  const [dailyActivities, setDailyActivities] = useState(() => {
+    const saved = localStorage.getItem('arit_daily_activities');
+    return saved ? JSON.parse(saved) : INITIAL_DAILY_ACTIVITIES;
+  });
+
+  const [attendance, setAttendance] = useState(() => {
+    const saved = localStorage.getItem('arit_attendance');
+    return saved ? JSON.parse(saved) : INITIAL_ATTENDANCE;
   });
 
   const [payments, setPayments] = useState(() => {
-    const saved = localStorage.getItem('incredible_crm_payments');
+    const saved = localStorage.getItem('arit_payments');
     return saved ? JSON.parse(saved) : INITIAL_PAYMENTS;
   });
 
-  const [notifications, setNotifications] = useState([
-    { id: 1, title: 'New Task Submission', text: 'Ananya Verma submitted RAG Pipeline for review.', time: '10m ago', unread: true },
-    { id: 2, title: 'Payment Confirmed', text: '$1,800 received from Rohan Mehta.', time: '1h ago', unread: true },
-    { id: 3, title: 'Certificate Downloaded', text: 'Jessica Chen downloaded verified PDF certificate.', time: '3h ago', unread: false },
-    { id: 4, title: 'Batch Standup Reminder', text: 'AI & ML Cohort #14 weekly review starts at 4 PM.', time: '5h ago', unread: false }
-  ]);
-
-  const [currentAdmin] = useState({
-    name: 'Dr. Maya Raman',
-    role: 'Chief Academic Officer & Co-Founder',
-    email: 'maya.raman@incredibleai.solutions',
-    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=150&q=80'
+  const [certificates, setCertificates] = useState(() => {
+    const saved = localStorage.getItem('arit_certificates');
+    return saved ? JSON.parse(saved) : INITIAL_CERTIFICATES;
   });
 
-  // Selected student for Profile modal / drawer
-  const [selectedStudent, setSelectedStudent] = useState(null);
-  // Selected certificate for Preview / PDF download
-  const [selectedCertificate, setSelectedCertificate] = useState(INITIAL_CERTIFICATES[0]);
+  const [mentors, setMentors] = useState(() => {
+    const saved = localStorage.getItem('arit_mentors');
+    return saved ? JSON.parse(saved) : INITIAL_MENTORS;
+  });
+
+  const [notifications, setNotifications] = useState(() => {
+    const saved = localStorage.getItem('arit_notifications');
+    return saved ? JSON.parse(saved) : INITIAL_NOTIFICATIONS;
+  });
+
+  const [communications, setCommunications] = useState(() => {
+    const saved = localStorage.getItem('arit_communications');
+    return saved ? JSON.parse(saved) : INITIAL_COMMUNICATIONS;
+  });
+
+  // 3. UI State
+  const [toasts, setToasts] = useState([]);
+  const [isSyncing, setIsSyncing] = useState(false);
 
   // Sync to localStorage
-  useEffect(() => { localStorage.setItem('incredible_crm_students', JSON.stringify(students)); }, [students]);
-  useEffect(() => { localStorage.setItem('incredible_crm_pending_tasks', JSON.stringify(pendingTasks)); }, [pendingTasks]);
-  useEffect(() => { localStorage.setItem('incredible_crm_activities', JSON.stringify(activities)); }, [activities]);
-  useEffect(() => { localStorage.setItem('incredible_crm_courses', JSON.stringify(courses)); }, [courses]);
-  useEffect(() => { localStorage.setItem('incredible_crm_certificates', JSON.stringify(certificates)); }, [certificates]);
-  useEffect(() => { localStorage.setItem('incredible_crm_payments', JSON.stringify(payments)); }, [payments]);
+  useEffect(() => { localStorage.setItem('arit_students', JSON.stringify(students)); }, [students]);
+  useEffect(() => { localStorage.setItem('arit_courses', JSON.stringify(courses)); }, [courses]);
+  useEffect(() => { localStorage.setItem('arit_internships', JSON.stringify(internships)); }, [internships]);
+  useEffect(() => { localStorage.setItem('arit_daily_activities', JSON.stringify(dailyActivities)); }, [dailyActivities]);
+  useEffect(() => { localStorage.setItem('arit_attendance', JSON.stringify(attendance)); }, [attendance]);
+  useEffect(() => { localStorage.setItem('arit_payments', JSON.stringify(payments)); }, [payments]);
+  useEffect(() => { localStorage.setItem('arit_certificates', JSON.stringify(certificates)); }, [certificates]);
+  useEffect(() => { localStorage.setItem('arit_mentors', JSON.stringify(mentors)); }, [mentors]);
+  useEffect(() => { localStorage.setItem('arit_notifications', JSON.stringify(notifications)); }, [notifications]);
+  useEffect(() => { localStorage.setItem('arit_communications', JSON.stringify(communications)); }, [communications]);
+  useEffect(() => { localStorage.setItem('arit_user', JSON.stringify(currentUser)); }, [currentUser]);
 
-  // Student Actions
+  // Toast Helper
+  const showToast = (message, type = 'success') => {
+    const id = Date.now();
+    setToasts(prev => [...prev, { id, message, type }]);
+    setTimeout(() => {
+      setToasts(prev => prev.filter(t => t.id !== id));
+    }, 4000);
+  };
+
+  const removeToast = (id) => {
+    setToasts(prev => prev.filter(t => t.id !== id));
+  };
+
+  // =========================================================================
+  // STUDENT ACTIONS
+  // =========================================================================
   const addStudent = (studentData) => {
-    const newId = `IAI-STU-${100 + students.length + 1}`;
+    const nextNumber = students.length + 1;
+    const formattedId = `ARIT-2026-STU${nextNumber < 10 ? '0' + nextNumber : nextNumber}`;
     const newStudent = {
-      id: newId,
-      progress: 0,
-      status: 'Active',
+      id: formattedId,
+      name: studentData.name,
+      email: studentData.email,
+      phone: studentData.phone || '+91 98000 00000',
+      address: studentData.address || 'AR IT Bangalore Campus',
+      course: studentData.course,
+      registrationDate: studentData.registrationDate || new Date().toISOString().split('T')[0],
+      internshipStatus: studentData.internshipStatus || 'Active',
+      duration: studentData.duration || '6 Months',
       attendance: 100,
-      feeStatus: 'Paid',
-      totalFee: 1500,
-      paidAmount: 1500,
+      progress: 0,
+      feeStatus: studentData.feeStatus || 'Paid',
+      totalFee: Number(studentData.totalFee) || 30000,
+      paidAmount: Number(studentData.paidAmount) || 30000,
+      pendingAmount: Math.max(0, (Number(studentData.totalFee) || 30000) - (Number(studentData.paidAmount) || 30000)),
       tasksCompleted: 0,
-      totalTasks: 45,
+      totalTasks: 40,
+      mentor: studentData.mentor || 'Rajesh K. Sharma',
+      college: studentData.college || 'Engineering Institute',
       certificateId: null,
       certificateIssued: false,
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80',
-      enrolledDate: new Date().toISOString().split('T')[0],
-      duration: '6 Months',
-      ...studentData
+      avatar: studentData.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
+      mode: studentData.mode || 'Hybrid (Bangalore Campus + Online)'
     };
+
     setStudents(prev => [newStudent, ...prev]);
 
-    // Add activity
-    addActivity({
+    // Also create corresponding internship record
+    const newInternship = {
+      id: `INT-APP-${100 + nextNumber}`,
+      studentId: newStudent.id,
+      studentName: newStudent.name,
+      course: newStudent.course,
+      startDate: new Date().toISOString().split('T')[0],
+      endDate: '2027-05-30',
+      mentor: newStudent.mentor,
+      status: 'Ongoing',
+      college: newStudent.college,
+      appliedDate: newStudent.registrationDate,
+      evaluationGrade: 'In Progress',
+      notes: 'Directly enrolled via AR IT COMPANY CRM portal.'
+    };
+    setInternships(prev => [newInternship, ...prev]);
+
+    // Record payment entry
+    if (newStudent.paidAmount > 0) {
+      const newPayment = {
+        id: `TXN-ARIT-${8900 + nextNumber}`,
+        studentId: newStudent.id,
+        studentName: newStudent.name,
+        course: newStudent.course,
+        courseFee: newStudent.totalFee,
+        amountPaid: newStudent.paidAmount,
+        pendingAmount: newStudent.pendingAmount,
+        paymentDate: newStudent.registrationDate,
+        paymentStatus: newStudent.pendingAmount === 0 ? 'Paid' : 'Partially Paid',
+        method: 'Online Transfer',
+        receiptNo: `REC-2026-${100 + nextNumber}`
+      };
+      setPayments(prev => [newPayment, ...prev]);
+    }
+
+    // Add Notification
+    addNotification({
       type: 'registration',
-      title: 'New Student Registered',
-      description: `${newStudent.name} enrolled in ${newStudent.course}.`,
-      avatar: newStudent.avatar,
-      iconColor: '#6366f1'
+      title: 'New Student Added',
+      message: `${newStudent.name} enrolled in ${newStudent.course}.`,
+      link: '/students'
     });
 
+    showToast(`Student ${newStudent.name} (${newStudent.id}) registered successfully!`);
     return newStudent;
   };
 
   const updateStudent = (id, updatedFields) => {
-    setStudents(prev => prev.map(s => s.id === id ? { ...s, ...updatedFields } : s));
-    if (selectedStudent && selectedStudent.id === id) {
-      setSelectedStudent(prev => ({ ...prev, ...updatedFields }));
-    }
-  };
-
-  const deleteStudent = (id) => {
-    setStudents(prev => prev.filter(s => s.id !== id));
-    if (selectedStudent && selectedStudent.id === id) {
-      setSelectedStudent(null);
-    }
-  };
-
-  // Task Actions
-  const approveTask = (taskId, comment) => {
-    setPendingTasks(prev => prev.map(t => {
-      if (t.id === taskId) {
-        // increase student progress
-        updateStudentProgress(t.studentId, 5);
-        return { ...t, status: 'Approved', mentorComment: comment || 'Task reviewed and approved with distinction.' };
-      }
-      return t;
-    }));
-
-    const task = pendingTasks.find(t => t.id === taskId);
-    if (task) {
-      addActivity({
-        type: 'submission',
-        title: 'Task Approved',
-        description: `Approved "${task.taskName}" for ${task.studentName}.`,
-        avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=80&q=80',
-        iconColor: '#10b981'
-      });
-    }
-  };
-
-  const rejectTask = (taskId, reason) => {
-    setPendingTasks(prev => prev.map(t => {
-      if (t.id === taskId) {
-        return { ...t, status: 'Needs Re-work', mentorComment: reason || 'Please revise according to requirements.' };
-      }
-      return t;
-    }));
-  };
-
-  const updateStudentProgress = (studentId, delta) => {
     setStudents(prev => prev.map(s => {
-      if (s.id === studentId) {
-        const nextProgress = Math.min(100, s.progress + delta);
-        const nextTasks = s.tasksCompleted + 1;
-        return {
-          ...s,
-          progress: nextProgress,
-          tasksCompleted: nextTasks,
-          status: nextProgress >= 100 ? 'Completed' : s.status
-        };
+      if (s.id === id) {
+        const merged = { ...s, ...updatedFields };
+        merged.pendingAmount = Math.max(0, merged.totalFee - merged.paidAmount);
+        merged.feeStatus = merged.pendingAmount === 0 ? 'Paid' : merged.paidAmount > 0 ? 'Partially Paid' : 'Pending';
+        return merged;
       }
       return s;
     }));
+
+    showToast('Student profile updated successfully.');
   };
 
-  // Certificate Actions
-  const generateCertificate = (student) => {
-    const certCode = `IAI-2026-${Math.floor(8000 + Math.random() * 2000)}`;
+  const deleteStudent = (id) => {
+    const student = students.find(s => s.id === id);
+    setStudents(prev => prev.filter(s => s.id !== id));
+    setInternships(prev => prev.filter(i => i.studentId !== id));
+    setPayments(prev => prev.filter(p => p.studentId !== id));
+    setDailyActivities(prev => prev.filter(a => a.studentId !== id));
+    showToast(`Student ${student ? student.name : id} has been removed.`, 'info');
+  };
+
+  // =========================================================================
+  // SIMULATE WEBSITE INTEGRATION (Section 19 context)
+  // =========================================================================
+  /**
+   * Directly satisfies: "student registration details submitted through the
+   * Internship Website can automatically appear in this CRM after backend integration.
+   * Do not require the admin to manually register the same student again."
+   */
+  const syncInternshipWebsiteRegistrations = async () => {
+    setIsSyncing(true);
+    showToast('Connecting to AR IT COMPANY Shared Registration API...', 'info');
+
+    // Simulate API network turnaround
+    setTimeout(() => {
+      const incomingCandidates = [
+        {
+          name: 'Nikhil R. Varma',
+          email: 'nikhil.varma@gmail.com',
+          phone: '+91 98452 77112',
+          address: '56, Indiranagar 100ft Road, Bangalore - 560038',
+          course: 'Full Stack Development',
+          college: 'PES University, Bangalore',
+          totalFee: 35000,
+          paidAmount: 35000,
+          mentor: 'Rajesh K. Sharma',
+          mode: 'Hybrid (Bangalore Campus + Online)'
+        },
+        {
+          name: 'Divya Bharathi',
+          email: 'divya.b@outlook.com',
+          phone: '+91 97411 88992',
+          address: '12, RS Puram, Coimbatore, Tamil Nadu - 641002',
+          course: 'Frontend Development',
+          college: 'PSG College of Technology',
+          totalFee: 25000,
+          paidAmount: 25000,
+          mentor: 'Pooja Sundaram',
+          mode: 'Online Live'
+        },
+        {
+          name: 'Tarun Reddy',
+          email: 'tarun.reddy@gmail.com',
+          phone: '+91 99088 12340',
+          address: '204, Madhapur, Hyderabad, Telangana - 500081',
+          course: 'Python Programming',
+          college: 'CBIT Hyderabad',
+          totalFee: 20000,
+          paidAmount: 10000,
+          mentor: 'Vikramaditya Verma',
+          mode: 'Online Live'
+        }
+      ];
+
+      // Filter out those already present by email
+      const newItems = incomingCandidates.filter(inc => !students.some(s => s.email === inc.email));
+
+      if (newItems.length === 0) {
+        showToast('All student registrations from the Internship Website are already up to date!', 'info');
+        setIsSyncing(false);
+        return;
+      }
+
+      newItems.forEach(candidate => {
+        addStudent({
+          ...candidate,
+          registrationDate: new Date().toISOString().split('T')[0],
+          internshipStatus: 'Active'
+        });
+      });
+
+      addNotification({
+        type: 'registration',
+        title: 'Website Registrations Synced',
+        message: `${newItems.length} student registrations successfully imported from AR IT Internship Website.`,
+        link: '/students'
+      });
+
+      showToast(`Successfully synced ${newItems.length} registrations from AR IT Internship Website!`, 'success');
+      setIsSyncing(false);
+    }, 1200);
+  };
+
+  // =========================================================================
+  // COURSE ACTIONS
+  // =========================================================================
+  const addCourse = (courseData) => {
+    const newCourse = {
+      id: `CRS-0${courses.length + 1}`,
+      name: courseData.name,
+      category: courseData.category || 'Technology',
+      duration: courseData.duration || '3 Months',
+      fee: Number(courseData.fee) || 20000,
+      status: courseData.status || 'Active',
+      enrolledCount: 0,
+      modulesCount: Number(courseData.modulesCount) || 12,
+      image: courseData.image || 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=600&q=80',
+      description: courseData.description || 'Comprehensive professional training curriculum designed by AR IT industry experts.'
+    };
+    setCourses(prev => [...prev, newCourse]);
+    showToast(`Course "${newCourse.name}" added successfully.`);
+  };
+
+  const updateCourse = (id, updatedFields) => {
+    setCourses(prev => prev.map(c => c.id === id ? { ...c, ...updatedFields } : c));
+    showToast('Course details updated successfully.');
+  };
+
+  const deleteCourse = (id) => {
+    const course = courses.find(c => c.id === id);
+    setCourses(prev => prev.filter(c => c.id !== id));
+    showToast(`Course "${course ? course.name : id}" removed.`, 'info');
+  };
+
+  // =========================================================================
+  // INTERNSHIP ACTIONS
+  // =========================================================================
+  const updateInternshipStatus = (internshipId, newStatus, mentorName = null) => {
+    setInternships(prev => prev.map(item => {
+      if (item.id === internshipId) {
+        const updated = {
+          ...item,
+          status: newStatus,
+          mentor: mentorName || item.mentor
+        };
+
+        // Also reflect on student record
+        setStudents(sList => sList.map(stu => {
+          if (stu.id === item.studentId) {
+            let stuStatus = 'Active';
+            if (newStatus === 'Completed') stuStatus = 'Completed';
+            if (newStatus === 'Rejected') stuStatus = 'Dropped';
+            if (newStatus === 'New Application') stuStatus = 'Pending';
+            return {
+              ...stu,
+              internshipStatus: stuStatus,
+              mentor: mentorName || stu.mentor
+            };
+          }
+          return stu;
+        }));
+
+        return updated;
+      }
+      return item;
+    }));
+
+    showToast(`Internship application updated to: ${newStatus}`);
+  };
+
+  // =========================================================================
+  // DAILY ACTIVITIES & MENTOR FEEDBACK
+  // =========================================================================
+  const addDailyActivity = (activityData) => {
+    const newAct = {
+      id: `ACT-0${dailyActivities.length + 1}`,
+      studentName: activityData.studentName,
+      studentId: activityData.studentId,
+      course: activityData.course,
+      dayNumber: activityData.dayNumber || `Day ${dailyActivities.length + 1}`,
+      activityDate: activityData.activityDate || new Date().toISOString().split('T')[0],
+      taskTitle: activityData.taskTitle,
+      workDescription: activityData.workDescription,
+      taskStatus: 'Pending Review',
+      mentorFeedback: 'Under review by assigned mentor.',
+      mentorName: activityData.mentorName || 'Assigned Mentor'
+    };
+    setDailyActivities(prev => [newAct, ...prev]);
+    showToast(`Activity for ${newAct.dayNumber} logged successfully.`);
+  };
+
+  const addMentorFeedback = (activityId, feedback, newStatus = 'Approved') => {
+    setDailyActivities(prev => prev.map(a => {
+      if (a.id === activityId) {
+        return {
+          ...a,
+          mentorFeedback: feedback,
+          taskStatus: newStatus
+        };
+      }
+      return a;
+    }));
+
+    showToast(`Mentor feedback submitted: status set to ${newStatus}.`);
+  };
+
+  // =========================================================================
+  // ATTENDANCE ACTIONS
+  // =========================================================================
+  const markAttendance = (studentId, status, date = new Date().toISOString().split('T')[0]) => {
+    const student = students.find(s => s.id === studentId);
+    if (!student) return;
+
+    setAttendance(prev => {
+      const filtered = prev.filter(a => !(a.studentId === studentId && a.date === date));
+      return [
+        {
+          studentId,
+          studentName: student.name,
+          course: student.course,
+          date,
+          status,
+          markedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        },
+        ...filtered
+      ];
+    });
+
+    showToast(`Marked ${student.name} as ${status}.`);
+  };
+
+  const markAllAttendance = (status, date = new Date().toISOString().split('T')[0]) => {
+    const newRecords = students.map(student => ({
+      studentId: student.id,
+      studentName: student.name,
+      course: student.course,
+      date,
+      status,
+      markedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    }));
+
+    setAttendance(prev => {
+      const otherDates = prev.filter(a => a.date !== date);
+      return [...newRecords, ...otherDates];
+    });
+
+    showToast(`Bulk updated all students as ${status} for ${date}.`);
+  };
+
+  // =========================================================================
+  // CERTIFICATES ACTIONS (Section 12)
+  // =========================================================================
+  /**
+   * Strictly enforces: "Do not automatically issue certificates to students
+   * who have not completed the required internship."
+   */
+  const generateCertificate = (studentId, theme = 'navy') => {
+    const student = students.find(s => s.id === studentId);
+    if (!student) {
+      showToast('Student not found.', 'error');
+      return null;
+    }
+
+    if (student.internshipStatus !== 'Completed') {
+      showToast(
+        `Cannot issue certificate: ${student.name}'s internship status is "${student.internshipStatus}". Completion required.`,
+        'error'
+      );
+      return null;
+    }
+
+    const certNumber = certificates.length + 1;
+    const certId = `ARIT-CERT-2026-${certNumber < 10 ? '0' + certNumber : certNumber}`;
+
     const newCert = {
-      id: certCode,
+      id: certId,
       studentId: student.id,
       studentName: student.name,
       courseName: student.course,
-      duration: student.duration || '6 Months Intensive Program',
-      completionDate: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
-      grade: student.progress >= 90 ? 'Distinction with Honors' : 'First Class with Merit',
-      status: 'Verified',
-      verificationCode: certCode,
-      qrData: `https://incredibleai.solutions/verify/${certCode}`,
-      issuedBy: 'Dr. Maya Raman & Vikram Singhania',
-      skills: `${student.course} Enterprise Specialization, Applied Project Portfolio, Production Architecture`
+      duration: `${student.duration} (${student.registrationDate} – Present)`,
+      issueDate: new Date().toISOString().split('T')[0],
+      theme: theme || 'navy',
+      grade: 'Distinction (A+)',
+      authorizedSignatory: 'Dr. Maya Raman (Managing Director)',
+      technicalLead: `${student.mentor} (Technical Head)`,
+      company: 'AR IT COMPANY',
+      verificationCode: `ARIT-VERIFY-${certNumber}`,
+      skills: 'Full Stack Architecture, Modern Software Engineering, Enterprise Standards'
     };
 
     setCertificates(prev => [newCert, ...prev]);
-    updateStudent(student.id, { certificateId: certCode, certificateIssued: true, status: 'Completed' });
-    setSelectedCertificate(newCert);
 
-    addActivity({
-      type: 'certificate',
-      title: 'Certificate Generated',
-      description: `Official digital certificate issued to ${student.name} (#${certCode}).`,
-      avatar: student.avatar,
-      iconColor: '#10b981'
+    // Update student record
+    updateStudent(student.id, {
+      certificateId: newCert.id,
+      certificateIssued: true
     });
 
+    addNotification({
+      type: 'certificate',
+      title: 'Certificate Generated',
+      message: `Official Certificate ${newCert.id} issued to ${student.name}.`,
+      link: '/certificates'
+    });
+
+    showToast(`Official Certificate ${newCert.id} generated for ${student.name}!`);
     return newCert;
   };
 
-  // Payment Actions
-  const recordPayment = (paymentData) => {
-    const newTxn = {
-      id: `TXN-${Math.floor(9000 + Math.random() * 1000)}`,
-      invoice: `INV-2026-${Math.floor(1000 + Math.random() * 9000)}`,
-      date: new Date().toISOString().split('T')[0],
-      status: 'Completed',
-      ...paymentData
+  // =========================================================================
+  // MENTORS ACTIONS
+  // =========================================================================
+  const addMentor = (mentorData) => {
+    const newMentor = {
+      id: `MTR-0${mentors.length + 1}`,
+      name: mentorData.name,
+      email: mentorData.email,
+      specialization: mentorData.specialization,
+      assignedCourse: mentorData.assignedCourse,
+      activeStudentsCount: 0,
+      phone: mentorData.phone || '+91 98000 00000',
+      avatar: mentorData.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+      experience: mentorData.experience || '5+ Years'
     };
-
-    setPayments(prev => [newTxn, ...prev]);
-    addActivity({
-      type: 'payment',
-      title: 'Payment Received',
-      description: `$${newTxn.amount} received from ${newTxn.studentName} (${newTxn.method}).`,
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&q=80',
-      iconColor: '#f59e0b'
-    });
+    setMentors(prev => [...prev, newMentor]);
+    showToast(`Mentor "${newMentor.name}" onboarded successfully.`);
   };
 
-  // Activity Helper
-  const addActivity = (act) => {
-    const newActivity = {
-      id: `ACT-${Date.now()}`,
+  const updateMentor = (id, updatedFields) => {
+    setMentors(prev => prev.map(m => m.id === id ? { ...m, ...updatedFields } : m));
+    showToast('Mentor information updated.');
+  };
+
+  const deleteMentor = (id) => {
+    const mentor = mentors.find(m => m.id === id);
+    setMentors(prev => prev.filter(m => m.id !== id));
+    showToast(`Mentor ${mentor ? mentor.name : id} removed.`, 'info');
+  };
+
+  // =========================================================================
+  // COMMUNICATIONS & NOTIFICATIONS
+  // =========================================================================
+  const addCommunication = (commData) => {
+    const newComm = {
+      id: `COMM-0${communications.length + 1}`,
+      title: commData.title,
+      category: commData.category,
+      targetAudience: commData.targetAudience,
+      sentDate: new Date().toISOString().split('T')[0],
+      sentBy: currentUser.name,
+      status: 'Sent',
+      content: commData.content
+    };
+    setCommunications(prev => [newComm, ...prev]);
+    showToast(`Announcement "${newComm.title}" published.`);
+  };
+
+  const addNotification = (notifData) => {
+    const newNotif = {
+      id: `NOTIF-${Date.now()}`,
+      type: notifData.type || 'info',
+      title: notifData.title,
+      message: notifData.message,
       timestamp: 'Just now',
-      ...act
+      unread: true,
+      link: notifData.link || '/dashboard'
     };
-    setActivities(prev => [newActivity, ...prev.slice(0, 15)]);
+    setNotifications(prev => [newNotif, ...prev]);
   };
 
-  // Notification helpers
   const markNotificationAsRead = (id) => {
     setNotifications(prev => prev.map(n => n.id === id ? { ...n, unread: false } : n));
   };
 
   const markAllNotificationsAsRead = () => {
     setNotifications(prev => prev.map(n => ({ ...n, unread: false })));
+    showToast('All notifications marked as read.');
   };
 
-  // Computed overview metrics
-  const totalStudents = 1248 + students.length - INITIAL_STUDENTS.length;
-  const tasksCompleted = 8620 + students.reduce((acc, s) => acc + (s.tasksCompleted || 0), 0) - INITIAL_STUDENTS.reduce((acc, s) => acc + s.tasksCompleted, 0);
-  const certificatesIssued = 642 + certificates.length - INITIAL_CERTIFICATES.length;
-  const totalRevenue = 128450 + payments.reduce((acc, p) => acc + (Number(p.amount) || 0), 0) - INITIAL_PAYMENTS.reduce((acc, p) => acc + p.amount, 0);
+  // =========================================================================
+  // PAYMENTS ACTIONS
+  // =========================================================================
+  const addPayment = (paymentData) => {
+    const newPayment = {
+      id: `TXN-ARIT-${8900 + payments.length + 1}`,
+      studentId: paymentData.studentId,
+      studentName: paymentData.studentName,
+      course: paymentData.course,
+      courseFee: Number(paymentData.courseFee),
+      amountPaid: Number(paymentData.amountPaid),
+      pendingAmount: Math.max(0, Number(paymentData.courseFee) - Number(paymentData.amountPaid)),
+      paymentDate: paymentData.paymentDate || new Date().toISOString().split('T')[0],
+      paymentStatus: paymentData.paymentStatus || 'Paid',
+      method: paymentData.method || 'Online Transfer',
+      receiptNo: `REC-2026-${100 + payments.length + 1}`
+    };
+
+    setPayments(prev => [newPayment, ...prev]);
+
+    // Also update student feeStatus & paidAmount
+    updateStudent(paymentData.studentId, {
+      paidAmount: newPayment.amountPaid,
+      pendingAmount: newPayment.pendingAmount
+    });
+
+    addNotification({
+      type: 'payment',
+      title: 'Payment Recorded',
+      message: `₹${newPayment.amountPaid.toLocaleString('en-IN')} recorded for ${newPayment.studentName}.`,
+      link: '/payments'
+    });
+
+    showToast(`Payment of ₹${newPayment.amountPaid.toLocaleString('en-IN')} logged.`);
+  };
+
+  // =========================================================================
+  // COMPUTED DASHBOARD METRICS (Section 4)
+  // =========================================================================
+  const totalStudents = students.length;
+  const totalRegistrations = students.length + internships.filter(i => i.status === 'New Application').length;
+  const activeStudents = students.filter(s => s.internshipStatus === 'Active').length;
+  const activeInterns = internships.filter(i => i.status === 'Ongoing').length;
+  const completedInternships = students.filter(s => s.internshipStatus === 'Completed').length;
+  const pendingApplications = internships.filter(i => i.status === 'New Application').length;
+  const totalCourses = courses.length;
+  const totalRevenue = payments.reduce((acc, curr) => acc + (curr.amountPaid || 0), 0);
 
   return (
     <CRMContext.Provider value={{
-      // Data
+      // Core states
+      currentUser,
+      setCurrentUser,
+      activeRole,
+      setActiveRole,
       students,
-      pendingTasks,
-      activities,
       courses,
-      certificates,
+      internships,
+      dailyActivities,
+      attendance,
       payments,
+      certificates,
+      mentors,
       notifications,
-      currentAdmin,
-      selectedStudent,
-      setSelectedStudent,
-      selectedCertificate,
-      setSelectedCertificate,
+      communications,
+      toasts,
+      isSyncing,
 
-      // Metrics
+      // Summary metrics
       metrics: {
         totalStudents,
-        tasksCompleted,
-        certificatesIssued,
+        totalRegistrations,
+        activeStudents,
+        activeInterns,
+        completedInternships,
+        pendingApplications,
+        totalCourses,
         totalRevenue
       },
 
-      // Methods
+      // Handlers
       addStudent,
       updateStudent,
       deleteStudent,
-      approveTask,
-      rejectTask,
+      syncInternshipWebsiteRegistrations,
+
+      addCourse,
+      updateCourse,
+      deleteCourse,
+
+      updateInternshipStatus,
+
+      addDailyActivity,
+      addMentorFeedback,
+
+      markAttendance,
+      markAllAttendance,
+
       generateCertificate,
-      recordPayment,
-      addActivity,
+
+      addMentor,
+      updateMentor,
+      deleteMentor,
+
+      addCommunication,
+      addNotification,
       markNotificationAsRead,
-      markAllNotificationsAsRead
+      markAllNotificationsAsRead,
+
+      addPayment,
+
+      showToast,
+      removeToast
     }}>
       {children}
+
+      {/* Global Toast Notification Container */}
+      <div className="crm-toast-container">
+        {toasts.map(toast => (
+          <div key={toast.id} className={`crm-toast ${toast.type}`}>
+            <div>
+              <strong style={{ fontSize: '13px', display: 'block', color: 'var(--crm-navy)' }}>
+                {toast.type === 'error' ? 'Notice' : 'AR IT CRM System'}
+              </strong>
+              <span style={{ fontSize: '12.5px', color: 'var(--crm-text-secondary)' }}>{toast.message}</span>
+            </div>
+            <button
+              onClick={() => removeToast(toast.id)}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', fontSize: '16px' }}
+            >
+              &times;
+            </button>
+          </div>
+        ))}
+      </div>
     </CRMContext.Provider>
   );
 };
 
-export const useCRM = () => useContext(CRMContext);
+export const useCRM = () => {
+  const context = useContext(CRMContext);
+  if (!context) {
+    throw new Error('useCRM must be used within a CRMProvider');
+  }
+  return context;
+};
+
+export default CRMContext;

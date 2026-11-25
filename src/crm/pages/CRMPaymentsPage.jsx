@@ -1,172 +1,296 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useCRM } from '../context/CRMContext';
 import {
   CreditCard,
-  DollarSign,
   Plus,
   Search,
+  Filter,
   Download,
   CheckCircle,
   Clock,
-  ArrowUpRight
+  AlertCircle,
+  FileText
 } from 'lucide-react';
 
 const CRMPaymentsPage = () => {
-  const { payments, students, recordPayment, metrics } = useCRM();
+  const { payments, students, courses, addPayment, metrics } = useCRM();
 
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedStatus, setSelectedStatus] = useState('All');
+  const [selectedCourse, setSelectedCourse] = useState('All');
   const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const [newPayment, setNewPayment] = useState({
-    studentName: 'Rohan Mehta',
-    course: 'AI & Machine Learning',
-    amount: 1800,
-    method: 'Stripe / Credit Card'
+
+  // New Payment Form
+  const [paymentForm, setPaymentForm] = useState({
+    studentId: students[0]?.id || '',
+    course: 'Full Stack Development',
+    courseFee: 35000,
+    amountPaid: 35000,
+    paymentDate: new Date().toISOString().split('T')[0],
+    method: 'UPI / NetBanking',
+    paymentStatus: 'Paid'
   });
 
-  const handleRecord = (e) => {
+  const statuses = ['All', 'Paid', 'Pending', 'Partially Paid', 'Failed'];
+
+  const filteredPayments = useMemo(() => {
+    return payments.filter(p => {
+      const matchSearch =
+        p.studentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        p.studentId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        p.id.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchStatus = selectedStatus === 'All' || p.paymentStatus === selectedStatus;
+      const matchCourse = selectedCourse === 'All' || p.course === selectedCourse;
+      return matchSearch && matchStatus && matchCourse;
+    });
+  }, [payments, searchTerm, selectedStatus, selectedCourse]);
+
+  const totalCollected = payments.reduce((acc, curr) => acc + (curr.amountPaid || 0), 0);
+  const totalPending = payments.reduce((acc, curr) => acc + (curr.pendingAmount || 0), 0);
+
+  const handleExportCSV = () => {
+    const headers = 'TransactionID,StudentID,StudentName,Course,CourseFee,AmountPaid,PendingAmount,PaymentDate,PaymentStatus,Method\n';
+    const rows = filteredPayments.map(p =>
+      `"${p.id}","${p.studentId}","${p.studentName}","${p.course}",${p.courseFee},${p.amountPaid},${p.pendingAmount},"${p.paymentDate}","${p.paymentStatus}","${p.method}"\n`
+    ).join('');
+
+    const blob = new Blob([headers + rows], { type: 'text/csv;charset=utf-8;' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `AR_IT_COMPANY_Payments_Report_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
+
+  const handleCreatePayment = (e) => {
     e.preventDefault();
-    const matched = students.find(s => s.name === newPayment.studentName) || students[0];
-    recordPayment({
+    const matched = students.find(s => s.id === paymentForm.studentId) || students[0];
+    addPayment({
       studentId: matched.id,
       studentName: matched.name,
-      course: newPayment.course,
-      amount: Number(newPayment.amount),
-      method: newPayment.method
+      course: paymentForm.course,
+      courseFee: paymentForm.courseFee,
+      amountPaid: paymentForm.amountPaid,
+      paymentDate: paymentForm.paymentDate,
+      paymentStatus: paymentForm.paymentStatus,
+      method: paymentForm.method
     });
     setShowPaymentModal(false);
   };
 
   return (
     <div>
+      {/* Top Banner */}
       <div className="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
         <div>
-          <h2 className="fw-bold mb-1" style={{ fontSize: '22px', color: '#1e1b4b' }}>
-            Fee & Payment Management
+          <h2 className="fw-bold mb-1" style={{ fontSize: '22px', color: 'var(--crm-navy)' }}>
+            Payment Management
           </h2>
           <p className="text-muted mb-0" style={{ fontSize: '13px' }}>
-            Monitor tuition collections, process course invoices, and review transaction ledgers
+            Monitor tuition invoices, verified transaction receipts, pending balances, and fee schedules
           </p>
         </div>
 
-        <button
-          type="button"
-          className="crm-btn crm-btn-primary crm-btn-sm"
-          onClick={() => setShowPaymentModal(true)}
-        >
-          <Plus size={15} />
-          <span>Record New Payment</span>
-        </button>
+        <div className="d-flex align-items-center gap-2">
+          <button
+            type="button"
+            className="crm-btn crm-btn-outline crm-btn-sm"
+            onClick={handleExportCSV}
+          >
+            <Download size={14} />
+            <span>Generate Payment Report</span>
+          </button>
+          <button
+            type="button"
+            className="crm-btn crm-btn-primary crm-btn-sm"
+            onClick={() => setShowPaymentModal(true)}
+          >
+            <Plus size={14} />
+            <span>Record Payment</span>
+          </button>
+        </div>
       </div>
 
-      {/* KPI Row */}
+      {/* KPI Summary Cards */}
       <div className="row g-3 mb-4">
         <div className="col-12 col-md-4">
-          <div className="crm-card p-4 mb-0">
-            <div className="d-flex align-items-center justify-content-between mb-2">
-              <span className="text-muted fw-semibold" style={{ fontSize: '12px' }}>Total Revenue Collected</span>
-              <div className="p-2 rounded-2 bg-success bg-opacity-10 text-success">
-                <DollarSign size={20} />
+          <div className="crm-stat-card success py-3">
+            <div>
+              <div className="crm-stat-label">Total Fee Collected</div>
+              <div className="crm-stat-value text-success fs-3">
+                ₹{totalCollected.toLocaleString('en-IN')}
               </div>
             </div>
-            <div className="fw-bold fs-3 text-dark mb-1">${metrics.totalRevenue.toLocaleString()}</div>
-            <span className="badge bg-success bg-opacity-10 text-success fw-bold" style={{ fontSize: '11px' }}>
-              +14.6% vs previous cycle
-            </span>
+            <div className="crm-stat-icon-wrapper crm-stat-icon-success">
+              <CheckCircle size={22} />
+            </div>
           </div>
         </div>
 
         <div className="col-12 col-md-4">
-          <div className="crm-card p-4 mb-0">
-            <div className="d-flex align-items-center justify-content-between mb-2">
-              <span className="text-muted fw-semibold" style={{ fontSize: '12px' }}>Pending Receivables</span>
-              <div className="p-2 rounded-2 bg-warning bg-opacity-10 text-warning">
-                <Clock size={20} />
+          <div className="crm-stat-card warning py-3">
+            <div>
+              <div className="crm-stat-label">Outstanding Receivables</div>
+              <div className="crm-stat-value text-warning fs-3">
+                ₹{totalPending.toLocaleString('en-IN')}
               </div>
             </div>
-            <div className="fw-bold fs-3 text-dark mb-1">$4,800</div>
-            <span className="badge bg-warning bg-opacity-10 text-warning fw-bold" style={{ fontSize: '11px' }}>
-              3 Partial payment plans active
-            </span>
+            <div className="crm-stat-icon-wrapper crm-stat-icon-warning">
+              <Clock size={22} />
+            </div>
           </div>
         </div>
 
         <div className="col-12 col-md-4">
-          <div className="crm-card p-4 mb-0">
-            <div className="d-flex align-items-center justify-content-between mb-2">
-              <span className="text-muted fw-semibold" style={{ fontSize: '12px' }}>Invoices Processed</span>
-              <div className="p-2 rounded-2 bg-primary bg-opacity-10 text-primary">
-                <CreditCard size={20} />
+          <div className="crm-stat-card navy py-3">
+            <div>
+              <div className="crm-stat-label">Transactions Processed</div>
+              <div className="crm-stat-value fs-3" style={{ color: 'var(--crm-navy)' }}>
+                {payments.length} Receipts
               </div>
             </div>
-            <div className="fw-bold fs-3 text-dark mb-1">1,248 Verified</div>
-            <span className="badge bg-primary bg-opacity-10 text-primary fw-bold" style={{ fontSize: '11px' }}>
-              Automated receipt generation enabled
-            </span>
+            <div className="crm-stat-icon-wrapper crm-stat-icon-navy">
+              <FileText size={22} />
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Payment Transactions Table */}
-      <div className="crm-card">
-        <div className="crm-card-header">
-          <h3 className="crm-card-title">
-            <CreditCard size={18} className="text-primary" />
-            <span>Recent Payment Transactions</span>
-          </h3>
+      {/* Search and Filters */}
+      <div className="crm-card mb-4 p-0">
+        <div className="p-3 bg-light border-bottom">
+          <div className="row g-2">
+            <div className="col-12 col-md-5">
+              <div className="input-group">
+                <span className="input-group-text bg-white border-end-0 text-muted">
+                  <Search size={14} />
+                </span>
+                <input
+                  type="text"
+                  className="form-control border-start-0"
+                  placeholder="Search student, student ID, transaction ID..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  style={{ fontSize: '13.5px' }}
+                />
+              </div>
+            </div>
+
+            <div className="col-6 col-md-4">
+              <select
+                className="form-select bg-white"
+                value={selectedCourse}
+                onChange={(e) => setSelectedCourse(e.target.value)}
+                style={{ fontSize: '13px' }}
+              >
+                <option value="All">All Courses</option>
+                {courses.map(c => (
+                  <option key={c.id} value={c.name}>{c.name}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="col-6 col-md-3">
+              <select
+                className="form-select bg-white"
+                value={selectedStatus}
+                onChange={(e) => setSelectedStatus(e.target.value)}
+                style={{ fontSize: '13px' }}
+              >
+                {statuses.map((st, idx) => (
+                  <option key={idx} value={st}>
+                    {st === 'All' ? 'All Payment Statuses' : st}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
         </div>
 
+        {/* Payment Records Table */}
         <div className="crm-table-container">
           <table className="crm-table">
             <thead>
               <tr>
                 <th>Transaction ID</th>
-                <th>Student</th>
-                <th>Course</th>
-                <th>Amount</th>
-                <th>Payment Method</th>
-                <th>Date</th>
-                <th>Invoice</th>
+                <th>Student Name</th>
+                <th>Student ID</th>
+                <th>Course Name</th>
+                <th>Course Fee</th>
+                <th>Amount Paid</th>
+                <th>Pending Amount</th>
+                <th>Payment Date</th>
                 <th>Status</th>
               </tr>
             </thead>
             <tbody>
-              {payments.map((p) => (
-                <tr key={p.id}>
-                  <td>
-                    <span className="font-monospace fw-bold text-primary" style={{ fontSize: '12px' }}>
-                      {p.id}
-                    </span>
-                  </td>
-                  <td>
-                    <div className="fw-semibold text-dark">{p.studentName}</div>
-                    <div className="text-muted font-monospace" style={{ fontSize: '11px' }}>{p.studentId}</div>
-                  </td>
-                  <td>
-                    <span className="badge bg-light text-secondary border" style={{ fontSize: '11px' }}>
-                      {p.course}
-                    </span>
-                  </td>
-                  <td>
-                    <span className="fw-bold text-success" style={{ fontSize: '13px' }}>
-                      ${p.amount.toLocaleString()}
-                    </span>
-                  </td>
-                  <td>
-                    <span className="text-muted" style={{ fontSize: '12px' }}>{p.method}</span>
-                  </td>
-                  <td>
-                    <span className="text-muted" style={{ fontSize: '12px' }}>{p.date}</span>
-                  </td>
-                  <td>
-                    <span className="font-monospace text-secondary" style={{ fontSize: '11px' }}>{p.invoice}</span>
-                  </td>
-                  <td>
-                    <span className="crm-badge active">
-                      <CheckCircle size={12} />
-                      <span>{p.status}</span>
-                    </span>
+              {filteredPayments.length === 0 ? (
+                <tr>
+                  <td colSpan="9" className="text-center py-5 text-muted">
+                    <AlertCircle size={32} className="mb-2 text-warning" />
+                    <p className="mb-0 fw-semibold">No payment records found.</p>
                   </td>
                 </tr>
-              ))}
+              ) : (
+                filteredPayments.map(pay => (
+                  <tr key={pay.id}>
+                    <td>
+                      <strong className="text-dark d-block" style={{ fontSize: '12.5px' }}>
+                        {pay.id}
+                      </strong>
+                      <span className="text-muted" style={{ fontSize: '11px' }}>
+                        {pay.method}
+                      </span>
+                    </td>
+
+                    <td>
+                      <strong className="text-dark" style={{ fontSize: '13px' }}>
+                        {pay.studentName}
+                      </strong>
+                    </td>
+
+                    <td>
+                      <span className="badge px-2 py-1 text-white" style={{ backgroundColor: 'var(--crm-navy)', fontSize: '10px' }}>
+                        {pay.studentId}
+                      </span>
+                    </td>
+
+                    <td style={{ fontSize: '12.5px' }}>{pay.course}</td>
+
+                    <td style={{ fontSize: '12.5px' }}>
+                      ₹{pay.courseFee?.toLocaleString('en-IN')}
+                    </td>
+
+                    <td>
+                      <strong className="text-success" style={{ fontSize: '13px' }}>
+                        ₹{pay.amountPaid?.toLocaleString('en-IN')}
+                      </strong>
+                    </td>
+
+                    <td>
+                      <span className={`fw-semibold ${pay.pendingAmount > 0 ? 'text-warning' : 'text-muted'}`} style={{ fontSize: '12.5px' }}>
+                        ₹{pay.pendingAmount?.toLocaleString('en-IN')}
+                      </span>
+                    </td>
+
+                    <td style={{ fontSize: '12px' }}>{pay.paymentDate}</td>
+
+                    <td>
+                      <span
+                        className={`crm-badge ${
+                          pay.paymentStatus === 'Paid' ? 'crm-badge-paid' :
+                          pay.paymentStatus === 'Partially Paid' ? 'crm-badge-partial' :
+                          pay.paymentStatus === 'Failed' ? 'crm-badge-failed' : 'crm-badge-pending'
+                        }`}
+                        style={{ fontSize: '10.5px' }}
+                      >
+                        {pay.paymentStatus}
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
@@ -175,57 +299,113 @@ const CRMPaymentsPage = () => {
       {/* Record Payment Modal */}
       {showPaymentModal && (
         <div className="crm-modal-backdrop" onClick={() => setShowPaymentModal(false)}>
-          <div className="crm-modal-card" onClick={(e) => e.stopPropagation()}>
+          <div className="crm-modal-card" style={{ maxWidth: '520px' }} onClick={(e) => e.stopPropagation()}>
             <div className="crm-modal-header">
-              <h3 className="fw-bold mb-0" style={{ fontSize: '17px', color: '#1e1b4b' }}>
+              <h3 className="fw-bold mb-0" style={{ fontSize: '16px', color: 'var(--crm-navy)' }}>
                 Record Tuition Payment
               </h3>
               <button type="button" className="btn-close" onClick={() => setShowPaymentModal(false)} />
             </div>
-            <form onSubmit={handleRecord}>
+
+            <form onSubmit={handleCreatePayment}>
               <div className="crm-modal-body">
-                <div className="crm-form-group mb-3">
-                  <label className="crm-form-label">Student</label>
+                <div className="mb-3">
+                  <label className="form-label fw-semibold" style={{ fontSize: '12.5px' }}>Student</label>
                   <select
-                    className="crm-form-control"
-                    value={newPayment.studentName}
-                    onChange={(e) => setNewPayment({ ...newPayment, studentName: e.target.value })}
+                    className="form-select"
+                    value={paymentForm.studentId}
+                    onChange={(e) => {
+                      const sid = e.target.value;
+                      const matched = students.find(s => s.id === sid);
+                      setPaymentForm({
+                        ...paymentForm,
+                        studentId: sid,
+                        course: matched ? matched.course : paymentForm.course,
+                        courseFee: matched ? matched.totalFee : paymentForm.courseFee
+                      });
+                    }}
                   >
-                    {students.map(s => <option key={s.id} value={s.name}>{s.name} ({s.course})</option>)}
+                    {students.map(s => (
+                      <option key={s.id} value={s.id}>{s.name} ({s.id}) - {s.course}</option>
+                    ))}
                   </select>
                 </div>
 
-                <div className="crm-form-group mb-3">
-                  <label className="crm-form-label">Amount ($) *</label>
-                  <input
-                    type="number"
-                    className="crm-form-control"
-                    value={newPayment.amount}
-                    onChange={(e) => setNewPayment({ ...newPayment, amount: e.target.value })}
-                    required
-                  />
+                <div className="row g-2 mb-3">
+                  <div className="col-6">
+                    <label className="form-label fw-semibold" style={{ fontSize: '12.5px' }}>Course Fee (₹)</label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      value={paymentForm.courseFee}
+                      onChange={(e) => setPaymentForm({ ...paymentForm, courseFee: Number(e.target.value) })}
+                      required
+                    />
+                  </div>
+
+                  <div className="col-6">
+                    <label className="form-label fw-semibold" style={{ fontSize: '12.5px' }}>Amount Paid (₹)</label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      value={paymentForm.amountPaid}
+                      onChange={(e) => setPaymentForm({ ...paymentForm, amountPaid: Number(e.target.value) })}
+                      required
+                    />
+                  </div>
                 </div>
 
-                <div className="crm-form-group mb-3">
-                  <label className="crm-form-label">Payment Method</label>
+                <div className="row g-2 mb-3">
+                  <div className="col-6">
+                    <label className="form-label fw-semibold" style={{ fontSize: '12.5px' }}>Payment Date</label>
+                    <input
+                      type="date"
+                      className="form-control"
+                      value={paymentForm.paymentDate}
+                      onChange={(e) => setPaymentForm({ ...paymentForm, paymentDate: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="col-6">
+                    <label className="form-label fw-semibold" style={{ fontSize: '12.5px' }}>Payment Status</label>
+                    <select
+                      className="form-select"
+                      value={paymentForm.paymentStatus}
+                      onChange={(e) => setPaymentForm({ ...paymentForm, paymentStatus: e.target.value })}
+                    >
+                      <option value="Paid">Paid (Full)</option>
+                      <option value="Partially Paid">Partially Paid</option>
+                      <option value="Pending">Pending</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="mb-2">
+                  <label className="form-label fw-semibold" style={{ fontSize: '12.5px' }}>Payment Method</label>
                   <select
-                    className="crm-form-control"
-                    value={newPayment.method}
-                    onChange={(e) => setNewPayment({ ...newPayment, method: e.target.value })}
+                    className="form-select"
+                    value={paymentForm.method}
+                    onChange={(e) => setPaymentForm({ ...paymentForm, method: e.target.value })}
                   >
-                    <option value="Stripe / Credit Card">Stripe / Credit Card</option>
                     <option value="UPI / Razorpay">UPI / Razorpay</option>
-                    <option value="Bank Wire / ACH">Bank Wire / ACH</option>
-                    <option value="PayPal">PayPal</option>
+                    <option value="NetBanking / NEFT">NetBanking / NEFT</option>
+                    <option value="Credit Card">Credit Card</option>
+                    <option value="Debit Card">Debit Card</option>
                   </select>
                 </div>
               </div>
+
               <div className="crm-modal-footer">
-                <button type="button" className="crm-btn crm-btn-outline crm-btn-sm" onClick={() => setShowPaymentModal(false)}>
+                <button
+                  type="button"
+                  className="crm-btn crm-btn-outline crm-btn-sm"
+                  onClick={() => setShowPaymentModal(false)}
+                >
                   Cancel
                 </button>
                 <button type="submit" className="crm-btn crm-btn-primary crm-btn-sm">
-                  Confirm & Generate Invoice
+                  <CreditCard size={14} />
+                  <span>Save Payment Record</span>
                 </button>
               </div>
             </form>

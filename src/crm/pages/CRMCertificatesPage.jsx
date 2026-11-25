@@ -7,92 +7,124 @@ import {
   Plus,
   ShieldCheck,
   CheckCircle,
-  ExternalLink,
-  Printer,
-  Download
+  Eye,
+  AlertCircle
 } from 'lucide-react';
 
-const CRMCertificatesPage = ({ onGenerateCertModal }) => {
-  const { certificates, students, generateCertificate, setSelectedCertificate } = useCRM();
+const CRMCertificatesPage = () => {
+  const { certificates, students, generateCertificate, showToast } = useCRM();
 
-  const [searchCode, setSearchCode] = useState('');
-  const [activeCert, setActiveCert] = useState(certificates[0]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeCert, setActiveCert] = useState(certificates[0] || null);
+  const [selectedTheme, setSelectedTheme] = useState('navy'); // 'pink' | 'purple' | 'navy'
   const [showIssueModal, setShowIssueModal] = useState(false);
   const [selectedStudentId, setSelectedStudentId] = useState(students[0]?.id || '');
+  const [issueTheme, setIssueTheme] = useState('navy');
 
   const filteredCerts = certificates.filter(c =>
-    c.studentName.toLowerCase().includes(searchCode.toLowerCase()) ||
-    c.verificationCode.toLowerCase().includes(searchCode.toLowerCase()) ||
-    c.courseName.toLowerCase().includes(searchCode.toLowerCase())
+    c.studentName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    c.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (c.studentId && c.studentId.toLowerCase().includes(searchQuery.toLowerCase())) ||
+    c.courseName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleIssueNew = () => {
-    const student = students.find(s => s.id === selectedStudentId);
-    if (student) {
-      const newCert = generateCertificate(student);
-      setActiveCert(newCert);
+  const eligibleStudents = students.filter(s => s.internshipStatus === 'Completed');
+  const selectedStudent = students.find(s => s.id === selectedStudentId);
+
+  const handleIssueSubmit = (e) => {
+    e.preventDefault();
+    if (!selectedStudent) return;
+
+    if (selectedStudent.internshipStatus !== 'Completed') {
+      showToast(
+        `Cannot issue certificate: ${selectedStudent.name}'s status is "${selectedStudent.internshipStatus}". Only Completed interns are eligible.`,
+        'error'
+      );
+      return;
+    }
+
+    const created = generateCertificate(selectedStudent.id, issueTheme);
+    if (created) {
+      setActiveCert(created);
+      setSelectedTheme(issueTheme);
       setShowIssueModal(false);
     }
   };
 
   return (
     <div>
+      {/* Top Banner */}
       <div className="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
         <div>
-          <h2 className="fw-bold mb-1" style={{ fontSize: '22px', color: '#1e1b4b' }}>
-            Digital Certificate Registry & Verification
+          <h2 className="fw-bold mb-1" style={{ fontSize: '22px', color: 'var(--crm-navy)' }}>
+            Certificate Management
           </h2>
           <p className="text-muted mb-0" style={{ fontSize: '13px' }}>
-            Issue, verify, preview, and download cryptographically stamped certificates for Incredible AI Solutions
+            Generate, verify, preview, and download cryptographically stamped certificates for AR IT COMPANY graduates
           </p>
         </div>
 
         <button
           type="button"
           className="crm-btn crm-btn-primary crm-btn-sm"
-          onClick={() => setShowIssueModal(true)}
+          onClick={() => {
+            const firstEligible = eligibleStudents[0];
+            if (firstEligible) setSelectedStudentId(firstEligible.id);
+            setShowIssueModal(true);
+          }}
         >
           <Plus size={15} />
-          <span>Issue New Certificate</span>
+          <span>Generate Certificate</span>
         </button>
       </div>
 
-      {/* Verification Search Bar */}
+      {/* Search Bar */}
       <div className="crm-card p-3 mb-4">
         <div className="row g-2 align-items-center">
           <div className="col-12 col-md-8">
             <div className="position-relative">
-              <Search size={16} className="position-absolute text-muted" style={{ left: 14, top: '50%', transform: 'translateY(-50%)' }} />
+              <Search
+                size={16}
+                className="position-absolute text-muted"
+                style={{ left: 14, top: '50%', transform: 'translateY(-50%)' }}
+              />
               <input
                 type="text"
-                className="crm-form-control ps-5"
-                placeholder="Search certificate by Student Name, Verification Code (e.g. IAI-2026-9842) or Course..."
-                value={searchCode}
-                onChange={(e) => setSearchCode(e.target.value)}
+                className="form-control ps-5 bg-light"
+                placeholder="Search by Student ID (e.g. ARIT-2026-STU01) or Certificate ID (e.g. ARIT-CERT-2026-0101)..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                style={{ fontSize: '13.5px' }}
               />
             </div>
           </div>
           <div className="col-12 col-md-4 text-md-end text-muted" style={{ fontSize: '12px' }}>
             <ShieldCheck size={14} className="text-success me-1 d-inline" />
-            <span>All credentials verified against Incredible AI registry</span>
+            <span>Official AR IT COMPANY Digital Credential Registry</span>
           </div>
         </div>
       </div>
 
-      {/* Active Certificate Preview */}
+      {/* Certificate Live Preview in Active Theme */}
       {activeCert && (
         <div className="mb-4">
-          <CRMCertificatePreview certData={activeCert} />
+          <CRMCertificatePreview
+            cert={activeCert}
+            selectedTheme={selectedTheme}
+            onThemeChange={(th) => setSelectedTheme(th)}
+          />
         </div>
       )}
 
-      {/* Registry Table of Issued Certificates */}
-      <div className="crm-card">
-        <div className="crm-card-header">
-          <h3 className="crm-card-title">
-            <Award size={18} className="text-primary" />
-            <span>Issued Credentials Archive ({filteredCerts.length})</span>
+      {/* Issued Certificates Table */}
+      <div className="crm-card p-0 mb-4">
+        <div className="p-3 border-bottom d-flex align-items-center justify-content-between">
+          <h3 className="fw-bold mb-0 text-dark" style={{ fontSize: '15px' }}>
+            Issued Certificates Archive ({filteredCerts.length})
           </h3>
+          <span className="text-muted" style={{ fontSize: '12px' }}>
+            Click "Preview" on any record to view and export
+          </span>
         </div>
 
         <div className="crm-table-container">
@@ -101,54 +133,66 @@ const CRMCertificatesPage = ({ onGenerateCertModal }) => {
               <tr>
                 <th>Certificate ID</th>
                 <th>Student Name</th>
-                <th>Specialization Track</th>
-                <th>Grade Conferred</th>
-                <th>Completion Date</th>
-                <th>Status</th>
-                <th className="text-end">Actions</th>
+                <th>Student ID</th>
+                <th>Course Name</th>
+                <th>Internship Duration</th>
+                <th>Issue Date</th>
+                <th>Theme</th>
+                <th className="text-end">Action</th>
               </tr>
             </thead>
             <tbody>
-              {filteredCerts.map((c) => (
-                <tr key={c.id}>
+              {filteredCerts.map((cert) => (
+                <tr key={cert.id}>
                   <td>
-                    <span className="font-monospace fw-bold text-primary" style={{ fontSize: '12px' }}>
-                      {c.verificationCode}
+                    <strong style={{ color: 'var(--crm-navy)', fontSize: '12.5px' }}>
+                      {cert.id}
+                    </strong>
+                  </td>
+
+                  <td>
+                    <strong className="text-dark" style={{ fontSize: '13px' }}>
+                      {cert.studentName}
+                    </strong>
+                  </td>
+
+                  <td>
+                    <span className="badge px-2 py-0.5 text-white" style={{ backgroundColor: 'var(--crm-navy)', fontSize: '10px' }}>
+                      {cert.studentId}
                     </span>
                   </td>
+
+                  <td style={{ fontSize: '12.5px' }}>{cert.courseName}</td>
+                  <td style={{ fontSize: '12px' }}>{cert.duration}</td>
+                  <td style={{ fontSize: '12px' }}>{cert.issueDate}</td>
+
                   <td>
-                    <div className="fw-semibold text-dark">{c.studentName}</div>
-                    <div className="text-muted font-monospace" style={{ fontSize: '11px' }}>{c.studentId}</div>
-                  </td>
-                  <td>
-                    <span className="fw-medium text-dark">{c.courseName}</span>
-                    <div className="text-muted" style={{ fontSize: '11px' }}>{c.duration}</div>
-                  </td>
-                  <td>
-                    <span className="badge bg-purple bg-opacity-10 text-purple" style={{ color: '#7c3aed', backgroundColor: '#f3e8ff' }}>
-                      {c.grade}
+                    <span
+                      className="badge rounded-pill text-capitalize"
+                      style={{
+                        backgroundColor: cert.theme === 'pink' ? '#fdf2f7' : cert.theme === 'purple' ? '#f5f0ff' : '#eff6ff',
+                        color: cert.theme === 'pink' ? '#db2777' : cert.theme === 'purple' ? '#7045B5' : '#172554',
+                        border: `1px solid ${cert.theme === 'pink' ? '#fbcfe8' : cert.theme === 'purple' ? '#ddd6fe' : '#bfdbfe'}`,
+                        fontSize: '11px'
+                      }}
+                    >
+                      {cert.theme || 'Navy'}
                     </span>
                   </td>
-                  <td>
-                    <span className="text-muted" style={{ fontSize: '12px' }}>{c.completionDate}</span>
-                  </td>
-                  <td>
-                    <span className="crm-badge active">
-                      <ShieldCheck size={12} />
-                      <span>{c.status}</span>
-                    </span>
-                  </td>
+
                   <td className="text-end">
                     <button
                       type="button"
-                      className="crm-btn crm-btn-secondary crm-btn-sm"
+                      className="btn btn-sm btn-light border py-1 px-2.5 text-primary"
+                      style={{ fontSize: '12px' }}
                       onClick={() => {
-                        setActiveCert(c);
-                        setSelectedCertificate(c);
-                        window.scrollTo({ top: 180, behavior: 'smooth' });
+                        setActiveCert(cert);
+                        setSelectedTheme(cert.theme || 'navy');
+                        window.scrollTo({ top: 380, behavior: 'smooth' });
                       }}
                     >
-                      <span>Preview & PDF</span>
+                      <Eye size={13} className="me-1" />
+                      Preview
                     </button>
                   </td>
                 </tr>
@@ -158,44 +202,107 @@ const CRMCertificatesPage = ({ onGenerateCertModal }) => {
         </div>
       </div>
 
-      {/* Issue Modal */}
+      {/* Generate Certificate Modal */}
       {showIssueModal && (
         <div className="crm-modal-backdrop" onClick={() => setShowIssueModal(false)}>
-          <div className="crm-modal-card" onClick={(e) => e.stopPropagation()}>
+          <div className="crm-modal-card" style={{ maxWidth: '520px' }} onClick={(e) => e.stopPropagation()}>
             <div className="crm-modal-header">
-              <h3 className="fw-bold mb-0" style={{ fontSize: '17px', color: '#1e1b4b' }}>
-                Confer Official Certificate of Completion
+              <h3 className="fw-bold mb-0" style={{ fontSize: '16px', color: 'var(--crm-navy)' }}>
+                Generate Official Certificate
               </h3>
               <button type="button" className="btn-close" onClick={() => setShowIssueModal(false)} />
             </div>
-            <div className="crm-modal-body">
-              <div className="alert alert-info py-2" style={{ fontSize: '12px' }}>
-                Select an eligible student. A tamper-proof verifiable digital certificate with QR seal and dual executive signatures will be generated immediately.
+
+            <form onSubmit={handleIssueSubmit}>
+              <div className="crm-modal-body">
+                <div className="mb-3">
+                  <label className="form-label fw-semibold" style={{ fontSize: '12.5px' }}>
+                    Select Candidate *
+                  </label>
+                  <select
+                    className="form-select"
+                    value={selectedStudentId}
+                    onChange={(e) => setSelectedStudentId(e.target.value)}
+                  >
+                    {students.map((s) => (
+                      <option key={s.id} value={s.id}>
+                        {s.name} ({s.id}) &ndash; Status: {s.internshipStatus}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Validation Banner */}
+                {selectedStudent && (
+                  <div
+                    className={`p-3 rounded-3 border mb-3 ${selectedStudent.internshipStatus === 'Completed' ? 'bg-success bg-opacity-10 border-success' : 'bg-warning bg-opacity-10 border-warning'}`}
+                  >
+                    <div className="d-flex align-items-center gap-2 mb-1">
+                      {selectedStudent.internshipStatus === 'Completed' ? (
+                        <CheckCircle size={16} className="text-success" />
+                      ) : (
+                        <AlertCircle size={16} className="text-warning" />
+                      )}
+                      <strong style={{ fontSize: '13px' }}>
+                        Internship Status: {selectedStudent.internshipStatus}
+                      </strong>
+                    </div>
+                    <div style={{ fontSize: '12px' }} className="text-secondary">
+                      {selectedStudent.internshipStatus === 'Completed'
+                        ? 'Candidate has satisfied all completion criteria. Ready to generate certificate.'
+                        : 'Notice: Candidate has not completed required internship hours. Certificates cannot be generated until the internship is marked as Completed.'}
+                    </div>
+                  </div>
+                )}
+
+                {/* Template Theme Selector */}
+                <div className="mb-3">
+                  <label className="form-label fw-semibold" style={{ fontSize: '12.5px' }}>
+                    Select Certificate Template Theme
+                  </label>
+                  <div className="row g-2">
+                    {[
+                      { id: 'pink', name: 'Pink Theme', desc: 'Rose Gold Accents', color: '#db2777' },
+                      { id: 'purple', name: 'Purple Theme', desc: 'Royal Amethyst', color: '#7045B5' },
+                      { id: 'navy', name: 'Navy Blue Theme', desc: 'Corporate Gold', color: '#172554' }
+                    ].map((th) => (
+                      <div key={th.id} className="col-4">
+                        <div
+                          className={`p-2.5 rounded-3 border text-center ${issueTheme === th.id ? 'border-primary shadow-sm bg-light' : ''}`}
+                          style={{ cursor: 'pointer', borderColor: issueTheme === th.id ? th.color : '#e2e8f0' }}
+                          onClick={() => setIssueTheme(th.id)}
+                        >
+                          <div
+                            className="rounded-circle mx-auto mb-1"
+                            style={{ width: '16px', height: '16px', backgroundColor: th.color }}
+                          />
+                          <div className="fw-bold" style={{ fontSize: '11px', color: th.color }}>{th.name}</div>
+                          <div className="text-muted" style={{ fontSize: '9.5px' }}>{th.desc}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
 
-              <div className="crm-form-group mb-3">
-                <label className="crm-form-label">Select Student</label>
-                <select
-                  className="crm-form-control"
-                  value={selectedStudentId}
-                  onChange={(e) => setSelectedStudentId(e.target.value)}
+              <div className="crm-modal-footer">
+                <button
+                  type="button"
+                  className="crm-btn crm-btn-outline crm-btn-sm"
+                  onClick={() => setShowIssueModal(false)}
                 >
-                  {students.map(s => (
-                    <option key={s.id} value={s.id}>
-                      {s.name} — {s.course} ({s.progress}% Complete)
-                    </option>
-                  ))}
-                </select>
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={selectedStudent?.internshipStatus !== 'Completed'}
+                  className="crm-btn crm-btn-primary crm-btn-sm"
+                >
+                  <Award size={14} />
+                  <span>Issue &amp; Verify Certificate</span>
+                </button>
               </div>
-            </div>
-            <div className="crm-modal-footer">
-              <button type="button" className="crm-btn crm-btn-outline crm-btn-sm" onClick={() => setShowIssueModal(false)}>
-                Cancel
-              </button>
-              <button type="button" className="crm-btn crm-btn-primary crm-btn-sm" onClick={handleIssueNew}>
-                Generate & Confer
-              </button>
-            </div>
+            </form>
           </div>
         </div>
       )}

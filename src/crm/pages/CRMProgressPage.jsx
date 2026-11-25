@@ -1,158 +1,249 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { useCRM } from '../context/CRMContext';
-import { TrendingUp, Award, CheckCircle, Flame, Star, Trophy } from 'lucide-react';
+import {
+  TrendingUp,
+  Award,
+  CheckCircle,
+  Search,
+  Filter,
+  BarChart2,
+  CalendarCheck,
+  Eye,
+  AlertCircle
+} from 'lucide-react';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend
+} from 'recharts';
 
 const CRMProgressPage = ({ onOpenStudentProfile }) => {
   const { students } = useCRM();
 
-  // Sort students by progress for leaderboard
-  const sortedStudents = [...students].sort((a, b) => b.progress - a.progress);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCourse, setSelectedCourse] = useState('All');
+
+  const filteredStudents = useMemo(() => {
+    return students.filter(s => {
+      const matchSearch =
+        s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        s.id.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchCourse = selectedCourse === 'All' || s.course === selectedCourse;
+      return matchSearch && matchCourse;
+    });
+  }, [students, searchTerm, selectedCourse]);
+
+  // Aggregate Course Progress Data for Chart
+  const courseProgressData = useMemo(() => {
+    const courseMap = {};
+    students.forEach(s => {
+      if (!courseMap[s.course]) {
+        courseMap[s.course] = { totalProg: 0, count: 0, totalAtt: 0 };
+      }
+      courseMap[s.course].totalProg += s.progress;
+      courseMap[s.course].totalAtt += s.attendance;
+      courseMap[s.course].count += 1;
+    });
+
+    return Object.keys(courseMap).map(cName => ({
+      course: cName.length > 18 ? cName.slice(0, 15) + '...' : cName,
+      avgProgress: Math.round(courseMap[cName].totalProg / courseMap[cName].count),
+      avgAttendance: Math.round(courseMap[cName].totalAtt / courseMap[cName].count)
+    }));
+  }, [students]);
 
   return (
     <div>
+      {/* Top Banner */}
       <div className="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
         <div>
-          <h2 className="fw-bold mb-1" style={{ fontSize: '22px', color: '#1e1b4b' }}>
-            Cohort Progress & Student Leaderboard
+          <h2 className="fw-bold mb-1" style={{ fontSize: '22px', color: 'var(--crm-navy)' }}>
+            Student Progress Tracking
           </h2>
           <p className="text-muted mb-0" style={{ fontSize: '13px' }}>
-            Track learning velocity, milestone achievements, and recognized top performers
+            Monitor task completions, syllabus advancement, attendance correlation, and sprint velocity
           </p>
         </div>
       </div>
 
-      {/* Top 3 Podium Cards */}
-      <div className="row g-3 mb-4">
-        {sortedStudents.slice(0, 3).map((stu, rank) => (
-          <div key={stu.id} className="col-12 col-md-4">
-            <div
-              className="crm-card text-center p-4 h-100 position-relative overflow-hidden"
-              style={{
-                borderColor: rank === 0 ? '#fbbf24' : rank === 1 ? '#cbd5e1' : '#f97316',
-                borderWidth: '2px'
-              }}
-            >
-              <div
-                className="position-absolute top-0 end-0 p-2"
-                style={{
-                  backgroundColor: rank === 0 ? '#fef3c7' : rank === 1 ? '#f1f5f9' : '#ffedd5',
-                  color: rank === 0 ? '#d97706' : rank === 1 ? '#475569' : '#ea580c',
-                  borderBottomLeftRadius: '12px',
-                  fontSize: '12px',
-                  fontWeight: 'bold'
-                }}
-              >
-                <Trophy size={14} className="me-1 d-inline" />
-                Rank #{rank + 1}
-              </div>
-
-              <img
-                src={stu.avatar}
-                alt={stu.name}
-                className="rounded-circle mb-3 shadow"
-                style={{ width: '70px', height: '70px', objectFit: 'cover' }}
-              />
-
-              <h3 className="fw-bold fs-5 mb-1 text-dark">{stu.name}</h3>
-              <div className="text-muted mb-2" style={{ fontSize: '12px' }}>{stu.course}</div>
-
-              <div className="d-flex align-items-center justify-content-center gap-1 text-primary fw-bold fs-4 mb-2">
-                <Flame size={20} className="text-danger" />
-                <span>{stu.progress}% Mastery</span>
-              </div>
-
-              <div className="crm-progress-track mb-3">
-                <div className="crm-progress-fill" style={{ width: `${stu.progress}%` }} />
-              </div>
-
-              <button
-                type="button"
-                className="crm-btn crm-btn-secondary crm-btn-sm w-100 justify-content-center"
-                onClick={() => onOpenStudentProfile(stu)}
-              >
-                <span>View Full Profile</span>
-              </button>
+      {/* Progress Chart Card */}
+      <div className="crm-card mb-4">
+        <div className="crm-card-header">
+          <div>
+            <h2 className="crm-card-title">
+              <BarChart2 size={18} style={{ color: 'var(--crm-purple)' }} />
+              <span>Domain-wise Average Progress &amp; Attendance</span>
+            </h2>
+            <div className="crm-card-subtitle">
+              Cohort learning velocity across AR IT COMPANY curriculum tracks
             </div>
           </div>
-        ))}
+        </div>
+
+        <div style={{ width: '100%', height: '260px' }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={courseProgressData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+              <XAxis dataKey="course" stroke="#94a3b8" fontSize={11} tickLine={false} />
+              <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} />
+              <Tooltip />
+              <Legend wrapperStyle={{ fontSize: '11px' }} />
+              <Bar dataKey="avgProgress" name="Avg Progress %" fill="#7045B5" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="avgAttendance" name="Avg Attendance %" fill="#172554" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </div>
 
-      {/* Full Progress Table */}
-      <div className="crm-card">
-        <div className="crm-card-header">
-          <h3 className="crm-card-title">
-            <TrendingUp size={18} className="text-primary" />
-            <span>Complete Cohort Velocity Table</span>
+      {/* Student Progress Table */}
+      <div className="crm-card mb-4 p-0">
+        <div className="p-3 border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2">
+          <h3 className="fw-bold mb-0 text-dark" style={{ fontSize: '15px' }}>
+            Individual Student Progress Overview
           </h3>
+
+          <div className="d-flex align-items-center gap-2">
+            <div className="input-group">
+              <span className="input-group-text bg-light border-end-0 text-muted">
+                <Search size={14} />
+              </span>
+              <input
+                type="text"
+                className="form-control form-control-sm bg-light border-start-0"
+                placeholder="Search student or ID..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                style={{ width: '180px', fontSize: '12.5px' }}
+              />
+            </div>
+
+            <select
+              className="form-select form-select-sm bg-light"
+              value={selectedCourse}
+              onChange={(e) => setSelectedCourse(e.target.value)}
+              style={{ width: '180px', fontSize: '12px' }}
+            >
+              <option value="All">All Courses</option>
+              <option value="Full Stack Development">Full Stack Development</option>
+              <option value="Frontend Development">Frontend Development</option>
+              <option value="Backend Development">Backend Development</option>
+              <option value="Python Programming">Python Programming</option>
+              <option value="Java Programming">Java Programming</option>
+              <option value="UI/UX Design">UI/UX Design</option>
+              <option value="Web Development">Web Development</option>
+            </select>
+          </div>
         </div>
 
         <div className="crm-table-container">
           <table className="crm-table">
             <thead>
               <tr>
-                <th>Rank</th>
-                <th>Student</th>
-                <th>Track</th>
-                <th>Tasks Completed</th>
-                <th>Progress Velocity</th>
-                <th>Attendance</th>
-                <th>Milestone Status</th>
+                <th>Student Name</th>
+                <th>Course Name</th>
+                <th>Completed Tasks</th>
+                <th>Pending Tasks</th>
+                <th>Overall Progress</th>
+                <th>Attendance %</th>
+                <th>Internship Completion %</th>
+                <th className="text-end">Profile</th>
               </tr>
             </thead>
             <tbody>
-              {sortedStudents.map((s, idx) => (
-                <tr key={s.id}>
-                  <td>
-                    <span className="fw-bold text-muted" style={{ fontSize: '13px' }}>
-                      #{idx + 1}
-                    </span>
-                  </td>
-                  <td>
-                    <div className="d-flex align-items-center gap-2">
-                      <img
-                        src={s.avatar}
-                        alt={s.name}
-                        className="rounded-circle"
-                        style={{ width: '32px', height: '32px', objectFit: 'cover' }}
-                      />
-                      <div>
-                        <div className="fw-semibold text-dark">{s.name}</div>
-                        <div className="text-muted font-monospace" style={{ fontSize: '11px' }}>{s.id}</div>
+              {filteredStudents.map(student => {
+                const pendingTasksCount = Math.max(0, student.totalTasks - student.tasksCompleted);
+                const internshipCompletionPct = student.internshipStatus === 'Completed' ? 100 : Math.round((student.tasksCompleted / student.totalTasks) * 100);
+
+                return (
+                  <tr key={student.id}>
+                    <td>
+                      <div className="d-flex align-items-center gap-2">
+                        <img
+                          src={student.avatar}
+                          alt={student.name}
+                          className="rounded-circle"
+                          style={{ width: '32px', height: '32px', objectFit: 'cover' }}
+                        />
+                        <div>
+                          <strong className="text-dark d-block" style={{ fontSize: '13px' }}>
+                            {student.name}
+                          </strong>
+                          <span className="text-muted" style={{ fontSize: '10.5px' }}>
+                            {student.id}
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                  </td>
-                  <td>
-                    <span className="badge bg-light text-secondary border" style={{ fontSize: '11px' }}>
-                      {s.course}
-                    </span>
-                  </td>
-                  <td>
-                    <span className="fw-bold text-dark" style={{ fontSize: '12px' }}>
-                      {s.tasksCompleted}/{s.totalTasks}
-                    </span>
-                  </td>
-                  <td style={{ minWidth: '180px' }}>
-                    <div className="d-flex align-items-center justify-content-between mb-1">
-                      <span className="fw-bold" style={{ fontSize: '12px' }}>{s.progress}%</span>
-                      <span className="text-muted" style={{ fontSize: '10px' }}>
-                        {s.progress >= 90 ? 'Near Graduation' : 'On Track'}
+                    </td>
+
+                    <td style={{ fontSize: '12.5px' }}>{student.course}</td>
+
+                    <td>
+                      <span className="badge bg-success bg-opacity-10 text-success fw-bold px-2 py-1" style={{ fontSize: '11.5px' }}>
+                        {student.tasksCompleted} Tasks
                       </span>
-                    </div>
-                    <div className="crm-progress-track">
-                      <div className="crm-progress-fill" style={{ width: `${s.progress}%` }} />
-                    </div>
-                  </td>
-                  <td>
-                    <span className="fw-semibold text-success" style={{ fontSize: '12px' }}>{s.attendance}%</span>
-                  </td>
-                  <td>
-                    <span className={`crm-badge ${s.progress >= 90 ? 'completed' : 'active'}`}>
-                      {s.progress >= 90 ? <Award size={12} /> : <CheckCircle size={12} />}
-                      <span>{s.progress >= 90 ? 'Capstone Ready' : 'Active Module'}</span>
-                    </span>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+
+                    <td>
+                      <span className="badge bg-warning bg-opacity-10 text-warning fw-bold px-2 py-1" style={{ fontSize: '11.5px' }}>
+                        {pendingTasksCount} Pending
+                      </span>
+                    </td>
+
+                    {/* Overall Progress */}
+                    <td>
+                      <div className="d-flex align-items-center gap-2">
+                        <span className="fw-bold" style={{ color: 'var(--crm-purple)', fontSize: '12.5px' }}>
+                          {student.progress}%
+                        </span>
+                        <div className="crm-progress-track" style={{ width: '60px', height: '6px' }}>
+                          <div
+                            className={`crm-progress-fill ${student.progress === 100 ? 'success' : ''}`}
+                            style={{ width: `${student.progress}%` }}
+                          />
+                        </div>
+                      </div>
+                    </td>
+
+                    {/* Attendance % */}
+                    <td>
+                      <span className="fw-semibold text-dark" style={{ fontSize: '12.5px' }}>
+                        {student.attendance}%
+                      </span>
+                    </td>
+
+                    {/* Internship Completion % */}
+                    <td>
+                      <div className="d-flex align-items-center gap-2">
+                        <span className="fw-bold text-dark" style={{ fontSize: '12.5px' }}>
+                          {internshipCompletionPct}%
+                        </span>
+                        <div className="crm-progress-track" style={{ width: '60px', height: '6px' }}>
+                          <div
+                            className={`crm-progress-fill ${internshipCompletionPct === 100 ? 'success' : 'navy'}`}
+                            style={{ width: `${internshipCompletionPct}%` }}
+                          />
+                        </div>
+                      </div>
+                    </td>
+
+                    <td className="text-end">
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-light border p-1.5 text-secondary"
+                        onClick={() => onOpenStudentProfile(student)}
+                        title="View Complete 7-Tab Profile"
+                      >
+                        <Eye size={14} />
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

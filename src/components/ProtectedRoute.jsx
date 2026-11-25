@@ -1,17 +1,14 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { useApp } from '../context/AppContext';
 
-const ProtectedRoute = ({ children, allowedRoles }) => {
-  const { currentUser } = useApp();
+const ProtectedRoute = ({ children }) => {
   const location = useLocation();
+  const token = localStorage.getItem('arit_admin_token');
 
-  if (!currentUser) {
+  // If no auth token in demo mode, auto-provision or redirect
+  // If token is missing, redirect to login
+  if (!token) {
     return <Navigate to="/login" state={{ from: location }} replace />;
-  }
-
-  if (allowedRoles && !allowedRoles.includes(currentUser.role)) {
-    return <Navigate to="/dashboard" replace />;
   }
 
   return children;
