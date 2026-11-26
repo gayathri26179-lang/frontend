@@ -14,6 +14,7 @@ import {
   ChevronDown
 } from 'lucide-react';
 
+
 const Header = ({ toggleMobileSidebar }) => {
   const { currentUser, logout, switchRole, tasks } = useApp();
   const navigate = useNavigate();
@@ -69,6 +70,21 @@ const Header = ({ toggleMobileSidebar }) => {
 
       {/* Right: Actions, Notifications & Profile */}
       <div className="d-flex align-items-center gap-2 gap-md-3">
+        {/* Incredible AI CRM Button */}
+        <button
+          type="button"
+          onClick={() => navigate('/crm')}
+          className="btn btn-sm text-white d-flex align-items-center gap-1 rounded-pill px-3 py-1 shadow-sm"
+          style={{
+            background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+            fontSize: '12px',
+            fontWeight: '600',
+            border: 'none'
+          }}
+        >
+          <span>✨ Incredible AI CRM</span>
+        </button>
+
         {/* Role Pill */}
         <div className="d-none d-md-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-light border">
           <Shield size={14} className="text-primary" />

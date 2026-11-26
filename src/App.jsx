@@ -1,180 +1,149 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AppProvider, useApp } from './context/AppContext';
 import ProtectedRoute from './components/ProtectedRoute';
-import Sidebar from './components/Sidebar';
-import Header from './components/Header';
-
 import Login from './pages/Login';
-import Home from './pages/Home';
-import Dashboard from './pages/Dashboard';
-import Courses from './pages/Courses';
-import MyCourses from './pages/MyCourses';
-import Tasks from './pages/Tasks';
-import Activities from './pages/Activities';
-import Reports from './pages/Reports';
-import Tickets from './pages/Tickets';
-import Employees from './pages/Employees';
-import Assignments from './pages/Assignments';
-import Profile from './pages/Profile';
-import Settings from './pages/Settings';
-
+import Register from './pages/Register';
+import MentorLogin from './pages/MentorLogin';
+import CRMApp from './crm/CRMApp';
 import './App.css';
-
-// Layout wrapper for authenticated pages
-const AppLayout = ({ children }) => {
-  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
-
-  return (
-    <div className="app-layout">
-      <Sidebar
-        isMobileOpen={isMobileSidebarOpen}
-        closeMobileSidebar={() => setIsMobileSidebarOpen(false)}
-      />
-
-      <div className="main-wrapper">
-        <Header toggleMobileSidebar={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)} />
-        <main>{children}</main>
-      </div>
-    </div>
-  );
-};
 
 function AppRoutes() {
   return (
     <Routes>
-      {/* Public Login Route */}
+      {/* Public Authentication Routes */}
       <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/admin-register" element={<Register />} />
+      <Route path="/mentor-login" element={<MentorLogin />} />
 
-      {/* Protected Routes */}
-      <Route
-        path="/home"
-        element={
-          <ProtectedRoute>
-            <AppLayout>
-              <Home />
-            </AppLayout>
-          </ProtectedRoute>
-        }
-      />
-
+      {/* AR IT COMPANY - Complete Internship & Student Management CRM Routes */}
       <Route
         path="/dashboard"
         element={
           <ProtectedRoute>
-            <AppLayout>
-              <Dashboard />
-            </AppLayout>
+            <CRMApp />
           </ProtectedRoute>
         }
       />
-
+      <Route
+        path="/students"
+        element={
+          <ProtectedRoute>
+            <CRMApp />
+          </ProtectedRoute>
+        }
+      />
       <Route
         path="/courses"
         element={
           <ProtectedRoute>
-            <AppLayout>
-              <Courses />
-            </AppLayout>
+            <CRMApp />
           </ProtectedRoute>
         }
       />
-
       <Route
-        path="/my-courses"
+        path="/internships"
         element={
           <ProtectedRoute>
-            <AppLayout>
-              <MyCourses />
-            </AppLayout>
+            <CRMApp />
           </ProtectedRoute>
         }
       />
-
       <Route
-        path="/tasks"
+        path="/daily-activities"
         element={
           <ProtectedRoute>
-            <AppLayout>
-              <Tasks />
-            </AppLayout>
+            <CRMApp />
           </ProtectedRoute>
         }
       />
-
       <Route
-        path="/activities"
+        path="/attendance"
         element={
           <ProtectedRoute>
-            <AppLayout>
-              <Activities />
-            </AppLayout>
+            <CRMApp />
           </ProtectedRoute>
         }
       />
-
+      <Route
+        path="/progress"
+        element={
+          <ProtectedRoute>
+            <CRMApp />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/payments"
+        element={
+          <ProtectedRoute>
+            <CRMApp />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/certificates"
+        element={
+          <ProtectedRoute>
+            <CRMApp />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/mentors"
+        element={
+          <ProtectedRoute>
+            <CRMApp />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/communication"
+        element={
+          <ProtectedRoute>
+            <CRMApp />
+          </ProtectedRoute>
+        }
+      />
       <Route
         path="/reports"
         element={
           <ProtectedRoute>
-            <AppLayout>
-              <Reports />
-            </AppLayout>
+            <CRMApp />
           </ProtectedRoute>
         }
       />
-
       <Route
-        path="/tickets"
+        path="/notifications"
         element={
           <ProtectedRoute>
-            <AppLayout>
-              <Tickets />
-            </AppLayout>
+            <CRMApp />
           </ProtectedRoute>
         }
       />
-
-      <Route
-        path="/employees"
-        element={
-          <ProtectedRoute>
-            <AppLayout>
-              <Employees />
-            </AppLayout>
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/assignments"
-        element={
-          <ProtectedRoute>
-            <AppLayout>
-              <Assignments />
-            </AppLayout>
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/profile"
-        element={
-          <ProtectedRoute>
-            <AppLayout>
-              <Profile />
-            </AppLayout>
-          </ProtectedRoute>
-        }
-      />
-
       <Route
         path="/settings"
         element={
           <ProtectedRoute>
-            <AppLayout>
-              <Settings />
-            </AppLayout>
+            <CRMApp />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Legacy / Alias paths */}
+      <Route
+        path="/crm"
+        element={
+          <ProtectedRoute>
+            <CRMApp />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/crm/*"
+        element={
+          <ProtectedRoute>
+            <CRMApp />
           </ProtectedRoute>
         }
       />
@@ -188,11 +157,9 @@ function AppRoutes() {
 
 function App() {
   return (
-    <AppProvider>
-      <BrowserRouter>
-        <AppRoutes />
-      </BrowserRouter>
-    </AppProvider>
+    <BrowserRouter>
+      <AppRoutes />
+    </BrowserRouter>
   );
 }
 
