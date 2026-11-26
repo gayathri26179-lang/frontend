@@ -14,6 +14,7 @@ import {
   ChevronDown
 } from 'lucide-react';
 
+
 const Header = ({ toggleMobileSidebar }) => {
   const { currentUser, logout, switchRole, tasks } = useApp();
   const navigate = useNavigate();
