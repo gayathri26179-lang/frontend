@@ -6,15 +6,15 @@ import { useCRM } from '../context/CRMContext';
 const CRMCourseDistributionChart = () => {
   const { courses } = useCRM();
 
-  // Color palette using AR IT COMPANY corporate tones
+  // Color palette using AR IT COMPANY corporate tones: Navy Blue, Violet, Pink
   const COLORS = [
     '#172554', // Navy Blue
-    '#7045B5', // Purple
-    '#E9A4C4', // Soft Pink
-    '#1e3a8a', // Deep Royal Blue
-    '#9055e8', // Light Purple
-    '#db2777', // Rose Deep Pink
-    '#0284c7'  // Cyan Accent
+    '#7C3AED', // Violet
+    '#EC9AC7', // Pink
+    '#1E3A8A', // Deep Navy
+    '#8B5CF6', // Light Violet
+    '#DB2777', // Rose Pink
+    '#6D28D9'  // Deep Violet
   ];
 
   const chartData = courses.map((course, idx) => ({

@@ -7,12 +7,14 @@
  */
 
 export const API_CONFIG = {
-  BASE_URL: import.meta.env.VITE_API_BASE_URL || 'https://api.aritcompany.com/v1',
+  BASE_URL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api',
   TIMEOUT: 10000,
   ENDPOINTS: {
-    // Auth & Admin
-    LOGIN: '/auth/admin/login',
-    LOGOUT: '/auth/admin/logout',
+    // Auth & Roles (Admin & Mentor)
+    ADMIN_REGISTER: '/auth/admin/register',
+    ADMIN_LOGIN: '/auth/admin/login',
+    ADMIN_LOGOUT: '/auth/admin/logout',
+    MENTOR_LOGIN: '/auth/mentor/login',
     VERIFY_TOKEN: '/auth/verify',
     
     // Students (Shared with Internship Registration Website)

@@ -1,10 +1,8 @@
 /**
  * AR IT COMPANY CRM - Unified API Service
  * 
- * Prepares the CRM for shared backend integration with the AR IT COMPANY
- * Internship Registration Website. When backend endpoints are deployed,
- * requests hit the configured REST API. During development, it provides
- * high-fidelity simulated latency and local persistence.
+ * Communicates directly with the backend REST API engine at http://localhost:5000/api.
+ * Provides fallback tolerance to keep the UI interactive under any network condition.
  */
 
 import { API_CONFIG } from './apiConfig';
@@ -19,7 +17,7 @@ const getAuthHeaders = () => {
 };
 
 /**
- * Generic fetch wrapper with timeout and fallback support
+ * Generic fetch wrapper with timeout, token headers, and error parsing
  */
 async function apiRequest(endpoint, options = {}) {
   const url = `${API_CONFIG.BASE_URL}${endpoint}`;
@@ -38,23 +36,66 @@ async function apiRequest(endpoint, options = {}) {
 
     clearTimeout(timeoutId);
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+    let data = null;
+    try {
+      data = await response.json();
+    } catch (e) {
+      data = null;
     }
 
-    return await response.json();
+    if (!response.ok) {
+      return {
+        success: false,
+        status: response.status,
+        message: data?.message || `HTTP error ${response.status}`,
+        error: data?.error || data?.message
+      };
+    }
+
+    return data || { success: true };
   } catch (error) {
     clearTimeout(timeoutId);
-    // Log info for developers preparing the backend
-    console.info(`[AR IT CRM API] External endpoint unavailable or dev mode (${endpoint}). Falling back to local data layer.`, error.message);
-    return null;
+    console.warn(`[AR IT CRM API] Endpoint request failed (${endpoint}):`, error.message);
+    return {
+      success: false,
+      isNetworkError: true,
+      message: error.message
+    };
   }
 }
 
 export const crmApiService = {
+  // 0. Authentication & Role-Based Access
+  async adminRegister(registerData) {
+    return await apiRequest(API_CONFIG.ENDPOINTS.ADMIN_REGISTER, {
+      method: 'POST',
+      body: JSON.stringify(registerData)
+    });
+  },
+
+  async adminLogin(email, password) {
+    return await apiRequest(API_CONFIG.ENDPOINTS.ADMIN_LOGIN, {
+      method: 'POST',
+      body: JSON.stringify({ email, password })
+    });
+  },
+
+  async mentorLogin(email, password) {
+    return await apiRequest(API_CONFIG.ENDPOINTS.MENTOR_LOGIN, {
+      method: 'POST',
+      body: JSON.stringify({ email, password })
+    });
+  },
+
+  async verifyToken() {
+    return await apiRequest(API_CONFIG.ENDPOINTS.VERIFY_TOKEN);
+  },
+
   // 1. Students & Shared Website Registrations
-  async fetchRegisteredStudents() {
-    const res = await apiRequest(API_CONFIG.ENDPOINTS.STUDENTS);
+  async fetchRegisteredStudents(params = {}) {
+    const query = new URLSearchParams(params).toString();
+    const endpoint = query ? `${API_CONFIG.ENDPOINTS.STUDENTS}?${query}` : API_CONFIG.ENDPOINTS.STUDENTS;
+    const res = await apiRequest(endpoint);
     return res?.data || null;
   },
 
@@ -83,13 +124,9 @@ export const crmApiService = {
     const res = await apiRequest(API_CONFIG.ENDPOINTS.STUDENT_DETAILS(studentId), {
       method: 'DELETE'
     });
-    return res?.success || true;
+    return res?.success !== false;
   },
 
-  /**
-   * Automatically sync new student registrations from the AR IT COMPANY Internship Website.
-   * Both projects share the same database; this endpoint pulls newly registered candidates.
-   */
   async syncInternshipWebsiteRegistrations() {
     const res = await apiRequest(API_CONFIG.ENDPOINTS.SYNC_WEBSITE_REGISTRATIONS, {
       method: 'POST'
@@ -123,12 +160,14 @@ export const crmApiService = {
     const res = await apiRequest(API_CONFIG.ENDPOINTS.COURSE_DETAILS(courseId), {
       method: 'DELETE'
     });
-    return res?.success || true;
+    return res?.success !== false;
   },
 
   // 3. Internship Applications
-  async fetchInternshipApplications() {
-    const res = await apiRequest(API_CONFIG.ENDPOINTS.INTERNSHIPS);
+  async fetchInternshipApplications(params = {}) {
+    const query = new URLSearchParams(params).toString();
+    const endpoint = query ? `${API_CONFIG.ENDPOINTS.INTERNSHIPS}?${query}` : API_CONFIG.ENDPOINTS.INTERNSHIPS;
+    const res = await apiRequest(endpoint);
     return res?.data || null;
   },
 
@@ -140,8 +179,8 @@ export const crmApiService = {
     return res?.data || null;
   },
 
-  async assignMentorToStudent(studentId, mentorName) {
-    const res = await apiRequest(API_CONFIG.ENDPOINTS.ASSIGN_MENTOR(studentId), {
+  async assignMentorToStudent(internshipId, mentorName) {
+    const res = await apiRequest(API_CONFIG.ENDPOINTS.ASSIGN_MENTOR(internshipId), {
       method: 'PATCH',
       body: JSON.stringify({ mentor: mentorName })
     });
@@ -152,6 +191,14 @@ export const crmApiService = {
   async fetchDailyActivitySubmissions(studentId = null) {
     const endpoint = studentId ? `${API_CONFIG.ENDPOINTS.DAILY_ACTIVITIES}?studentId=${studentId}` : API_CONFIG.ENDPOINTS.DAILY_ACTIVITIES;
     const res = await apiRequest(endpoint);
+    return res?.data || null;
+  },
+
+  async createDailyActivity(activityData) {
+    const res = await apiRequest(API_CONFIG.ENDPOINTS.DAILY_ACTIVITIES, {
+      method: 'POST',
+      body: JSON.stringify(activityData)
+    });
     return res?.data || null;
   },
 
@@ -170,11 +217,16 @@ export const crmApiService = {
     return res?.data || null;
   },
 
-  async markAttendance(records) {
+  async markAttendance(records, date = null) {
     const res = await apiRequest(API_CONFIG.ENDPOINTS.ATTENDANCE, {
       method: 'POST',
-      body: JSON.stringify({ records, timestamp: new Date().toISOString() })
+      body: JSON.stringify({ records, date, timestamp: new Date().toISOString() })
     });
+    return res?.data || null;
+  },
+
+  async fetchAttendanceSummary() {
+    const res = await apiRequest(API_CONFIG.ENDPOINTS.ATTENDANCE_SUMMARY);
     return res?.data || null;
   },
 
@@ -198,6 +250,11 @@ export const crmApiService = {
     return res?.data || null;
   },
 
+  async fetchPaymentSummary() {
+    const res = await apiRequest(API_CONFIG.ENDPOINTS.PAYMENT_SUMMARY);
+    return res?.data || null;
+  },
+
   // 8. Certificates
   async fetchCertificateInformation() {
     const res = await apiRequest(API_CONFIG.ENDPOINTS.CERTIFICATES);
@@ -212,10 +269,38 @@ export const crmApiService = {
     return res?.data || null;
   },
 
+  async verifyCertificate(code) {
+    const res = await apiRequest(API_CONFIG.ENDPOINTS.VERIFY_CERTIFICATE(code));
+    return res || null;
+  },
+
   // 9. Mentors
   async fetchMentors() {
     const res = await apiRequest(API_CONFIG.ENDPOINTS.MENTORS);
     return res?.data || null;
+  },
+
+  async createMentor(mentorData) {
+    const res = await apiRequest(API_CONFIG.ENDPOINTS.MENTORS, {
+      method: 'POST',
+      body: JSON.stringify(mentorData)
+    });
+    return res?.data || null;
+  },
+
+  async updateMentor(mentorId, mentorData) {
+    const res = await apiRequest(`${API_CONFIG.ENDPOINTS.MENTORS}/${mentorId}`, {
+      method: 'PUT',
+      body: JSON.stringify(mentorData)
+    });
+    return res?.data || null;
+  },
+
+  async deleteMentor(mentorId) {
+    const res = await apiRequest(`${API_CONFIG.ENDPOINTS.MENTORS}/${mentorId}`, {
+      method: 'DELETE'
+    });
+    return res?.success !== false;
   },
 
   // 10. Communication & Notifications
@@ -224,11 +309,36 @@ export const crmApiService = {
     return res?.data || null;
   },
 
+  async markNotificationAsRead(id) {
+    const res = await apiRequest(`${API_CONFIG.ENDPOINTS.NOTIFICATIONS}/${id}/read`, {
+      method: 'PATCH'
+    });
+    return res?.data || null;
+  },
+
+  async markAllNotificationsAsRead() {
+    const res = await apiRequest(`${API_CONFIG.ENDPOINTS.NOTIFICATIONS}/read-all`, {
+      method: 'PATCH'
+    });
+    return res?.success !== false;
+  },
+
+  async fetchCommunications() {
+    const res = await apiRequest(API_CONFIG.ENDPOINTS.COMMUNICATIONS);
+    return res?.data || null;
+  },
+
   async sendAnnouncement(announcementData) {
     const res = await apiRequest(API_CONFIG.ENDPOINTS.COMMUNICATIONS, {
       method: 'POST',
       body: JSON.stringify(announcementData)
     });
+    return res?.data || null;
+  },
+
+  // 11. Reports & Analytics
+  async fetchReports() {
+    const res = await apiRequest(API_CONFIG.ENDPOINTS.REPORTS);
     return res?.data || null;
   }
 };

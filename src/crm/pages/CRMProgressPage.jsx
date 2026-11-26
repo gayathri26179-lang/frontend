@@ -93,7 +93,7 @@ const CRMProgressPage = ({ onOpenStudentProfile }) => {
               <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} />
               <Tooltip />
               <Legend wrapperStyle={{ fontSize: '11px' }} />
-              <Bar dataKey="avgProgress" name="Avg Progress %" fill="#7045B5" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="avgProgress" name="Avg Progress %" fill="#7C3AED" radius={[4, 4, 0, 0]} />
               <Bar dataKey="avgAttendance" name="Avg Attendance %" fill="#172554" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>

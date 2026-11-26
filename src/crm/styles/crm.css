@@ -1,31 +1,40 @@
 /* ==============================================================
    AR IT COMPANY – INTERNSHIP & STUDENT MANAGEMENT CRM
    Brand Identity:
-   - Navy Blue: #172554
-   - Purple:    #7045B5
-   - Soft Pink: #E9A4C4
-   - White:     #FFFFFF
-   - Light Grey:#F5F6FA
+   - Navy Blue:      #172554
+   - Violet:         #7C3AED
+   - Pink:           #EC9AC7
+   - Light Lavender: #F3E8FF
+   - White:          #FFFFFF
+   - Light Grey:     #F5F6FA
    ============================================================== */
 
 :root {
   /* Brand Core Palette */
   --crm-navy: #172554;
-  --crm-navy-deep: #0f172a;
+  --crm-navy-deep: #0b1329;
   --crm-navy-light: #1e3a8a;
   --crm-navy-subtle: #eff6ff;
 
-  --crm-purple: #7045B5;
-  --crm-purple-hover: #5d349e;
-  --crm-purple-light: #8b5cf6;
-  --crm-purple-soft: #f5f0ff;
-  --crm-purple-border: #ddd6fe;
+  --crm-violet: #7C3AED;
+  --crm-violet-hover: #6D28D9;
+  --crm-violet-light: #8B5CF6;
+  --crm-violet-soft: #F3E8FF;
+  --crm-violet-border: #DDD6FE;
 
-  --crm-pink: #E9A4C4;
-  --crm-pink-hover: #d889b0;
-  --crm-pink-soft: #fdf2f7;
-  --crm-pink-border: #fbcfe8;
+  /* Legacy purple alias to maintain full compatibility */
+  --crm-purple: #7C3AED;
+  --crm-purple-hover: #6D28D9;
+  --crm-purple-light: #8B5CF6;
+  --crm-purple-soft: #F3E8FF;
+  --crm-purple-border: #DDD6FE;
 
+  --crm-pink: #EC9AC7;
+  --crm-pink-hover: #DB7CAE;
+  --crm-pink-soft: #FDF2F8;
+  --crm-pink-border: #FBCFE8;
+
+  --crm-lavender: #F3E8FF;
   --crm-white: #FFFFFF;
   --crm-bg: #F5F6FA;
   --crm-card-bg: #FFFFFF;
@@ -33,7 +42,7 @@
   --crm-border-subtle: #F1F5F9;
 
   /* Typography Colors */
-  --crm-text-primary: #0F172A;
+  --crm-text-primary: #172554;
   --crm-text-secondary: #334155;
   --crm-text-muted: #64748B;
   --crm-text-light: #94A3B8;
@@ -53,11 +62,12 @@
   --crm-info-border: #BAE6FD;
 
   /* Elevation Shadows */
-  --crm-shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
-  --crm-shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.07), 0 2px 4px -2px rgba(15, 23, 42, 0.05);
-  --crm-shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04);
-  --crm-shadow-card: 0 2px 10px rgba(23, 37, 84, 0.05);
-  --crm-shadow-glow: 0 0 20px rgba(112, 69, 181, 0.18);
+  --crm-shadow-sm: 0 1px 3px 0 rgba(23, 37, 84, 0.06);
+  --crm-shadow-md: 0 4px 6px -1px rgba(23, 37, 84, 0.08), 0 2px 4px -2px rgba(23, 37, 84, 0.05);
+  --crm-shadow-lg: 0 10px 15px -3px rgba(23, 37, 84, 0.1), 0 4px 6px -4px rgba(23, 37, 84, 0.05);
+  --crm-shadow-card: 0 2px 12px rgba(23, 37, 84, 0.06);
+  --crm-shadow-glow: 0 0 24px rgba(124, 58, 237, 0.22);
+  --crm-shadow-pink: 0 0 20px rgba(236, 154, 199, 0.28);
 
   /* Border Radii */
   --crm-radius-xs: 6px;
@@ -69,9 +79,11 @@
 
   /* Gradients */
   --crm-grad-navy: linear-gradient(135deg, #172554 0%, #1e3a8a 100%);
-  --crm-grad-purple: linear-gradient(135deg, #7045B5 0%, #9055e8 100%);
-  --crm-grad-pink: linear-gradient(135deg, #E9A4C4 0%, #f472b6 100%);
-  --crm-grad-brand: linear-gradient(135deg, #172554 0%, #7045B5 55%, #E9A4C4 100%);
+  --crm-grad-violet: linear-gradient(135deg, #7C3AED 0%, #9055E8 100%);
+  --crm-grad-purple: linear-gradient(135deg, #7C3AED 0%, #9055E8 100%);
+  --crm-grad-pink: linear-gradient(135deg, #EC9AC7 0%, #f472b6 100%);
+  --crm-grad-brand: linear-gradient(135deg, #172554 0%, #7C3AED 55%, #EC9AC7 100%);
+  --crm-grad-lavender: linear-gradient(135deg, #F3E8FF 0%, #FFFFFF 100%);
 }
 
 /* Global Reset & Base */

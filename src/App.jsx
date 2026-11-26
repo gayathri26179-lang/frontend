@@ -2,14 +2,19 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
+import Register from './pages/Register';
+import MentorLogin from './pages/MentorLogin';
 import CRMApp from './crm/CRMApp';
 import './App.css';
 
 function AppRoutes() {
   return (
     <Routes>
-      {/* Public Admin Login Route */}
+      {/* Public Authentication Routes */}
       <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/admin-register" element={<Register />} />
+      <Route path="/mentor-login" element={<MentorLogin />} />
 
       {/* AR IT COMPANY - Complete Internship & Student Management CRM Routes */}
       <Route

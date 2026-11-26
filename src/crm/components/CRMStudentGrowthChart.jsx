@@ -43,7 +43,7 @@ const CRMStudentGrowthChart = () => {
           style={{ borderColor: 'var(--crm-border)', fontSize: '12px' }}
         >
           <div className="fw-bold mb-1" style={{ color: 'var(--crm-navy)' }}>{label}</div>
-          <div style={{ color: '#7045B5' }}>
+          <div style={{ color: '#7C3AED' }}>
             New Registrations: <span className="fw-bold">{payload[0]?.value}</span>
           </div>
           {payload[1] && (
@@ -52,7 +52,7 @@ const CRMStudentGrowthChart = () => {
             </div>
           )}
           {payload[2] && (
-            <div style={{ color: '#E9A4C4' }}>
+            <div style={{ color: '#EC9AC7' }}>
               Completed Internships: <span className="fw-bold">{payload[2]?.value}</span>
             </div>
           )}
@@ -67,7 +67,7 @@ const CRMStudentGrowthChart = () => {
       <div className="crm-card-header">
         <div>
           <h2 className="crm-card-title">
-            <TrendingUp size={18} style={{ color: 'var(--crm-purple)' }} />
+            <TrendingUp size={18} style={{ color: '#7C3AED' }} />
             <span>Monthly Registration Analytics</span>
           </h2>
           <div className="crm-card-subtitle">
@@ -80,7 +80,7 @@ const CRMStudentGrowthChart = () => {
             type="button"
             className={`btn btn-sm ${timeRange === '6M' ? 'text-white' : 'text-muted'} py-1 px-2.5 rounded-2 fw-semibold`}
             style={{
-              backgroundColor: timeRange === '6M' ? 'var(--crm-purple)' : 'transparent',
+              backgroundColor: timeRange === '6M' ? '#7C3AED' : 'transparent',
               fontSize: '11px',
               border: 'none'
             }}
@@ -92,7 +92,7 @@ const CRMStudentGrowthChart = () => {
             type="button"
             className={`btn btn-sm ${timeRange === '1Y' ? 'text-white' : 'text-muted'} py-1 px-2.5 rounded-2 fw-semibold`}
             style={{
-              backgroundColor: timeRange === '1Y' ? 'var(--crm-purple)' : 'transparent',
+              backgroundColor: timeRange === '1Y' ? '#7C3AED' : 'transparent',
               fontSize: '11px',
               border: 'none'
             }}
@@ -108,16 +108,16 @@ const CRMStudentGrowthChart = () => {
           <AreaChart data={currentData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
             <defs>
               <linearGradient id="purpleGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#7045B5" stopOpacity={0.4} />
-                <stop offset="95%" stopColor="#7045B5" stopOpacity={0.0} />
+                <stop offset="5%" stopColor="#7C3AED" stopOpacity={0.45} />
+                <stop offset="95%" stopColor="#7C3AED" stopOpacity={0.0} />
               </linearGradient>
               <linearGradient id="navyGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#172554" stopOpacity={0.3} />
+                <stop offset="5%" stopColor="#172554" stopOpacity={0.35} />
                 <stop offset="95%" stopColor="#172554" stopOpacity={0.0} />
               </linearGradient>
               <linearGradient id="pinkGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#E9A4C4" stopOpacity={0.5} />
-                <stop offset="95%" stopColor="#E9A4C4" stopOpacity={0.0} />
+                <stop offset="5%" stopColor="#EC9AC7" stopOpacity={0.55} />
+                <stop offset="95%" stopColor="#EC9AC7" stopOpacity={0.0} />
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
@@ -132,7 +132,7 @@ const CRMStudentGrowthChart = () => {
               type="monotone"
               name="New Registrations"
               dataKey="registrations"
-              stroke="#7045B5"
+              stroke="#7C3AED"
               strokeWidth={2.5}
               fillOpacity={1}
               fill="url(#purpleGrad)"
@@ -150,8 +150,8 @@ const CRMStudentGrowthChart = () => {
               type="monotone"
               name="Completions"
               dataKey="completions"
-              stroke="#E9A4C4"
-              strokeWidth={2}
+              stroke="#EC9AC7"
+              strokeWidth={2.5}
               fillOpacity={1}
               fill="url(#pinkGrad)"
             />

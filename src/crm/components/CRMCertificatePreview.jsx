@@ -9,31 +9,44 @@ const CRMCertificatePreview = ({ cert, selectedTheme = 'navy', onThemeChange }) 
   // Theme configuration constants
   const themeStyles = {
     pink: {
-      primary: '#db2777',
-      borderOuter: '#E9A4C4',
+      primary: '#EC9AC7',
+      primaryText: '#be185d',
+      borderOuter: '#EC9AC7',
       borderInner: '#f472b6',
       badgeBg: '#fdf2f7',
       bgGradient: 'radial-gradient(circle at center, #ffffff 60%, #fff5f8 100%)',
       titleColor: '#be185d',
-      watermarkColor: 'rgba(233, 164, 196, 0.12)'
+      watermarkColor: 'rgba(236, 154, 199, 0.14)'
     },
-    purple: {
-      primary: '#7045B5',
-      borderOuter: '#7045B5',
+    violet: {
+      primary: '#7C3AED',
+      primaryText: '#7C3AED',
+      borderOuter: '#7C3AED',
       borderInner: '#9055e8',
       badgeBg: '#f5f0ff',
       bgGradient: 'radial-gradient(circle at center, #ffffff 60%, #f7f3ff 100%)',
-      titleColor: '#582b9e',
-      watermarkColor: 'rgba(112, 69, 181, 0.1)'
+      titleColor: '#6D28D9',
+      watermarkColor: 'rgba(124, 58, 237, 0.12)'
+    },
+    purple: {
+      primary: '#7C3AED',
+      primaryText: '#7C3AED',
+      borderOuter: '#7C3AED',
+      borderInner: '#9055e8',
+      badgeBg: '#f5f0ff',
+      bgGradient: 'radial-gradient(circle at center, #ffffff 60%, #f7f3ff 100%)',
+      titleColor: '#6D28D9',
+      watermarkColor: 'rgba(124, 58, 237, 0.12)'
     },
     navy: {
       primary: '#172554',
+      primaryText: '#172554',
       borderOuter: '#172554',
-      borderInner: '#d97706', // gold inner trim
+      borderInner: '#1e3a8a',
       badgeBg: '#eff6ff',
       bgGradient: 'radial-gradient(circle at center, #ffffff 60%, #f0f4ff 100%)',
       titleColor: '#172554',
-      watermarkColor: 'rgba(23, 37, 84, 0.08)'
+      watermarkColor: 'rgba(23, 37, 84, 0.1)'
     }
   };
 
@@ -250,33 +263,21 @@ const CRMCertificatePreview = ({ cert, selectedTheme = 'navy', onThemeChange }) 
         </div>
 
         <div className="d-flex flex-wrap align-items-center gap-2">
-          {/* Theme Selector Tabs (Pink, Purple, Navy Blue) */}
+          {/* Theme Selector Tabs (Pink, Violet, Navy Blue) */}
           <div className="btn-group bg-light p-1 rounded-3 border" role="group">
             <button
               type="button"
               className={`btn btn-sm py-1 px-2.5 rounded-2 ${currentTheme === 'pink' ? 'text-white' : 'text-muted'}`}
               style={{
-                backgroundColor: currentTheme === 'pink' ? '#db2777' : 'transparent',
+                backgroundColor: currentTheme === 'pink' ? '#EC9AC7' : 'transparent',
+                color: currentTheme === 'pink' ? '#172554' : undefined,
                 border: 'none',
                 fontSize: '11.5px',
-                fontWeight: 600
+                fontWeight: 700
               }}
               onClick={() => onThemeChange && onThemeChange('pink')}
             >
-              Pink Theme
-            </button>
-            <button
-              type="button"
-              className={`btn btn-sm py-1 px-2.5 rounded-2 ${currentTheme === 'purple' ? 'text-white' : 'text-muted'}`}
-              style={{
-                backgroundColor: currentTheme === 'purple' ? '#7045B5' : 'transparent',
-                border: 'none',
-                fontSize: '11.5px',
-                fontWeight: 600
-              }}
-              onClick={() => onThemeChange && onThemeChange('purple')}
-            >
-              Purple Theme
+              1. Pink Theme
             </button>
             <button
               type="button"
@@ -285,11 +286,24 @@ const CRMCertificatePreview = ({ cert, selectedTheme = 'navy', onThemeChange }) 
                 backgroundColor: currentTheme === 'navy' ? '#172554' : 'transparent',
                 border: 'none',
                 fontSize: '11.5px',
-                fontWeight: 600
+                fontWeight: 700
               }}
               onClick={() => onThemeChange && onThemeChange('navy')}
             >
-              Navy Blue Theme
+              2. Navy Blue Theme
+            </button>
+            <button
+              type="button"
+              className={`btn btn-sm py-1 px-2.5 rounded-2 ${currentTheme === 'violet' || currentTheme === 'purple' ? 'text-white' : 'text-muted'}`}
+              style={{
+                backgroundColor: currentTheme === 'violet' || currentTheme === 'purple' ? '#7C3AED' : 'transparent',
+                border: 'none',
+                fontSize: '11.5px',
+                fontWeight: 700
+              }}
+              onClick={() => onThemeChange && onThemeChange('violet')}
+            >
+              3. Violet Theme
             </button>
           </div>
 

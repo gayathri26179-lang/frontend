@@ -262,9 +262,9 @@ const CRMCertificatesPage = () => {
                   </label>
                   <div className="row g-2">
                     {[
-                      { id: 'pink', name: 'Pink Theme', desc: 'Rose Gold Accents', color: '#db2777' },
-                      { id: 'purple', name: 'Purple Theme', desc: 'Royal Amethyst', color: '#7045B5' },
-                      { id: 'navy', name: 'Navy Blue Theme', desc: 'Corporate Gold', color: '#172554' }
+                      { id: 'pink', name: '1. Pink Theme', desc: 'Soft Pink (#EC9AC7)', color: '#EC9AC7' },
+                      { id: 'navy', name: '2. Navy Blue Theme', desc: 'Corporate (#172554)', color: '#172554' },
+                      { id: 'violet', name: '3. Violet Theme', desc: 'Royal Violet (#7C3AED)', color: '#7C3AED' }
                     ].map((th) => (
                       <div key={th.id} className="col-4">
                         <div
